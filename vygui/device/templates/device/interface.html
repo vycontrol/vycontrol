@@ -1,16 +1,15 @@
 {% if interface %}
-    {{ interface }}
-    <table border="1" width="100%">
-    <tr><th>type</th><th>name</th><th>address</th></tr>
+<h2>Interface</h2>
 
-    {% for key, value in interface.items %}
-        <tr><td>{{ key }}</td>
-        {% for ifkey, ifvaluekey in value.items %}
-            <td>{% url 'device-views-interface' key ifkey as url_interface %}
-            <a href="{{ url_interface }}">{{ ifkey }}</a></td><td>{{ ifvalue.address }}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}
+{{ interface }}
+    <table border="1" width="100%">
+    <tr>
+    <th>address</th> <td>{{ interface.address }}</td>
+    </tr>
+
+    <tr>
+    <th>mtu</th> <td>{{ interface.mtu }}</td>
+    </tr>
 
     </table>
 {% else %}
