@@ -56,7 +56,7 @@ ROOT_URLCONF = 'vycenter.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['vycenter/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

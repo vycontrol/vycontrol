@@ -1,5 +1,12 @@
-<h2>Instance add</h2>
+{% extends "base.html" %}
+
+{% block header_title %}Add a new instances{% endblock %}
+{% block section_title %}Add a new instances{% endblock %}
+
+{% block content %}
 <p>List of instances, group owners</p>
 
 {% url 'instance-add' as instance_add %}
 <p>Add a new instance</p>
+{% endblock %}
+
