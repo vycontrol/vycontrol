@@ -12,9 +12,12 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * unset/set firewall interface - todo
 * change interface parameters - todo
 * crud firewall - todo
+* use VyOS instances from database not local.py - todo
 
 ### config module
 * users crud - todo
 * groups crud - todo
-* add new VyoS servers - todo
-* associate groups to VyOS servers
+* add new VyoS instances only db work - alpha
+* add new VyoS instances test connection while adding - todo
+* add new VyoS instances test connection all servers - todo
+* associate groups to VyOS instances
