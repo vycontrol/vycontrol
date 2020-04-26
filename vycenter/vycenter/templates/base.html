@@ -9,14 +9,35 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>{% block header_title %}{% endblock %} - VyCenter</title>
+
+    <style>
+    body {
+        background-color: black;
+        color: white;
+        
+    }
+    .container {
+        color: black;
+    }
+    .menu { 
+        background-color: #aaa;
+        padding: 5px;
+    }
+    .content { 
+        background-color: #ccc;
+        padding: 5px;
+    }
+
+
+    </style>
   </head>
-  <body>
-    <h1>VyCenter</h1>
+  <body >
+    <h1 align="center">VyCenter</h1>
 
 
-<div class="container" style="background-color: #dcc">
+<div class="container">
   <div class="row">
-    <div class="col-3" style="background-color: #ccc">
+    <div class="col-3 menu">
 
     <h2>Manage VyOS</h2>
     <p><select name="vyos-id"><option>xxxx - 192.168.4.4</option></select></p>
@@ -33,8 +54,8 @@
    
     <h2>Manage VyGUI</h2>
     <ol>
-    {% url 'config:instance-add' as url_config_instance_add %}<li><a href="{{ url_config_instance_add }}/config/instance-add">Add a new instance</a></li>
-    {% url 'config:instance-add' as url_config_instance_add %}<li><a href="{{ url_config_instance_add }}/config/instance">List instances</a></li>
+    <li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>
+    <li><a href="{% url 'config:instances' %}">List instances</a></li>
 
     <li>GUI Users</li>
     <li>GUI Groups</li>
@@ -42,7 +63,7 @@
 
 
     </div>
-    <div class="col">
+    <div class="col content">
         <h2>{% block section_title %}{% endblock %}</h2>
         {% block content %}{% endblock %}
     </div>

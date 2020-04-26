@@ -1,12 +1,45 @@
 {% extends "base.html" %}
 
-{% block header_title %}Add a new instances{% endblock %}
-{% block section_title %}Add a new instances{% endblock %}
+{% block header_title %}Add new instance{% endblock %}
+{% block section_title %}Add new instance{% endblock %}
 
 {% block content %}
-<p>List of instances, group owners</p>
 
-{% url 'instance-add' as instance_add %}
-<p>Add a new instance</p>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'config:instance-add' %}" method="post">
+{% csrf_token %}
+
+<p>
+<label for="alias">Alias</label><br>
+<input type="text" name="alias" id="alias" value="{{ alias }}" size="20">
+</p>
+
+<p>
+<label for="hostname">VyOS API Hosname/IP</label><br>
+<input type="text" name="hostname" id="hostname" value="{{ hostname }}" size="60">
+</p>
+
+<p>
+<label for="port">VyOS API TCP Port</label><br>
+<input type="text" name="port" id="port" value="{{ port }}" size="5">
+</p>
+
+<p>
+<label for="key">VyOS API Key</label><br>
+<input type="text" name="key" id="key" value="{{ key }}" size="60">
+</p>
+
+
+<p>
+<label for="https">VyOS is https?</label><br>
+<input type="checkbox" name="https" id="https" value="1" checked="checked">
+</p>
+
+<input type="submit" value="Add Instance">
+</form>
+
+
+
 {% endblock %}
 
