@@ -8,30 +8,97 @@ import sys
 sys.path.append('/var/secrets')
 import local
 
+from config.models import Instance
 
+def get_url(hostname):
+    # permcheck
+    instance = Instance.objects.get(hostname=hostname)
+    if instance.https == True:
+        protocol = "https"
+    else:
+        protocol = "http"
 
+    if (instance.port == None):
+        instance.port = 443
 
- 
-SERVER_URL_MANAGE = local.SERVER_URL + 'config-file'
-SERVER_URL_CONFIG = local.SERVER_URL + 'configure'
-SERVER_URL_RETRIE = local.SERVER_URL + 'retrieve'
+    url = protocol + "://" + instance.hostname + ":" + str(instance.port)
+
+    return url
+
+def get_url_manage(hostname):
+    url = get_url(hostname) + '/config-file'
+    return url
+
+def get_url_configure(hostname):
+    url = get_url(hostname) + '/configure'
+    return url
+
+def get_url_retrieve(hostname):
+    url = get_url(hostname) + '/retrieve'        
+    return url
+
+def get_key(hostname):
+    # permcheck
+    instance = Instance.objects.get(hostname=hostname)
+    return instance.key
+
 
 #data='{"op": "showConfig", "path": ["interfaces", "dummy"]}
+def instance_getall():
+    instances = Instance.objects.all()
+    return instances
 
 
-def getall():
-    #cmd = {"op": "save", "file": "/config/config.boot"}
-    cmd = {"op": "showConfig", "path": ["interfaces", "dummy"]}
+def conntry(hostname): 
+    cmd = {"op": "showConfig", "path": ["interfaces"]}
 
     print(json.dumps(cmd))
-    post = {'key': local.SERVER_KEY, 'data': json.dumps(cmd)}
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
     print(post)
 
 
     # curl -X POST -F data='{"op": "showConfig", "path": ["interfaces", "dummy"]}' -F key=qwerty http://127.0.0.1:8080/retrieve
     # {"success": true, "data": " /* So very dummy */\n dummy dum0 {\n     address 192.168.168.1/32\n     address 192.168.168.2/32\n     /* That is a description */\n     description \"Test interface\"\n }\n dummy dum1 {\n     address 203.0.113.76/32\n     address 203.0.113.79/32\n }\n", "error": null}
 
-    resp = requests.post(SERVER_URL_RETRIE, verify=False, data=post)
+    
+    print(get_url_retrieve(hostname))
+
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+    except requests.exceptions.ConnectionError:
+        return False
+    
+    print(resp.status_code)
+
+    if (resp.status_code == 200):
+        return True
+    
+    pprint.pprint(resp)
+    pprint.pprint(resp.json())
+
+    return False
+
+
+
+
+def getall(hostname="179.127.12.142"):
+    #cmd = {"op": "save", "file": "/config/config.boot"}
+    cmd = {"op": "showConfig", "path": ["interfaces", "dummy"]}
+
+    print(json.dumps(cmd))
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
+    print(post)
+
+
+    # curl -X POST -F data='{"op": "showConfig", "path": ["interfaces", "dummy"]}' -F key=qwerty http://127.0.0.1:8080/retrieve
+    # {"success": true, "data": " /* So very dummy */\n dummy dum0 {\n     address 192.168.168.1/32\n     address 192.168.168.2/32\n     /* That is a description */\n     description \"Test interface\"\n }\n dummy dum1 {\n     address 203.0.113.76/32\n     address 203.0.113.79/32\n }\n", "error": null}
+
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+    except requests.exceptions.ConnectionError:
+        return False
+
+
     print(resp.status_code)
     pprint.pprint(resp)
 
@@ -48,18 +115,22 @@ def getall():
     return resp
 
 
-def get_interfaces():
+def get_interfaces(hostname="179.127.12.142"):
     cmd = {"op": "showConfig", "path": ["interfaces"]}
 
     print(json.dumps(cmd))
-    post = {'key': local.SERVER_KEY, 'data': json.dumps(cmd)}
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
     print(post)
 
 
     # curl -X POST -F data='{"op": "showConfig", "path": ["interfaces", "dummy"]}' -F key=qwerty http://127.0.0.1:8080/retrieve
     # {"success": true, "data": " /* So very dummy */\n dummy dum0 {\n     address 192.168.168.1/32\n     address 192.168.168.2/32\n     /* That is a description */\n     description \"Test interface\"\n }\n dummy dum1 {\n     address 203.0.113.76/32\n     address 203.0.113.79/32\n }\n", "error": null}
 
-    resp = requests.post(SERVER_URL_RETRIE, verify=False, data=post)
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+    except requests.exceptions.ConnectionError:
+        return False
+
     print(resp.status_code)
     pprint.pprint(resp)
 
@@ -80,18 +151,22 @@ def get_interfaces():
 
     return result1['data']
 
-def get_interface(interface_type, interface_name):
+def get_interface(interface_type, interface_name, hostname="179.127.12.142"):
     cmd = {"op": "showConfig", "path": ["interfaces", interface_type, interface_name]}
 
     print(json.dumps(cmd))
-    post = {'key': local.SERVER_KEY, 'data': json.dumps(cmd)}
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
     print(post)
 
 
     # curl -X POST -F data='{"op": "showConfig", "path": ["interfaces", "dummy"]}' -F key=qwerty http://127.0.0.1:8080/retrieve
     # {"success": true, "data": " /* So very dummy */\n dummy dum0 {\n     address 192.168.168.1/32\n     address 192.168.168.2/32\n     /* That is a description */\n     description \"Test interface\"\n }\n dummy dum1 {\n     address 203.0.113.76/32\n     address 203.0.113.79/32\n }\n", "error": null}
 
-    resp = requests.post(SERVER_URL_RETRIE, verify=False, data=post)
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+    except requests.exceptions.ConnectionError:
+        return False
+
     print(resp.status_code)
     pprint.pprint(resp)
 

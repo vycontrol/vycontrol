@@ -40,7 +40,14 @@
     <div class="col-3 menu">
 
     <h2>Manage VyOS</h2>
-    <p><select name="vyos-id"><option>xxxx - 192.168.4.4</option></select></p>
+    <p><select name="vyos-id">
+      {% for instance in instances %}
+      <option value="{{instance.hostname}}">{{instance.alias}}</option>
+      {% endfor %}
+
+      
+    
+    </select></p>
     <ol>
     <li><a href="/instance/">Dashboard</a></li>
     <li>Static Routing</li>
