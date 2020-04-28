@@ -7,6 +7,7 @@ class Instance(models.Model):
     port = models.IntegerField()
     key = models.CharField(max_length=100)
     https = models.BooleanField()
-
+    main = models.BooleanField(default=False)
+    
 
 

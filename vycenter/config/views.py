@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.shortcuts import redirect
+
 
 import vyos
 
@@ -10,11 +12,14 @@ from .models import Instance
 def index(request):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
 
     template = loader.get_template('config/instance.html')
     context = { 
         #'interfaces': interfaces,
         'instances': all_instances,
+        'hostname_default': hostname_default,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -22,17 +27,21 @@ def index(request):
 
 def instances(request):
     all_instances = vyos.instance_getall()
-    
+    hostname_default = vyos.get_hostname_prefered(request)
+
 
     template = loader.get_template('config/instances.html')
     context = { 
         'instances': all_instances,
+        'hostname_default': hostname_default,
+
     }   
     return HttpResponse(template.render(context, request))
 
 def instance_add(request):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
 
     if len(request.POST) > 0:
         instance = Instance()
@@ -50,6 +59,7 @@ def instance_add(request):
 
     template = loader.get_template('config/instance_add.html')
     context = { 
+        'hostname_default': hostname_default,
         'instance_id': instance_id,
         'instances': all_instances,
     }   
@@ -57,18 +67,55 @@ def instance_add(request):
 
 def instance_conntry(request, hostname):
     all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
 
     # permcheck
     instance = Instance.objects.get(hostname=hostname)
     connected = vyos.conntry(hostname)
+    if connected == True:
+        request.session['hostname'] = hostname
+
 
     template = loader.get_template('config/instance_conntry.html')
     context = { 
         'instance': instance,
         "connected": connected,
         'instances': all_instances,
+        'hostname_default': hostname_default,
     }   
     return HttpResponse(template.render(context, request))
+
+
+def instance_default(request, hostname):
+    all_instances = vyos.instance_getall()
+
+    # permcheck
+    instance = Instance.objects.get(hostname=hostname)
+    
+    connected = vyos.conntry(hostname)
+    # show some error when not connected
+    if connected == True:
+        request.session['hostname'] = hostname
+        instance.main = True
+        instance.save()
+
+    return redirect('config:instances')
+
+
+
+def instance_remove(request, hostname):
+    all_instances = vyos.instance_getall()
+
+    # permcheck
+    instance = Instance.objects.get(hostname=hostname)
+    
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    if hostname_default != hostname:
+        instance.delete()
+
+    return redirect('config:instances')
+
 
 
 

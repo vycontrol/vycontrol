@@ -42,6 +42,19 @@ def get_key(hostname):
     instance = Instance.objects.get(hostname=hostname)
     return instance.key
 
+def get_hostname_prefered(request):
+    hostname = None
+
+    if request.session.get('hostname', None) != None:
+        hostname = request.session.get('hostname', None)
+        
+
+    if hostname == None:
+        instance = Instance.objects.get(main=True)
+        hostname = instance.hostname
+
+    return hostname 
+    
 
 #data='{"op": "showConfig", "path": ["interfaces", "dummy"]}
 def instance_getall():
@@ -151,7 +164,7 @@ def get_interfaces(hostname="179.127.12.142"):
 
     return result1['data']
 
-def get_interface(interface_type, interface_name, hostname="179.127.12.142"):
+def get_interface(interface_type, interface_name, hostname):
     cmd = {"op": "showConfig", "path": ["interfaces", interface_type, interface_name]}
 
     print(json.dumps(cmd))

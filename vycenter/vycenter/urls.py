@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from . import views
+
+
+app_name = 'vycenter'
+
 
 urlpatterns = [
     path('instance/', include('instance.urls')),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('admin/', admin.site.urls),
+    path('', views.vycenter_login, name='vycenter-login'),
 ]

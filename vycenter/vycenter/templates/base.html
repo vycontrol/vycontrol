@@ -27,27 +27,80 @@
         background-color: #ccc;
         padding: 5px;
     }
+    h1 {
+      font-size: 10px;      
+    }
+    #menu-logotop {
+      background-color: #444E5A;
+      padding: 0;
+    }
+    #menu-topline {
+      padding-top: 3px;
+      background-color: #AD343E;
+    }
+    h2 {
+      font-size: 12px;
+    }
+    ol {
+      font-size: 11px;
+    }
+    p.menu-config {
+      padding: 0 5px;
+      margin: 0;
+    }
+    form.instancedefault {
+      display: inline;
+    }
 
-
+    #vyos-id,  #vycenter-config-menu {
+        margin-right: 10px;
+    }
+    
     </style>
   </head>
   <body >
-    <h1 align="center">VyCenter</h1>
 
+    <div class="container" id="menu-logotop" >
+      <div id="menu-topline"></div>
+        
+      <div class="row ">
+        <div class="col-3 ">
+          <h1 align="left"><img src="https://storage.googleapis.com/imgvycenter/logo/logoreduzido20h.png" height="20" alt="vycenter"></h1>
+        </div>
+        <div class="col-9">
+          <form action="/config/instance-default" method="get" id="instancedefault">
+            <p class="text-right menu-config">
+            
+              <select name="vyos-id" id="vyos-id" onchange="this.form.submit();">
+                {% for instance in instances %}
+                <option value="{{instance.hostname}}" {% if hostname_default == instance.hostname %}selected="selected"{% endif %}>{{instance.alias}}</option>
+                {% endfor %}
+          
+                
+              
+              </select>
+            
+
+            
+              <span id="vycenter-config-menu">Config</span>
+              <span id="vycenter-config-user">Usuário</span>
+
+          </p>
+        </form>
+        </div>
+      </div>
+    </div>
 
 <div class="container">
   <div class="row">
     <div class="col-3 menu">
 
     <h2>Manage VyOS</h2>
-    <p><select name="vyos-id">
-      {% for instance in instances %}
-      <option value="{{instance.hostname}}">{{instance.alias}}</option>
-      {% endfor %}
 
-      
-    
-    </select></p>
+
+
+
+
     <ol>
     <li><a href="/instance/">Dashboard</a></li>
     <li>Static Routing</li>

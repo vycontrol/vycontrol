@@ -8,16 +8,27 @@
 {% if instances %}
 
     <table border="1" width="100%">
-    <tr><th>alias</th><th>hostname</th><th>port</th><th>key</th><th>https</th><th>test connection</th></tr>
+    <tr>
+        <th>alias</th>
+        <th>hostname</th>
+        <th>port</th>
+        <th>key</th>
+        <th>https</th>
+        <th>test connection</th>
+        <th>default</th>
+        <th>remove</th>
+    </tr>
 
     {% for instance in instances %}
     <tr>
         <td>{{ instance.alias }}</td>
         <td>{{ instance.hostname }}</td>
         <td>{{ instance.port }}</td>
-        <td>{{ instance.key }}</td>
+        <td>show</td>
         <td>{{ instance.https }}</td>
         <td><a href="{% url 'config:instance-conntry' instance.hostname %}">test</a></td>
+        <td>{% if instance.main == True %}default{% else %}<a href="{% url 'config:instance-default' instance.hostname %}">set default</a>{% endif %}</td>
+        <td>{% if instance.main == True %}-{% else %}<a href="{% url 'config:instance-remove' instance.hostname %}">remove</a>{% endif %}</td>
     </tr>
 
     {% endfor %}
