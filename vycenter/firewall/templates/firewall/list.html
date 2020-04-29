@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Dashboard{% endblock %}
+{% block section_title %}Firewall Dashboard{% endblock %}
+
+{% block debug %}
+{{ firewall_all }}
+{% endblock %}
+
+{% block content %}
+
+
+
+{% if firewall_all %}
+    <table border="1" width="100%">
+    <tr><th>name</th><th>description</th><th>action</th></tr>
+
+    {% for key, value in firewall_all.items %}
+        <tr>
+        {% for ifkey, ifvalue in value.items %}
+            <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
+            <td>{{ ifvalue.description }}</td>
+            <td>delete</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+
+    </table>
+{% else %}
+    <p>No interfaces.</p>
+{% endif %}
+
+{% endblock %}
+
+
+

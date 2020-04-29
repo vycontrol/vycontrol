@@ -200,3 +200,40 @@ def get_interface(interface_type, interface_name, hostname):
 
     return result1['data']
 
+
+
+def get_firewall_all(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall"]}
+
+    print(json.dumps(cmd))
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
+    print(post)
+
+
+    # curl -X POST -F data='{"op": "showConfig", "path": ["interfaces", "dummy"]}' -F key=qwerty http://127.0.0.1:8080/retrieve
+    # {"success": true, "data": " /* So very dummy */\n dummy dum0 {\n     address 192.168.168.1/32\n     address 192.168.168.2/32\n     /* That is a description */\n     description \"Test interface\"\n }\n dummy dum1 {\n     address 203.0.113.76/32\n     address 203.0.113.79/32\n }\n", "error": null}
+
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+    except requests.exceptions.ConnectionError:
+        return False
+
+    print(resp.status_code)
+    pprint.pprint(resp)
+
+    pprint.pprint(resp.json())
+
+
+    if resp.status_code != 200:
+        # This means something went wrong.
+        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
+        return "erro"
+    #for todo_item in resp.json():
+        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
+
+    result1 = resp.json()
+    print(result1['data'])
+    #result2 = json.loads(result1['data'])
+    pprint.pprint(result1)
+
+    return result1['data']

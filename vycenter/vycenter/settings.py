@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'instance.apps.InstanceConfig',
     'config.apps.ConfigConfig',
+    'firewall.apps.FirewallConfig',
 ]
 
 MIDDLEWARE = [

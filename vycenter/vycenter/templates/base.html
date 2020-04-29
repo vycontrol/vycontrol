@@ -56,6 +56,21 @@
         margin-right: 10px;
     }
     
+    #debug {
+        background-color:palegoldenrod;
+        margin-top: 20px;
+    }
+    #debug h3 {
+        font-size: 14px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+    }  
+    #debug pre {
+      font-size: 12px;
+      padding-top: 0;   
+      margin: 0;  
+    }
     </style>
   </head>
   <body >
@@ -103,11 +118,12 @@
 
     <ol>
     <li><a href="/instance/">Dashboard</a></li>
+    <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
+
     <li>Static Routing</li>
     <li>IPSEC</li>
     <li>BGP</li>
     <li>OSPF</li>
-    <li>Firewall</li>
     <li>NAT</li>
     </ol>
 
@@ -133,6 +149,12 @@
 </div>
 
 
+<div class="container" id="debug">
+  <h3>Debug</h3>
+  <pre>
+  {% block debug %}{% endblock %}
+</pre>
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -26,5 +26,6 @@ urlpatterns = [
     path('instance/', include('instance.urls')),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('firewall/', include('firewall.urls')),
     path('', views.vycenter_login, name='vycenter-login'),
 ]
