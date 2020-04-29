@@ -48,6 +48,6 @@ http://127.0.0.1:8000/
 
 ## setup vyos new instance
 * click on *Add new instance*
-* configure vyos services like explanined here https://docs.vyos.io/en/latest/appendix/http-api.html
+* configure vyos services like explained here https://docs.vyos.io/en/latest/appendix/http-api.html
 * click on *List Instances*
 * click on *Test Connection*
