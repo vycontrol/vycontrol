@@ -14,6 +14,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 
 ### firewall module
 * basic firewall rules creation proof of concept - done
+* list firewall rules - done
 * crud firewall - todo
 
 ## other modules - todo
