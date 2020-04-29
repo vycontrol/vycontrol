@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block header_title %}Interface{% endblock %}
+{% block section_title %}Interface{% endblock %}
+
+{% block debug %}
+{{ interface }}
+{% endblock %}
+
+
+{% block content %}
+{% if interface %}
+
+    <table border="1" width="100%">
+    <tr>
+    <th>address</th> <td>{{ interface.address }}</td>
+    </tr>
+
+    <tr>
+    <th>mtu</th> <td>{{ interface.mtu }}</td>
+    </tr>
+
+    </table>
+{% else %}
+    <p>Invalid interface.</p>
+{% endif %}
+
+{% endblock %}
+
+

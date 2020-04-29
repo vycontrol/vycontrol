@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'instance.apps.InstanceConfig',
+    'interface.apps.InterfaceConfig',
     'config.apps.ConfigConfig',
     'firewall.apps.FirewallConfig',
 ]

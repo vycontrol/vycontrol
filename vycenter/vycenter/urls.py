@@ -23,7 +23,7 @@ app_name = 'vycenter'
 
 
 urlpatterns = [
-    path('instance/', include('instance.urls')),
+    path('interface/', include('interface.urls')),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('firewall/', include('firewall.urls')),

@@ -5,17 +5,18 @@
 
 {% block debug %}
 {{ firewall_all }}
+{{ firewall_name }}
 {% endblock %}
 
 {% block content %}
 
 
 
-{% if firewall_all %}
+{% if firewall %}
     <table border="1" width="100%">
     <tr><th>name</th><th>description</th><th>action</th></tr>
 
-    {% for key, value in firewall_all.items %}
+    {% for key, value in firewall.items %}
         <tr>
         {% for ifkey, ifvalue in value.items %}
             <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
@@ -27,8 +28,49 @@
 
     </table>
 {% else %}
-    <p>No interfaces.</p>
+    <p>No firewalls.</p>
 {% endif %}
+
+
+
+<h2>Create new rule</h2>
+
+<form action="{% url 'firewall:addrule' firewall_name %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">rule number</label><br>
+        <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+    </p>
+    
+    <p>
+        <label for="hostname">action</label><br>
+        <input type="checkbox" name="action" id="action" value="accept"> accept
+        <input type="checkbox" name="action" id="action" value="drop"> drop
+    </p>
+
+    <p>
+        <label for="hostname">protocol</label><br>
+        <input type="checkbox" name="protocol" id="protocol" value="tcp"> tcp
+        <input type="checkbox" name="protocol" id="protocol" value="udp"> udp
+    </p>   
+    
+    <p>
+        <label for="alias">destination port</label><br>
+        <input type="text" name="destinationport" id="destinationport" value="{{ destinationport }}" size="5">
+    </p>
+    
+    <p>
+        <label for="alias">source port</label><br>
+        <input type="text" name="sourceport" id="sourceport" value="{{ sourceport }}" size="5">
+    </p>    
+    
+    
+    <input type="submit" value="Add Rule">
+    </form>
+
+    
+
 
 {% endblock %}
 

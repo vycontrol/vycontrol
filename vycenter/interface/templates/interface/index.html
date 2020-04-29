@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block header_title %}Instance Dashboard{% endblock %}
+{% block section_title %}Instance Dashboard{% endblock %}
+
+{% block content %}
+
+{% if interfaces %}
+    <table border="1" width="100%">
+    <tr><th>type</th><th>name</th><th>address</th></tr>
+
+    {% for key, value in interfaces.items %}
+        <tr><td>{{ key }}</td>
+        {% for ifkey, ifvalue in value.items %}
+            <td>{% url 'interface:interface-show' key ifkey as url_interface %}
+            <a href="{{ url_interface }}">{{ ifkey }}</a></td><td>{{ ifvalue.address }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+
+    </table>
+{% else %}
+    <p>No interfaces.</p>
+{% endif %}
+
+{% endblock %}
+
+
+

@@ -7,7 +7,8 @@ app_name = 'firewall'
 
 urlpatterns = [
     path('', views.index, name='firewall-list'),
-    path('show/<str:name>', views.show, name='show'),
+    path('show/<str:firewall_name>', views.show, name='show'),
+    path('addrule/<str:firewall_name>', views.addrule, name='addrule'),
 ]
 
 

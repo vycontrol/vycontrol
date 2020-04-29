@@ -27,7 +27,7 @@
         background-color: #ccc;
         padding: 5px;
     }
-    h1 {
+    #menu-logotop h1 {
       font-size: 10px;      
     }
     #menu-logotop {
@@ -38,7 +38,7 @@
       padding-top: 3px;
       background-color: #AD343E;
     }
-    h2 {
+    #menu-logotop h2 {
       font-size: 12px;
     }
     ol {
@@ -71,6 +71,20 @@
       padding-top: 0;   
       margin: 0;  
     }
+
+    #central h1 {
+      font-size: 18px;
+    }
+
+    #central h2 {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    #central {
+      font-size: 12px;
+    }
+
     </style>
   </head>
   <body >
@@ -106,7 +120,7 @@
       </div>
     </div>
 
-<div class="container">
+<div class="container" id="central">
   <div class="row">
     <div class="col-3 menu">
 
@@ -117,7 +131,7 @@
 
 
     <ol>
-    <li><a href="/instance/">Dashboard</a></li>
+    <li><a href="/interface/">Interfaces</a></li>
     <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
 
     <li>Static Routing</li>

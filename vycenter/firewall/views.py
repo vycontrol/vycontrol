@@ -26,20 +26,63 @@ def index(request):
 
 
 
-def show(request, name):
+def show(request, firewall_name):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
-    firewall_all = vyos.get_firewall_all(hostname_default)
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    
 
     template = loader.get_template('firewall/show.html')
     context = { 
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
-        'firewall_all':  firewall_all
+        'firewall':  firewall,
+        'firewall_name': firewall_name,
     }   
+    return HttpResponse(template.render(context, request))
+
+
+
+def addrule(request, firewall_name):
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    
+    if 'action' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
+        result1 = vyos.set_config(hostname_default, cmd)
+        print(result1)
+
+    if 'protocol' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", request.POST['protocol']]}
+        result2 = vyos.set_config(hostname_default, cmd)
+        print(result2)
+
+    if 'destinationport' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "destination", "port", request.POST['destinationport']]}
+        result3 = vyos.set_config(hostname_default, cmd)
+        print(result3)
+
+    if 'sourceport' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "source", "port", request.POST['sourceport']]}
+        result3 = vyos.set_config(hostname_default, cmd)
+        print(result3)        
+
+
+
+    template = loader.get_template('firewall/show.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'firewall':  firewall,
+        'firewall_name': firewall_name,
+    }  
     return HttpResponse(template.render(context, request))
 
 
