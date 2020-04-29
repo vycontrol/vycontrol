@@ -50,7 +50,11 @@ def get_hostname_prefered(request):
         
 
     if hostname == None:
-        instance = Instance.objects.get(main=True)
+        try:
+            instance = Instance.objects.get(main=True)
+        except Instance.DoesNotExist:
+            return None
+
         hostname = instance.hostname
 
     return hostname 

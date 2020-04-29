@@ -29,6 +29,8 @@ def instances(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
+    if hostname_default == None:
+        return redirect('config:instance-add')
 
     template = loader.get_template('config/instances.html')
     context = { 
