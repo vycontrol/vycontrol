@@ -53,7 +53,7 @@ http://127.0.0.1:8000/
 * click on *Test Connection*
 
 
-# screenshoots (keep in mid we're in early alpha stages)
+# screenshoots (keep in mind we're in early alpha stages)
 
 ## List VyOS Instances
 ![List VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/list-instances.png)
