@@ -21,3 +21,24 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * add new VyoS instances test connection while adding - todo
 * add new VyoS instances test connection all servers - todo
 * associate groups to VyOS instances
+
+# install instructions
+
+## setup virtual env and pip requirements
+```
+virtualenv env
+source env/bin/activate
+pip3 install -r requirements.txt
+```
+
+## setup initial database
+```
+cd vycenter
+python3 manage.py migrate
+```
+
+## setup vyos new instance
+* click on *Add new instance*
+* configure vyos services like explanined here https://docs.vyos.io/en/latest/appendix/http-api.html
+* click on *List Instances*
+* click on *Test Connection*
