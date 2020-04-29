@@ -1,0 +1,12 @@
+version: "2.2"
+services:
+  django:
+    container_name: vycenter
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vycenter
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"

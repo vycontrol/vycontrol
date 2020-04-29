@@ -1,0 +1,8 @@
+vycenter/db.sqlite3
+.git
+.DS_Store
+db.sqlite3
+*.code-workspace
+__pycache__
+*.pyc
+**/db.sqlite3

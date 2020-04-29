@@ -6,7 +6,6 @@ import sys
 #curl -k -X POST -F data='{"op": "set", "path": ["interfaces", "dummy", "dum1", "address"], "value": "203.0.113.76/32"}' -F key=a6ffb742a8a631a65b07ab2026258629da2632fd https://179.127.12.142:44302/configure
 
 sys.path.append('/var/secrets')
-import local
 
 from config.models import Instance
 
