@@ -222,7 +222,7 @@ def get_firewall_all(hostname):
 
 
 def get_firewall(hostname, name):
-    cmd = {"op": "showConfig", "path": ["firewall", name]}
+    cmd = {"op": "showConfig", "path": ["firewall", "name", name]}
 
     print(json.dumps(cmd))
     post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
