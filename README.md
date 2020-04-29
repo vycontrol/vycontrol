@@ -14,8 +14,11 @@ in alpha stage we're going to provide just essential device config, interfaces a
 
 ### firewall module
 * basic firewall rules creation proof of concept - done
-* list firewall rules - done
-* crud firewall - todo
+* basic list firewall rules - done
+* basic add firewall rules - done
+* basic edit firewall rules - done
+* change firewall rules order - todo
+* delete firewall rules - todo
 
 ## other modules - todo
 * ospf

@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
+
+
+
 {% block header_title %}Firewall Dashboard{% endblock %}
 {% block section_title %}Firewall Dashboard{% endblock %}
 
 {% block debug %}
 {{ firewall }}
 {{ firewall_name }}
+{{ firewall_rulenumber }}
+{{ firewall_rule }}
 {% endblock %}
 
 {% block content %}
+
 
 
 
@@ -38,41 +44,41 @@
 
 
 
-<h2>Create new rule</h2>
+<h2>Edit rule</h2>
 
-<form action="{% url 'firewall:addrule' firewall_name %}" method="post">
+<form action="{% url 'firewall:editrule' firewall_name firewall_rulenumber %}" method="post">
     {% csrf_token %}
     
     <p>
         <label for="alias">rule number</label><br>
-        <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+        <input type="text" name="rulenumber" id="rulenumber" value="{{ firewall_rulenumber }}" size="5" disabled>
     </p>
     
     <p>
         <label for="hostname">action</label><br>
-        <input type="radio" name="action" id="action" value="accept"> accept
-        <input type="radio" name="action" id="action" value="drop"> drop
-        <input type="radio" name="action" id="action" value="reject"> reject        
+        <input type="radio" name="action" id="action" value="accept" {% if firewall_rule.action == "accept" %}checked="checked"{% endif %}> accept
+        <input type="radio" name="action" id="action" value="drop" {% if firewall_rule.action == "drop" %}checked="checked"{% endif %}> drop
+        <input type="radio" name="action" id="action" value="reject" {% if firewall_rule.action == "reject" %}checked="checked"{% endif %}> reject        
     </p>
 
     <p>
         <label for="hostname">protocol</label><br>
-        <input type="radio" name="protocol" id="protocol" value="tcp"> tcp
-        <input type="radio" name="protocol" id="protocol" value="udp"> udp
+        <input type="radio" name="protocol" id="protocol" value="tcp" {% if firewall_rule.protocol == "tcp" %}checked="checked"{% endif %}> tcp
+        <input type="radio" name="protocol" id="protocol" value="udp" {% if firewall_rule.protocol == "udp" %}checked="checked"{% endif %}> udp
     </p>   
     
     <p>
         <label for="alias">destination port</label><br>
-        <input type="text" name="destinationport" id="destinationport" value="{{ destinationport }}" size="5">
+        <input type="text" name="destinationport" id="destinationport" value="{{ firewall_rule.destination.port }}" size="5">
     </p>
     
     <p>
         <label for="alias">source port</label><br>
-        <input type="text" name="sourceport" id="sourceport" value="{{ sourceport }}" size="5">
+        <input type="text" name="sourceport" id="sourceport" value="{{ firewall_rule.source.port }}" size="5">
     </p>    
     
     
-    <input type="submit" value="Add Rule">
+    <input type="submit" value="Edit Rule">
     </form>
 
     
