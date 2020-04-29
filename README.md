@@ -6,20 +6,35 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 ## features
 in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
 
-### device module
+### interfaces module
 * list interfaces - alpha
 * show interface - alpha
 * unset/set firewall interface - todo
 * change interface parameters - todo
+
+### firewall module
+* basic firewall rules creation proof of concept - done
 * crud firewall - todo
-* use VyOS instances from database not local.py - todo
+
+## other modules - todo
+* ospf
+* bgp
+* ipsec
+* openvpn
+* reports (maybe collecting using snmp)
+* ssh management 
+* system login managament
+* nat
+* dhcp servers
+* static routes
 
 ### config module
-* users crud - todo
-* groups crud - todo
-* add new VyoS instances only db work - alpha
+* vycenter users crud - todo
+* vycenter groups crud - todo
+* vyos instance using database - done
+* full vyos instances crud - todo
 * add new VyoS instances test connection while adding - todo
-* add new VyoS instances test connection all servers - todo
+* add new VyoS instances test connection all servers crontab - todo
 * associate groups to VyOS instances
 
 # docker composer
