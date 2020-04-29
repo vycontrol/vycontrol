@@ -22,7 +22,16 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * add new VyoS instances test connection all servers - todo
 * associate groups to VyOS instances
 
-# install instructions
+# docker composer
+
+Right now we are using db.sqlite3, but I used composer so we can change to mySQL if needed.
+
+```
+docker-compose build
+docker-compose  up
+```
+
+# manual install instructions
 
 ## setup virtual env and pip requirements
 ```
