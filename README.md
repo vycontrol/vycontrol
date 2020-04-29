@@ -37,6 +37,15 @@ cd vycenter
 python3 manage.py migrate
 ```
 
+## run webserver
+```
+python3 manage.py runserver
+```
+
+## access webpage
+http://127.0.0.1:8000/
+
+
 ## setup vyos new instance
 * click on *Add new instance*
 * configure vyos services like explanined here https://docs.vyos.io/en/latest/appendix/http-api.html
