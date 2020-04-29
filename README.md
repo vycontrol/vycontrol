@@ -51,3 +51,23 @@ http://127.0.0.1:8000/
 * configure vyos services like explained here https://docs.vyos.io/en/latest/appendix/http-api.html
 * click on *List Instances*
 * click on *Test Connection*
+
+
+# screenshoots (keep in mid we're in early alpha stages)
+
+## List VyOS Instances
+![List VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/list-instances.png)
+
+## Add VyOS Instances
+![Add VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/add-instance.png)
+
+## List Interfaces
+![List Interfaces](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/list-interfaces.png)
+
+## Firewall Dashboard
+![Firewall Dashboard](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-dash.png)
+
+## Add Firewall Rule
+![Add Firewall Rule](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-rule.png)
+
+
