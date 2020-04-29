@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect
 
-
+import pprint
 import vyos
 
 from .models import Instance
@@ -29,8 +29,16 @@ def instances(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
+    print(all_instances)
+
     if hostname_default == None:
-        return redirect('config:instance-add')
+        if all_instances.count() > 0:
+            for i in all_instances:
+                pprint.pprint(i.hostname)
+                instance_default(request, i.hostname)
+            
+        else:
+            return redirect('config:instance-add')
 
     template = loader.get_template('config/instances.html')
     context = { 

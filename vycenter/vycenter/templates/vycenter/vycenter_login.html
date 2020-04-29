@@ -5,7 +5,12 @@
 
 {% block content %}
 
-<p>Auth not yet implemented. Proceed to <a href="{% url 'config:instances' %}">list os instances</a>.</p>
+<p>Auth not yet implemented. </p>
+
+<ul>
+    <li>First time? <a href="{% url 'config:instance-add' %}">create a new instance</a>.</p></li>
+    <li>Proceed to <a href="{% url 'config:instances' %}">list os instances</a>.</p></li>
+</ul>
 
 
 
