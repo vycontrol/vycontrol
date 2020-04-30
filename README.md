@@ -46,7 +46,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * add new VyoS instances test connection all servers crontab - todo
 * associate groups to VyOS instances
 
-### know issues
+### known issues
 * cannot edit firewall rules number using current API
 
 
