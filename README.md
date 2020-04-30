@@ -95,6 +95,10 @@ http://127.0.0.1:8000/
 * click on *List Instances*
 * click on *Test Connection*
 
+# references
+* https://docs.vyos.io/en/latest/appendix/http-api.html
+* https://forum.vyos.io/t/http-api-for-show/3922
+* https://blog.vyos.io/vyos-rolling-release-has-got-an-http-api 
 
 # screenshoots (keep in mind we're in early alpha stages)
 
