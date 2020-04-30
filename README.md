@@ -44,7 +44,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 
 
 # dockerhub
-https://hub.docker.com/r/robertoberto/vycenter
+latest vycenter is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
 ```
 docker pull robertoberto/vycenter
 ```
