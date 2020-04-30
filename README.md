@@ -46,6 +46,9 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * add new VyoS instances test connection all servers crontab - todo
 * associate groups to VyOS instances
 
+### know issues
+* cannot edit firewall rules number using current API
+
 
 # dockerhub
 latest vycenter is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
