@@ -3,6 +3,10 @@
 
 It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several vycenter to each customer. That's why the name vycenter.
 
+## community
+* Slack Channel https://vyos.slack.com/archives/C012X7DGASY
+* Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
+
 ## features
 in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
 
