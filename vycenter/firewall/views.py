@@ -14,6 +14,30 @@ def index(request):
     hostname_default = vyos.get_hostname_prefered(request)
 
     firewall_all = vyos.get_firewall_all(hostname_default)
+    for xitem in firewall_all['name']:
+        if 'default-action' in firewall_all['name'][xitem]:
+            firewall_all['name'][xitem]['default_action'] = firewall_all['name'][xitem]['default-action']
+            del firewall_all['name'][xitem]['default-action']
+
+
+
+    if 'name' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", request.POST['name']]}
+        result1 = vyos.set_config(hostname_default, cmd)
+        print(result1)
+
+        if 'description' in request.POST:
+            cmd = {"op": "set", "path": ["firewall", "name", request.POST['name'], "description", request.POST['description']]}
+            result2 = vyos.set_config(hostname_default, cmd)
+            print(result2)
+
+        if 'action' in request.POST:
+            cmd = {"op": "set", "path": ["firewall", "name", request.POST['name'], "default-action", request.POST['action']]}
+            result3 = vyos.set_config(hostname_default, cmd)
+            print(result3)
+
+        return redirect('firewall:firewall-list')
+        
 
     template = loader.get_template('firewall/list.html')
     context = { 

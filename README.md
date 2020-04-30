@@ -17,6 +17,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * basic list firewall rules - done
 * basic add firewall rules - done
 * basic edit firewall rules - done
+* basic firewall create - done
 * change firewall rules order - todo
 * delete firewall rules - todo
 

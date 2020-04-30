@@ -13,22 +13,56 @@
 
 {% if firewall_all %}
     <table border="1" width="100%">
-    <tr><th>name</th><th>description</th><th>action</th></tr>
+    <tr><th>name</th><th>description</th><th>default-action</th></th><th>actions</th></tr>
 
     {% for key, value in firewall_all.items %}
-        <tr>
+        
         {% for ifkey, ifvalue in value.items %}
-            <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
-            <td>{{ ifvalue.description }}</td>
-            <td>delete</td>
+            <tr>
+                <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
+                <td>{{ ifvalue.description }}</td>
+                <td>{{ ifvalue.default_action }}</td>
+                <td>delete</td>
+            </tr>
         {% endfor %}
-        </tr>
+        
     {% endfor %}
 
     </table>
 {% else %}
     <p>No firewalls.</p>
 {% endif %}
+
+
+<h2>Create new rule</h2>
+
+<form action="{% url 'firewall:firewall-list' %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">name</label><br>
+        <input type="text" name="name" id="name" value="{{ name }}" size="30">
+    </p>
+
+    <p>
+        <label for="alias">description</label><br>
+        <input type="text" name="description" id="description" value="{{ description }}" size="60">
+    </p>    
+    
+    <p>
+        <label for="hostname">default action</label><br>
+        <input type="radio" name="action" id="action" value="accept"> accept
+        <input type="radio" name="action" id="action" value="drop"> drop
+        <input type="radio" name="action" id="action" value="reject"> reject        
+    </p>
+
+    
+    
+    <input type="submit" value="Add Firewall">
+    </form>
+
+    
+
 
 {% endblock %}
 
