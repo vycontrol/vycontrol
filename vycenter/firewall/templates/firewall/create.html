@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Dashboard{% endblock %}
+{% block section_title %}Firewall Dashboard{% endblock %}
+
+{% block debug %}
+{{ firewall_all }}
+{% endblock %}
+
+{% block content %}
+
+<h2>Create new firewall</h2>
+
+<form action="{% url 'firewall:firewall-create' %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">name</label><br>
+        <input type="text" name="name" id="name" value="{{ name }}" size="30">
+    </p>
+
+    <p>
+        <label for="alias">description</label><br>
+        <input type="text" name="description" id="description" value="{{ description }}" size="60">
+    </p>    
+    
+    <p>
+        <label for="hostname">default action</label><br>
+        <input type="radio" name="action" id="action" value="accept"> accept
+        <input type="radio" name="action" id="action" value="drop"> drop
+        <input type="radio" name="action" id="action" value="reject"> reject        
+    </p>
+
+    
+    
+    <input type="submit" value="Add Firewall">
+    </form>
+
+    
+
+
+{% endblock %}
+
+
+

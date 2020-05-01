@@ -121,8 +121,8 @@ def instance_remove(request, hostname):
     
     hostname_default = vyos.get_hostname_prefered(request)
 
-    if hostname_default != hostname:
-        instance.delete()
+    #if hostname_default != hostname:
+    instance.delete()
 
     return redirect('config:instances')
 

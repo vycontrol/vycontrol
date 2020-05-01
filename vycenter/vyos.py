@@ -41,6 +41,44 @@ def get_key(hostname):
     instance = Instance.objects.get(hostname=hostname)
     return instance.key
 
+def api_get(type, hostname, cmd):
+    if type == "retrieve":
+        url = get_url_retrieve(hostname)
+    elif type == "manage":
+        url = get_url_manage(hostname)
+    elif type == "configure":
+        url = get_url_configure(hostname)
+    else:
+        return False
+
+    print(json.dumps(cmd))
+    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
+    print(post)   
+
+    try:
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=5)
+    except requests.exceptions.ConnectionError:
+        return False
+
+    print(resp.status_code)
+    pprint.pprint(resp)
+
+    pprint.pprint(resp.json())
+
+    if resp.status_code != 200:
+        # This means something went wrong.
+        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
+        return False
+    #for todo_item in resp.json():
+        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
+
+    result1 = resp.json()
+    print(result1['data'])
+    #result2 = json.loads(result1['data'])
+    pprint.pprint(result1)
+
+    return result1['data']
+
 def get_hostname_prefered(request):
     hostname = None
 
@@ -58,11 +96,6 @@ def get_hostname_prefered(request):
 
     return hostname 
     
-def instance_getall():
-    instances = Instance.objects.all()
-    return instances
-
-
 def conntry(hostname): 
     cmd = {"op": "showConfig", "path": ["interfaces"]}
 
@@ -87,6 +120,20 @@ def conntry(hostname):
     pprint.pprint(resp.json())
 
     return False
+
+
+
+
+def instance_getall():
+    instances = Instance.objects.all()
+    return instances
+
+
+
+def get_firewall_all(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall"]}
+    firewall_list = api_get("retrieve", hostname, cmd)
+    return firewall_list
 
 
 
@@ -186,38 +233,6 @@ def get_interface(interface_type, interface_name, hostname):
     return result1['data']
 
 
-
-def get_firewall_all(hostname):
-    cmd = {"op": "showConfig", "path": ["firewall"]}
-
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
-
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
 
 
 

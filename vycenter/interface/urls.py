@@ -7,4 +7,6 @@ app_name = 'interface'
 urlpatterns = [
     path('', views.index, name='interface-list'),
     path('interface-show/<slug:interface_type>/<slug:interface_name>', views.interfaceshow, name='interface-show'),
+    path('interface-firewall/<slug:interface_type>/<slug:interface_name>', views.interfacefirewall, name='interface-firewall'),
+
 ]

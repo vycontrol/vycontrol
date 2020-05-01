@@ -25,6 +25,26 @@
     <p>Invalid interface.</p>
 {% endif %}
 
+
+
+<form action="{% url 'interface:interface-firewall interface_type interface_name' %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">inbound</label><br>
+        
+    </p>
+
+    <p>
+        <label for="alias">outbound/label><br>
+        
+    </p>    
+    
+    <input type="submit" value="Set Firewall">
+    </form>
+
+
+
 {% endblock %}
 
 

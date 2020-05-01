@@ -14,12 +14,28 @@ def index(request):
     hostname_default = vyos.get_hostname_prefered(request)
 
     firewall_all = vyos.get_firewall_all(hostname_default)
+    if firewall_all == False:
+        return redirect('firewall:firewall-create')
+
     for xitem in firewall_all['name']:
         if 'default-action' in firewall_all['name'][xitem]:
             firewall_all['name'][xitem]['default_action'] = firewall_all['name'][xitem]['default-action']
             del firewall_all['name'][xitem]['default-action']
 
+    template = loader.get_template('firewall/list.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'firewall_all':  firewall_all
+    }   
+    return HttpResponse(template.render(context, request))
 
+
+def create(request):
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
 
     if 'name' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", request.POST['name']]}
@@ -37,17 +53,14 @@ def index(request):
             print(result3)
 
         return redirect('firewall:firewall-list')
-        
 
-    template = loader.get_template('firewall/list.html')
+    template = loader.get_template('firewall/create.html')
     context = { 
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
-        'firewall_all':  firewall_all
     }   
     return HttpResponse(template.render(context, request))
-
 
 
 def show(request, firewall_name):
@@ -81,22 +94,28 @@ def addrule(request, firewall_name):
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
         result1 = vyos.set_config(hostname_default, cmd)
         print(result1)
+        changed = True
 
     if 'protocol' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", request.POST['protocol']]}
         result2 = vyos.set_config(hostname_default, cmd)
         print(result2)
+        changed = True
 
     if 'destinationport' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "destination", "port", request.POST['destinationport']]}
         result3 = vyos.set_config(hostname_default, cmd)
         print(result3)
+        changed = True
 
     if 'sourceport' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "source", "port", request.POST['sourceport']]}
         result3 = vyos.set_config(hostname_default, cmd)
         print(result3)        
+        changed = True
 
+    if changed == True:
+        return redirect('firewall:firewall-list')
 
 
     template = loader.get_template('firewall/show.html')
