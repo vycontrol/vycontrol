@@ -64,6 +64,7 @@ def instance_add(request):
         else:
             instance.https = False
         instance_id = instance.save()
+        return redirect('config:instances')
     else:
         instance_id = 0
 

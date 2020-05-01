@@ -5,6 +5,7 @@
 
 {% block debug %}
     {{ interfaces }}
+    {{ firewall_all }}
 {% endblock %}
 
 
@@ -12,19 +13,47 @@
 {% block content %}
 
 {% if interfaces %}
-    <table border="1" width="100%">
-    <tr><th>type</th><th>name</th><th>address</th></tr>
+    <form action="{% url 'interface:interface-list' %}" method="post">
+        {% csrf_token %}
 
-    {% for key, value in interfaces.items %}
-        <tr><td>{{ key }}</td>
-        {% for ifkey, ifvalue in value.items %}
-            <td>{% url 'interface:interface-show' key ifkey as url_interface %}
-            <a href="{{ url_interface }}">{{ ifkey }}</a></td><td>{{ ifvalue.address }}</td>
+        <table border="1" width="100%">
+        <tr><th>type</th><th>name</th><th>address</th><th>firewall ipv4 in</th><th>firewall ipv4 out</th></th></tr>
+
+        {% for key, value in interfaces.items %}
+            <tr>
+                <td>{{ key }}</td>
+            {% for ifkey, ifvalue in value.items %}
+            <td>{% url 'interface:interface-show' key ifkey as url_interface %}<a href="{{ url_interface }}">{{ ifkey }}</a></td><td>{{ ifvalue.address }}</td>
+            <td><select id="firewall-ipv4-in" name="firewall-ipv4-in.{{ key }}.{{ ifkey }}"><option value="">None</option>
+                {% if firewall_all != False %}
+                    {% for fkey, fvalue in firewall_all.items %}    
+                        {% for fitemkey, fitemvalue in fvalue.items %}
+                        <option value="{{ fitemkey }}">{{ fitemkey }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </select></td>
+            <td><select id="firewall-ipv4-out" name="firewall-ipv4-out.{{ key }}.{{ ifkey }}"><option value="">None</option>
+                {% if firewall_all != False %}
+                    {% for fkey, fvalue in firewall_all.items %}    
+                        {% for fitemkey, fitemvalue in fvalue.items %}
+                        <option value="{{ fitemkey }}">{{ fitemkey }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </select></td>
+
+            {% endfor %}
+            </tr>
         {% endfor %}
-        </tr>
-    {% endfor %}
 
-    </table>
+        </table>
+
+        <div id="submit-firewall" class="text-right">
+            <input type="submit" value="Set interfaces firewall">
+        </div>
+    </form>
+
 {% else %}
     <p>No interfaces.</p>
 {% endif %}

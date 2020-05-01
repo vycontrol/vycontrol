@@ -36,7 +36,7 @@
 
 <h2>Create new rule</h2>
 
-<form action="{% url 'firewall:firewall-list' %}" method="post">
+<form action="{% url 'firewall:firewall-create' %}" method="post">
     {% csrf_token %}
     
     <p>

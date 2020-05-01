@@ -3,10 +3,6 @@ import json
 import pprint
 import sys
 
-#curl -k -X POST -F data='{"op": "set", "path": ["interfaces", "dummy", "dum1", "address"], "value": "203.0.113.76/32"}' -F key=a6ffb742a8a631a65b07ab2026258629da2632fd https://179.127.12.142:44302/configure
-
-sys.path.append('/var/secrets')
-
 from config.models import Instance
 
 def get_url(hostname):
@@ -41,7 +37,7 @@ def get_key(hostname):
     instance = Instance.objects.get(hostname=hostname)
     return instance.key
 
-def api_get(type, hostname, cmd):
+def api(type, hostname, cmd):
     if type == "retrieve":
         url = get_url_retrieve(hostname)
     elif type == "manage":
@@ -56,7 +52,7 @@ def api_get(type, hostname, cmd):
     print(post)   
 
     try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=5)
+        resp = requests.post(url, verify=False, data=post, timeout=5)
     except requests.exceptions.ConnectionError:
         return False
 
@@ -78,6 +74,12 @@ def api_get(type, hostname, cmd):
     pprint.pprint(result1)
 
     return result1['data']
+
+def api_get(hostname, cmd):
+    return api('retrieve', hostname, cmd)
+
+def api_set(hostname, cmd):
+    return api('configure', hostname, cmd)    
 
 def get_hostname_prefered(request):
     hostname = None
@@ -121,228 +123,52 @@ def conntry(hostname):
 
     return False
 
-
-
-
 def instance_getall():
     instances = Instance.objects.all()
     return instances
 
-
-
 def get_firewall_all(hostname):
     cmd = {"op": "showConfig", "path": ["firewall"]}
-    firewall_list = api_get("retrieve", hostname, cmd)
+    firewall_list = api_get(hostname, cmd)
     return firewall_list
 
-
-
-
-def getall(hostname="179.127.12.142"):
-    #cmd = {"op": "save", "file": "/config/config.boot"}
-    cmd = {"op": "showConfig", "path": ["interfaces", "dummy"]}
-
-    print(json.dumps(cmd))
+def set_interface_firewall_ipv4(hostname, interface_type, interface_name, direction, firewall_name):
+    cmd = {"op": "set", "path": ["interface", interface_type, interface_name, "firewall", direction, "name", firewall_name]}
     post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
 
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
+    success = api_set(hostname, cmd)
+    return success
 
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    return resp
-
-
-def get_interfaces(hostname="179.127.12.142"):
+def get_interfaces(hostname):
     cmd = {"op": "showConfig", "path": ["interfaces"]}
 
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
-
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
+    result1 = api_get(hostname, cmd)
+    return result1
 
 def get_interface(interface_type, interface_name, hostname):
     cmd = {"op": "showConfig", "path": ["interfaces", interface_type, interface_name]}
 
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
-
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
-
-
-
-
-
+    result1 = api_get(hostname, cmd)
+    return result1
+  
 def get_firewall(hostname, name):
     cmd = {"op": "showConfig", "path": ["firewall", "name", name]}
 
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
-
-
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
-
-
+    result1 = api_get(hostname, cmd)
+    return result1
 
 def get_firewall_rule(hostname, name, rulenumber):
     cmd = {"op": "showConfig", "path": ["firewall", "name", name, "rule", rulenumber]}
 
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
-
-
-    try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
-
-
+    result1 = api_get(hostname, cmd)
+    return result1
 
 def set_config(hostname, cmd):
-    print(json.dumps(cmd))
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-    print(post)
+    #cmd = {"op": "set", "path": ["interface", interface_type, interface_name, "firewall", direction, "name", firewall_name]}
+    result1 = api_set(hostname, cmd)
+    return result1
 
-
-    try:
-        resp = requests.post(get_url_configure(hostname), verify=False, data=post, timeout=15)
-    except requests.exceptions.ConnectionError:
-        return False
-
-    print(resp.status_code)
-    pprint.pprint(resp)
-
-    pprint.pprint(resp.json())
-
-
-    if resp.status_code != 200:
-        # This means something went wrong.
-        #raise ApiError('POST /tasks/ {}'.format(resp.status_code))
-        return "erro"
-    #for todo_item in resp.json():
-        #print('{} {}'.format(todo_item['id'], todo_item['summary']))
-
-    result1 = resp.json()
-    print(result1['data'])
-    #result2 = json.loads(result1['data'])
-    pprint.pprint(result1)
-
-    return result1['data']
-
-
-def insert_firewall_rules(hostname, firewall_name):
-    cmd = {"op": "set", "path": ["firewall", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
-    result1 = set_config(hostname, cmd)
-
-
-
-#curl -k -X POST -F data='{"op": "set", "path": ["interfaces", "dummy", "dum1", "address"], "value": "203.0.113.76/32"}' -F key=a6ffb742a8a631a65b07ab2026258629da2632fd https://179.127.12.142:44302/configure
-
+def insert_firewall_rules(hostname, cmd):
+    pprint.pprint(cmd)
+    result1 = api_set(hostname, cmd)
+    return result1
