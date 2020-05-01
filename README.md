@@ -3,6 +3,10 @@
 
 It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several vycenter to each customer. That's why the name vycenter.
 
+## community
+* Slack Channel https://vyos.slack.com/archives/C012X7DGASY
+* Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
+
 ## features
 in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
 
@@ -41,6 +45,16 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * add new VyoS instances test connection while adding - todo
 * add new VyoS instances test connection all servers crontab - todo
 * associate groups to VyOS instances
+
+### known issues
+* cannot edit firewall rules number using current API
+
+
+# dockerhub
+latest vycenter is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
+```
+docker pull robertoberto/vycenter
+```
 
 # docker composer
 
@@ -81,6 +95,10 @@ http://127.0.0.1:8000/
 * click on *List Instances*
 * click on *Test Connection*
 
+# references
+* https://docs.vyos.io/en/latest/appendix/http-api.html
+* https://forum.vyos.io/t/http-api-for-show/3922
+* https://blog.vyos.io/vyos-rolling-release-has-got-an-http-api 
 
 # screenshoots (keep in mind we're in early alpha stages)
 
