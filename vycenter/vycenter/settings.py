@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'interface.apps.InterfaceConfig',
+    'accounts.apps.AccountsConfig',
     'config.apps.ConfigConfig',
     'firewall.apps.FirewallConfig',
     'static.apps.StaticConfig',
@@ -51,6 +52,10 @@ INSTALLED_APPS = [
     'ospf.apps.OspfConfig',
     'ssh.apps.SshConfig',
     'wanlb.apps.WanlbConfig',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 MIDDLEWARE = [

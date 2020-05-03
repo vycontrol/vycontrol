@@ -12,7 +12,7 @@
 
     <style>
     body {
-        background-color: black;
+        background-color: #333;
         color: white;
         
     }
@@ -20,11 +20,11 @@
         color: black;
     }
     .menu { 
-        background-color: #000;
+        background-color: #ccc;
         padding: 5px;
     }
     .menu a, .menu h2 { 
-      color: #fff;
+      color: #000;
     }    
     .content { 
         background-color: rgb(120, 120, 120);
@@ -37,12 +37,13 @@
       font-size: 10px;      
     }
     #menu-logotop {
-      background-color: #fff;
+      background-color: #333;
       padding: 0 0px 4px 0px;
     }
     #menu-topline {
       padding-top: 3px;
-      background-color: #3023AE;
+      background-color: #e14342;
+      margin-bottom: 2px;
     }
     #menu-logotop h2 {
       font-size: 12px;
@@ -123,9 +124,10 @@
               </select>
             
 
-            
-              <span id="vycenter-config-menu">Config</span>
-              <span id="vycenter-config-user">User</span>
+              <span id="vycenter-config-menu"><a href="/accounts/login/">Login</a></span>
+              <span id="vycenter-config-menu"><a href="/accounts/logout/">Logout</a></span>
+
+              <span id="vycenter-config-menu"><a href="/admin">Admin</a></span>
 
           </p>
         </form>
@@ -138,7 +140,7 @@
     <div class="col-3 menu">
 
       <p class="text-center">
-        <h1 align="center"><a href="/"><img src="https://storage.googleapis.com/imgvycontrol/logos/logo_transparent.png" height="160" alt="vycontrol"></a></h1>
+        <h1 align="center"><a href="/"><img src="https://storage.googleapis.com/vycontrol/logos/logo_minimal.png" width="100"  height="100" alt="vycontrol"></a></h1>
       </p>
 
 

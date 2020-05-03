@@ -25,6 +25,9 @@ app_name = 'vycenter'
 urlpatterns = [
     path('interface/', include('interface.urls')),
     path('config/', include('config.urls')),
+    #path('vauth/', include('vauth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+
     path('dashboard/', include('dashboard.urls')),
     path('firewall/', include('firewall.urls')),
     path('static/', include('static.urls')),

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect
+from django.conf import settings
+
 
 import pprint
 import vyos
@@ -13,6 +15,9 @@ from django.contrib.auth.models import User
 
 
 def index(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -28,6 +33,9 @@ def index(request):
 
 
 def users_list(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -47,6 +55,9 @@ def users_list(request):
 
 
 def instances(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
@@ -70,6 +81,9 @@ def instances(request):
     return HttpResponse(template.render(context, request))
 
 def instance_add(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -98,6 +112,9 @@ def instance_add(request):
     return HttpResponse(template.render(context, request))
 
 def instance_conntry(request, hostname):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
@@ -119,6 +136,9 @@ def instance_conntry(request, hostname):
 
 
 def instance_default(request, hostname):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
 
     # permcheck
@@ -136,6 +156,9 @@ def instance_default(request, hostname):
 
 
 def instance_remove(request, hostname):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
 
     # permcheck

@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.conf import settings
+from django.shortcuts import redirect
+
 
 import vyos
 
@@ -9,6 +12,9 @@ from config.models import Instance
 import pprint
 
 def index(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall()
     firewall_all = vyos.get_firewall_all(hostname_default)
@@ -57,6 +63,9 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 def interfaceshow(request, interface_type, interface_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
 
     hostname_default = vyos.get_hostname_prefered(request)
@@ -75,6 +84,9 @@ def interfaceshow(request, interface_type, interface_name):
 
 
 def interfacefirewall(request, interface_type, interface_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        
     all_instances = vyos.instance_getall()
 
     hostname_default = vyos.get_hostname_prefered(request)
