@@ -39,4 +39,5 @@ urlpatterns = [
     path('ssh/', include('ssh.urls')),
     path('wanlb/', include('wanlb.urls')),
     path('', views.vycenter_login, name='vycenter-login'),
+    path('admin/', admin.site.urls, name="django-admin"),
 ]

@@ -7,6 +7,8 @@ app_name = 'config'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('users-list', views.users_list, name='users-list'),
+
     path('instance-add', views.instance_add, name='instance-add'),
     path('instance-conntry/<str:hostname>', views.instance_conntry, name='instance-conntry'),
     path('instance-default/<str:hostname>', views.instance_default, name='instance-default'),

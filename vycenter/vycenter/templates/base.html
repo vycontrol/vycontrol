@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>{% block header_title %}{% endblock %} - VyCenter</title>
+    <title>{% block header_title %}{% endblock %} - VyControl</title>
 
     <style>
     body {
@@ -20,23 +20,29 @@
         color: black;
     }
     .menu { 
-        background-color: #aaa;
+        background-color: #000;
         padding: 5px;
     }
+    .menu a, .menu h2 { 
+      color: #fff;
+    }    
     .content { 
-        background-color: #ccc;
+        background-color: rgb(120, 120, 120);
         padding: 5px;
+    }
+    .content a {
+      color: #3023AE
     }
     #menu-logotop h1 {
       font-size: 10px;      
     }
     #menu-logotop {
-      background-color: #444E5A;
-      padding: 0;
+      background-color: #fff;
+      padding: 0 0px 4px 0px;
     }
     #menu-topline {
       padding-top: 3px;
-      background-color: #AD343E;
+      background-color: #3023AE;
     }
     #menu-logotop h2 {
       font-size: 12px;
@@ -57,7 +63,7 @@
     }
     
     #debug {
-        background-color:palegoldenrod;
+        background-color: #B161D0;
         margin-top: 20px;
     }
     #debug h3 {
@@ -101,7 +107,7 @@
         
       <div class="row ">
         <div class="col-3 ">
-          <h1 align="left"><a href="/"><img src="https://storage.googleapis.com/imgvycenter/logo/logoreduzido20h.png" height="20" alt="vycenter"></a></h1>
+          
         </div>
         <div class="col-9">
           <form action="/config/instance-default" method="get" id="instancedefault">
@@ -131,33 +137,61 @@
   <div class="row">
     <div class="col-3 menu">
 
-    <h2>Manage VyOS</h2>
+      <p class="text-center">
+        <h1 align="center"><a href="/"><img src="https://storage.googleapis.com/imgvycontrol/logos/logo_transparent.png" height="160" alt="vycontrol"></a></h1>
+      </p>
 
-    <ol>
+
+
+      <h2>Manage VyOS</h2>
+
+    <ul>
     <li><a href="{% url 'interface:interface-list' %}">Interfaces</a></li>
     <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
-    <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
-    <li><a href="{% url 'ipsec:ipsec-list' %}">IPSEC</a></li>
-    <li><a href="{% url 'bgp:bgp-list' %}">BGP</a></li>
-    <li><a href="{% url 'ospf:ospf-list' %}">OSPF</a></li>
-    <li><a href="{% url 'nat:nat-list' %}">NAT</a></li>
-    <li><a href="{% url 'arp:arp-list' %}">ARP</a></li>
-    <li><a href="{% url 'dhcp:dhcp-list' %}">DHCP</a></li>
-    <li><a href="{% url 'openvpn:openvpn-list' %}">OpenVPN</a></li>
-    <li><a href="{% url 'qos:qos-list' %}">QoS</a></li>
-    <li><a href="{% url 'ssh:ssh-list' %}">SSH</a></li>
-    <li><a href="{% url 'wanlb:wanlb-list' %}">Wan Load Balancing</a></li>
-    </ol>
+    </ul>
 
+    <h2>Manage Routing</h2>
+    <ul>
+    <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
+    <li><a href="{% url 'arp:arp-list' %}">ARP</a></li>
+    <li><a href="{% url 'ospf:ospf-list' %}">OSPF</a></li>
+    <li><a href="{% url 'bgp:bgp-list' %}">BGP</a></li>
+    </ul>
+
+    <h2>Manage Services</h2>
+    <ul>
+    <li><a href="{% url 'dhcp:dhcp-list' %}">DHCP</a></li>
+    <li><a href="{% url 'ssh:ssh-list' %}">SSH</a></li>
+    </ul>
+
+    <h2>Manage VPN</h2>
+    <ul>
+    <li><a href="{% url 'openvpn:openvpn-list' %}">OpenVPN</a></li>
+    <li><a href="{% url 'ipsec:ipsec-list' %}">IPSEC</a></li>
+    </ul>
+
+
+    <h2>Manage NAT</h2>
+    <ul>
+      <li><a href="{% url 'nat:nat-list' %}">NAT</a></li>
+    </ul>    
+
+    <h2>Manage QoS</h2>
+    <ul>
+    <li><a href="{% url 'qos:qos-list' %}">QoS</a></li>
+    </ul>    
+
+    <h2>Manage Wan Load Balancing</h2>
+    <ul>
+    <li><a href="{% url 'wanlb:wanlb-list' %}">Wan Load Balancing</a></li>
+    </ul>        
    
-    <h2>Manage VyGUI</h2>
-    <ol>
+    <h2>Manage VyControl</h2>
+    <ul>
     <li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>
     <li><a href="{% url 'config:instances' %}">List instances</a></li>
-
-    <li>GUI Users</li>
-    <li>GUI Groups</li>
-    </ol>
+    <li><a href="{% url 'config:users-list' %}">Manage user permissions</a></li>
+    </ul>
 
 
     </div>

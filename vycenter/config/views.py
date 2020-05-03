@@ -8,6 +8,9 @@ import vyos
 
 from .models import Instance
 
+from django.contrib.auth.models import User
+
+
 
 def index(request):
     #interfaces = vyos.get_interfaces()
@@ -22,6 +25,24 @@ def index(request):
         'hostname_default': hostname_default,
     }   
     return HttpResponse(template.render(context, request))
+
+
+def users_list(request):
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+    users = User.objects.all()
+
+
+    template = loader.get_template('config/users_list.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'users' : users
+    }   
+    return HttpResponse(template.render(context, request))
+
 
 
 
