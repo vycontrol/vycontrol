@@ -15,8 +15,8 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 ## features
-# in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
-# basic authentication - use django admin to create superuser than http://127.0.0.1:8000/admin/login/?next=/admin/ to create a new user, after that you can use VyControl
+* in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
+* basic authentication - use django admin to create superuser than http://127.0.0.1:8000/admin/login/?next=/admin/ to create a new user, after that you can use VyControl
 
 
 ### interfaces module
