@@ -2,7 +2,7 @@
 [VyOS](https://www.vyos.io/) frontend made in Python / Django using VyOS new 1.3 API server
 
 <p align="center">
-<img align="center" width="150" height="150" src="https://storage.googleapis.com/imgvycontrol/logos/logo_transparent.png">
+<img align="center" width="150" height="150" src="https://storage.googleapis.com/vycontrol/logos/logo_transparent.png">
 </p>
 
 
