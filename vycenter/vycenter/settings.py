@@ -40,6 +40,17 @@ INSTALLED_APPS = [
     'interface.apps.InterfaceConfig',
     'config.apps.ConfigConfig',
     'firewall.apps.FirewallConfig',
+    'static.apps.StaticConfig',
+    'arp.apps.ArpConfig',
+    'bgp.apps.BgpConfig',
+    'dhcp.apps.DhcpConfig',
+    'ipsec.apps.IpsecConfig',
+    'nat.apps.NatConfig',
+    'qos.apps.QosConfig',
+    'openvpn.apps.OpenvpnConfig',
+    'ospf.apps.OspfConfig',
+    'ssh.apps.SshConfig',
+    'wanlb.apps.WanlbConfig',
 ]
 
 MIDDLEWARE = [
@@ -138,4 +149,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/s/'
