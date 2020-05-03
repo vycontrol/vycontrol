@@ -117,7 +117,7 @@ http://127.0.0.1:8000/
 ![Add VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/add-instance.png)
 
 ## List Interfaces
-![List Interfaces](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/list-interfaces.png)
+![List Interfaces](https://storage.googleapis.com/vycontrol/screenshoots/vycontrol-interfaces.png)
 
 ## Firewall Dashboard
 ![Firewall Dashboard](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-dash.png)
