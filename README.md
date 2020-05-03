@@ -1,7 +1,14 @@
-# vycenter
+# VyControl
 [VyOS](https://www.vyos.io/) frontend made in Python / Django using VyOS new 1.3 API server
 
-It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several vycenter to each customer. That's why the name vycenter.
+<p align="center">
+<img align="center" width="150" height="150" src="https://storage.googleapis.com/imgvycontrol/logos/logo_transparent.png">
+</p>
+
+
+
+
+It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
 
 ## community
 * Slack Channel https://vyos.slack.com/archives/C012X7DGASY
@@ -38,8 +45,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 * static routes
 
 ### config module
-* vycenter users crud - todo
-* vycenter groups crud - todo
+* VyControl users crud - todo
 * vyos instance using database - done
 * full vyos instances crud - todo
 * add new VyoS instances test connection while adding - todo
@@ -51,7 +57,7 @@ in alpha stage we're going to provide just essential device config, interfaces a
 
 
 # dockerhub
-latest vycenter is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
+latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
 ```
 docker pull robertoberto/vycenter
 ```
