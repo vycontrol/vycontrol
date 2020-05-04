@@ -70,7 +70,7 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 # dockerhub
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 ```
-docker pull robertoberto/vycenter
+docker pull robertoberto/vycontrol
 ```
 
 # docker composer
