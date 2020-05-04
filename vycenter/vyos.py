@@ -172,3 +172,11 @@ def insert_firewall_rules(hostname, cmd):
     pprint.pprint(cmd)
     result1 = api_set(hostname, cmd)
     return result1
+
+
+
+def get_static(hostname):
+    cmd = {"op": "showConfig", "path": ["show","ip","route","static"]}
+
+    result1 = api_get(hostname, cmd)
+    return result1

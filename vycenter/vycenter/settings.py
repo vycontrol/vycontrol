@@ -31,15 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+ 
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'interface.apps.InterfaceConfig',
+
+    #'vauth.apps.VauthConfig',
     'accounts.apps.AccountsConfig',
+
     'config.apps.ConfigConfig',
+
+    'interface.apps.InterfaceConfig',
     'firewall.apps.FirewallConfig',
     'static.apps.StaticConfig',
     'arp.apps.ArpConfig',
@@ -52,6 +55,9 @@ INSTALLED_APPS = [
     'ospf.apps.OspfConfig',
     'ssh.apps.SshConfig',
     'wanlb.apps.WanlbConfig',
+
+    'django.contrib.auth',
+    'django.contrib.admin',
 ]
 
 AUTHENTICATION_BACKENDS = [

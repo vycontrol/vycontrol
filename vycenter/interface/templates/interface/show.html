@@ -5,10 +5,14 @@
 
 {% block debug %}
 {{ interface }}
+{{ interface_type }}
+{{ interface_name }}
 {% endblock %}
 
 
 {% block content %}
+
+
 {% if interface %}
 
     <table border="1" width="100%">
@@ -26,23 +30,40 @@
 {% endif %}
 
 
-
-<form action="{% url 'interface:interface-firewall interface_type interface_name' %}" method="post">
+<div class="separe-form">
+<h2>Set Interface Firewall</h2>
+<form action="{% url 'interface:interface-show' interface_type interface_name %}" method="post">
     {% csrf_token %}
     
     <p>
-        <label for="alias">inbound</label><br>
-        
+        <label for="alias">IPv4 Inbound</label><br>
+        <select id="firewall-ipv4-in" name="firewall-ipv4-in"><option value="">None</option>
+            {% if firewall_all != False %}
+                {% for fkey, fvalue in firewall_all.items %}    
+                    {% for fitemkey, fitemvalue in fvalue.items %}
+                    <option value="{{ fitemkey }}">{{ fitemkey }}</option>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </select>
     </p>
 
     <p>
-        <label for="alias">outbound/label><br>
-        
+        <label for="alias">IPv4 Outbound</label><br>
+        <select id="firewall-ipv4-out" name="firewall-ipv4-out"><option value="">None</option>
+        {% if firewall_all != False %}
+            {% for fkey, fvalue in firewall_all.items %}    
+                {% for fitemkey, fitemvalue in fvalue.items %}
+                <option value="{{ fitemkey }}">{{ fitemkey }}</option>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    </select>
     </p>    
     
     <input type="submit" value="Set Firewall">
     </form>
-
+</div>
 
 
 {% endblock %}

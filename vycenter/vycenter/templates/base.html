@@ -15,7 +15,9 @@
         background-color: #333;
         color: white;
         
+        
     }
+
     .container {
         color: black;
     }
@@ -23,15 +25,16 @@
         background-color: #ccc;
         padding: 5px;
     }
+   
     .menu a, .menu h2 { 
       color: #000;
     }    
     .content { 
         background-color: rgb(120, 120, 120);
-        padding: 5px;
+        padding: 0 10px 0 10px;
     }
     .content a {
-      color: #3023AE
+      color: #640000;
     }
     #menu-logotop h1 {
       font-size: 10px;      
@@ -40,6 +43,11 @@
       background-color: #333;
       padding: 0 0px 4px 0px;
     }
+
+    #menu-logotop a {
+      color: #af1d1d;
+    }
+
     #menu-topline {
       padding-top: 3px;
       background-color: #e14342;
@@ -64,8 +72,9 @@
     }
     
     #debug {
-        background-color: #B161D0;
+        background-color: #AB425E;
         margin-top: 20px;
+        margin-bottom: 20px;
     }
     #debug h3 {
         font-size: 14px;
@@ -99,6 +108,15 @@
     #submit-firewall {
       margin-top: 20px;
     }
+
+    input[type=submit] {
+      background-color: #EACD65;
+      border: 0;
+    }
+
+    .separe-form {
+      margin-top: 30px;      
+    }
     </style>
   </head>
   <body >
@@ -124,8 +142,8 @@
               </select>
             
 
-              <span id="vycenter-config-menu"><a href="/accounts/login/">Login</a></span>
-              <span id="vycenter-config-menu"><a href="/accounts/logout/">Logout</a></span>
+              <span id="vycenter-config-menu"><a href="{% url 'registration-login' %}">Login</a></span>
+              <span id="vycenter-config-menu"><a href="{% url 'registration-logout' %}">Logout</a></span>
 
               <span id="vycenter-config-menu"><a href="/admin">Admin</a></span>
 

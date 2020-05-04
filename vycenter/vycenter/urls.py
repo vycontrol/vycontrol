@@ -15,20 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from . import views
+
+from django.contrib.auth import views as auth_views
+
 
 
 app_name = 'vycenter'
 
-
 urlpatterns = [
-    path('interface/', include('interface.urls')),
-    path('config/', include('config.urls')),
+    path('', RedirectView.as_view(url='/login/')),
     #path('vauth/', include('vauth.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-
+    path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
+    #path('', views.vycenter_login, name='vycenter-login'),
+    path('admin/', admin.site.urls, name="django-admin"),
+    #path('change-password/', auth_views.PasswordChangeView.as_view()),
+    path('login/', auth_views.LoginView.as_view(), name="registration-login"),
+    path('logout/', auth_views.LogoutView.as_view(), name="registration-logout"),
+
+
+
+    path('interface/', include('interface.urls')),
+
     path('firewall/', include('firewall.urls')),
     path('static/', include('static.urls')),
     path('arp/', include('arp.urls')),
@@ -41,6 +52,4 @@ urlpatterns = [
     path('qos/', include('qos.urls')),
     path('ssh/', include('ssh.urls')),
     path('wanlb/', include('wanlb.urls')),
-    path('', views.vycenter_login, name='vycenter-login'),
-    path('admin/', admin.site.urls, name="django-admin"),
 ]

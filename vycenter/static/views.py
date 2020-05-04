@@ -15,11 +15,13 @@ def index(request):
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+    static_list = vyos.get_static(hostname_default)
 
     template = loader.get_template('static/list.html')
     context = { 
         'instances': all_instances,
         'hostname_default': hostname_default,
+        'static_list' : static_list
     }   
     return HttpResponse(template.render(context, request))
 

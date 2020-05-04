@@ -67,9 +67,8 @@ def interfaceshow(request, interface_type, interface_name):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
         
     all_instances = vyos.instance_getall()
-
     hostname_default = vyos.get_hostname_prefered(request)
-    
+    firewall_all = vyos.get_firewall_all(hostname_default)   
     interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     
     template = loader.get_template('interface/show.html')
@@ -79,6 +78,7 @@ def interfaceshow(request, interface_type, interface_name):
         'interface_type' : interface_type,
         'interface_name' : interface_name,
         'hostname_default': hostname_default,
+        'firewall_all' : firewall_all,
     }   
     return HttpResponse(template.render(context, request))
 
