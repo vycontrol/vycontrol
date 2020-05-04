@@ -15,19 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic import RedirectView
+from django.conf import settings
+
+def reload_urlconf(self):
+    if settings.ROOT_URLCONF in sys.modules:
+        reload(sys.modules[settings.ROOT_URLCONF])
+    return import_module(settings.ROOT_URLCONF)
+
+import pprint
 
 from . import views
 
 from django.contrib.auth import views as auth_views
 
 
-
 app_name = 'vycenter'
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/login/')),
-    #path('vauth/', include('vauth.urls')),
+    path('', include('accounts.urls')),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
     #path('', views.vycenter_login, name='vycenter-login'),
@@ -53,3 +58,6 @@ urlpatterns = [
     path('ssh/', include('ssh.urls')),
     path('wanlb/', include('wanlb.urls')),
 ]
+
+
+

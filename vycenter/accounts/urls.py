@@ -15,8 +15,12 @@ from . import views
 app_name = 'accounts'
 
 
+
+
+
+
 urlpatterns = [
-   path('logout', views.logout, name='accounts-logout'),
+   path('', views.index, name='accounts-index'),
    # path('', include('django.contrib.auth.urls', name='vauth-login')
 ]
 

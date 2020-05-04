@@ -26,6 +26,7 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * associate users to groups - admin only todo
 * associate groups to vyos servers - admin only todo
 * allow commum users to add vyos servers?
+* start page to create initial superadmin user on new installations - done
 
 ### interfaces module
 * list interfaces - alpha
