@@ -18,6 +18,14 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
 * basic authentication - use django admin to create superuser than http://127.0.0.1:8000/admin/login/?next=/admin/ to create a new user, after that you can use VyControl
 
+### auth module
+* login - done
+* logout - done
+* lost password - todo
+* create users - admin only todo
+* associate users to groups - admin only todo
+* associate groups to vyos servers - admin only todo
+* allow commum users to add vyos servers?
 
 ### interfaces module
 * list interfaces - alpha
