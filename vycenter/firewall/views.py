@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect
 from django.conf import settings
+from django.urls import reverse
 
 
 import vyos
@@ -11,7 +12,7 @@ import vyos
 
 def index(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -38,7 +39,7 @@ def index(request):
 
 def create(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -72,7 +73,7 @@ def create(request):
 
 def show(request, firewall_name):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -95,7 +96,7 @@ def show(request, firewall_name):
 
 def addrule(request, firewall_name):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()

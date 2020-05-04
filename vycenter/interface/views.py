@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.conf import settings
 from django.shortcuts import redirect
+from django.urls import reverse
 
 
 import vyos
@@ -13,7 +14,7 @@ import pprint
 
 def index(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall()
@@ -64,7 +65,7 @@ def index(request):
 
 def interfaceshow(request, interface_type, interface_name):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -85,7 +86,7 @@ def interfaceshow(request, interface_type, interface_name):
 
 def interfacefirewall(request, interface_type, interface_name):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
 

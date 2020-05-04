@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect
 from django.conf import settings
+from django.urls import reverse
 
 
 import vyos
@@ -13,7 +14,7 @@ import vyos
 
 def index(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
 
     
     all_instances = vyos.instance_getall()

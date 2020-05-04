@@ -35,7 +35,6 @@
               </select>
             
 
-              <span id="vycenter-config-menu"><a href="{% url 'registration-login' %}">Login</a></span>
               <span id="vycenter-config-menu"><a href="{% url 'registration-logout' %}">Logout</a></span>
 
               <span id="vycenter-config-menu"><a href="/admin">Admin</a></span>
@@ -103,7 +102,8 @@
     <ul>
     <li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>
     <li><a href="{% url 'config:instances' %}">List instances</a></li>
-    <li><a href="{% url 'config:users-list' %}">Manage user permissions</a></li>
+    <li><a href="{% url 'config:users-list' %}">Manage users</a></li>
+    <li><a href="{% url 'config:groups-list' %}">Manage groups</a></li>
     </ul>
 
 
