@@ -1,0 +1,58 @@
+{% extends "base_not_installed.html" %}
+
+{% block header_title %}Installing{% endblock %}
+{% block section_title %}Installing{% endblock %}
+
+{% block debug %}
+{{ users_admin }}
+{% endblock %}
+
+{% block content %}
+
+<p>
+    You are installing VyControl.
+</p>
+
+<ol>
+    <li>You have already created and connected to the database</li>
+    <li>For small installations, db.sqlite3 is sufficient. Otherwise, use mySQL or PostgreSQL.</li>
+    <li>Now we are going to create an administrator user.</li>
+</ol>
+
+
+<div class="separe-form">
+
+
+    <form action="{% url 'accounts:accounts-index' %}" method="post">
+        {% csrf_token %}
+        
+        <p>
+        <label for="username">Admin username</label><br>
+        <input type="text" name="username" id="username" size="20">
+        </p>
+            
+        <p>
+        <label for="password">Admin password</label><br>
+        <input type="password" name="password" id="password"  size="32">
+        </p>
+            
+        
+        <p>
+        <input type="submit" value="Create Admin">
+        </p>
+    
+        </form>
+    
+    
+
+</div>
+
+
+{% endblock %}
+
+  
+
+
+
+
+
