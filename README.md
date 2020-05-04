@@ -23,7 +23,7 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * logout - done
 * lost password - todo
 * create users - admin only todo
-* associate users to groups - admin only todo
+* associate users to groups - admin only done
 * associate groups to vyos servers - admin only todo
 * allow commum users to add vyos servers?
 * start page to create initial superadmin user on new installations - done

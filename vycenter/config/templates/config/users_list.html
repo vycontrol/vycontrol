@@ -2,73 +2,60 @@
 
 {% block debug %}
 {{ users }}
+{{ groups }}
+{{ user_groups }}
 {% endblock %}
 
 
-{% block header_title %}Manage users{% endblock %}
-{% block section_title %}Manage users{% endblock %}
+{% block header_title %}List users{% endblock %}
+{% block section_title %}List users{% endblock %}
 
 {% block content %}
 
-{% if instances %}
 
-    <table border="1" width="100%">
-    <tr>
-        <th>alias</th>
-        <th>hostname</th>
-        <th>port</th>
-        <th>key</th>
-        <th>https</th>
-        <th>test connection</th>
-        <th>default</th>
-        <th>remove</th>
-    </tr>
-
-    {% for instance in instances %}
-    <tr>
-        <td>{{ instance.alias }}</td>
-        <td>{{ instance.hostname }}</td>
-        <td>{{ instance.port }}</td>
-        <td>show</td>
-        <td>{{ instance.https }}</td>
-        <td><a href="{% url 'config:instance-conntry' instance.hostname %}">test</a></td>
-        <td>{% if instance.main == True %}default{% else %}<a href="{% url 'config:instance-default' instance.hostname %}">set default</a>{% endif %}</td>
-        <td>{% if instance.main == True %}-{% else %}<a href="{% url 'config:instance-remove' instance.hostname %}">remove</a>{% endif %}</td>
-    </tr>
-
-    {% endfor %}
-
-    </table>   
-{% else %}
-    <p>No instances.</p>
-{% endif %}
 
 
 
 
 {% if users %}
 
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="{% url 'config:users-list' %}" method="post">
+    {% csrf_token %}
+
+
+    
     <table border="1" width="100%">
     <tr>
-        <th>alias</th>
-        <th>hostname</th>
-        <th>port</th>
-        <th>key</th>
-        <th>https</th>
-        <th>test connection</th>
-        <th>default</th>
-        <th>remove</th>
+        <th>name</th>
+        <th>group</th>
     </tr>
 
     {% for user in users %}
     <tr>
         <td>{{ user }}</td>
-    
+        <td><select id="group-{{ user }}" name="group-{{ user }}"><option value="">None</option>
+            {% if groups != False %}
+                {% for fkey in groups %}    
+                    <option value="{{ fkey }}" {% if user_groups|get_item:user.username == fkey %}selected="selected"{% endif %}>{{ fkey }}</option>
+                {% endfor %}
+            {% endif %}
+        </select></td>
     </tr>
 
     {% endfor %}
 
-    </table>   
+    </table>  
+    
+
+    <div class="separe-form" class="text-right">
+        <input type="submit" value="Set Groups">
+    </div>
+    
+    </form>
+    
+    
 {% else %}
     <p>No users.</p>
 {% endif %}

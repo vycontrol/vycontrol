@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block header_title %}Add new group{% endblock %}
+{% block section_title %}Add new group{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'config:group-add' %}" method="post">
+{% csrf_token %}
+
+<p>
+<label for="alias">Name</label><br>
+<input type="text" name="name" id="name" value="{{ name }}" size="90">
+</p>
+
+
+<input type="submit" value="Add group">
+</form>
+
+
+
+{% endblock %}
+

@@ -4,7 +4,7 @@ from django.template import loader
 from django.shortcuts import redirect
 from django.conf import settings
 from django.urls import reverse
-
+from django.contrib.auth.models import Group
 
 import pprint
 import vyos
@@ -13,6 +13,26 @@ from .models import Instance
 
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+
+from django.template.defaultfilters import register
+
+@register.filter(name='dict_key')
+def dict_key(d, k):
+    '''Returns the given key from a dictionary.'''
+    return d[k]
+
+@register.filter('get_value_from_dict')
+def get_value_from_dict(dict_data, key):
+    """
+    usage example {{ your_dict|get_value_from_dict:your_key }}
+    """
+    if key:
+        return dict_data.get(key)
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
 
 
 def index(request):
@@ -41,14 +61,62 @@ def users_list(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     users = User.objects.all()
+    groups = Group.objects.all()
 
+    group_show = []
+    for group in groups:
+        if group.name != "admin":
+            group_show.append(group.name)
+
+
+    has_group_add = False
+    for el in request.POST:
+
+        if el.startswith('group-') and request.POST[el]:
+            pos = el.split("-", 1)
+            
+            el_username = pos[1]
+            el_groupname = request.POST[el]
+            
+            # test also if username is member of admin or superuser, than this one should not being no group
+            if el_groupname not in ['admin']:
+                try:
+                    el_userid = User.objects.get(username=el_username) 
+                except User.DoesNotExist:
+                    return redirect('config:users_list')
+
+                try:
+                    # remove any group user is inside, we support just only group per user
+                    if el_userid.groups.exists():
+                        for g in el_userid.groups.all():
+                            el_userid.groups.remove(g)
+
+                    el_groupadd = Group.objects.get(name=el_groupname) 
+                    el_groupadd.user_set.add(el_userid)
+                    has_group_add = has_group_add  + 1
+                except Group.DoesNotExist:
+                    return redirect('config:users_list')
+
+    if has_group_add > 0:
+        return redirect('config:users-list')
+
+
+    user_groups = {}
+    for user in users:
+        user_groups_list = user.groups.all()
+        if len(user_groups_list) > 0:
+            user_groups[str(user)] = str(user_groups_list[0])
+        else:
+            user_groups[str(user)] = None
 
     template = loader.get_template('config/users_list.html')
     context = { 
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
-        'users' : users
+        'users' : users,
+        'groups': group_show,
+        'user_groups': user_groups
     }   
     return HttpResponse(template.render(context, request))
 
@@ -132,6 +200,38 @@ def instance_add(request):
         'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
+
+
+
+def group_add(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    error_message = None
+
+    if len(request.POST) > 0 and 'name' in request.POST:
+        try:
+            group_get = Group.objects.get(name=request.POST['name'])       
+            error_message = 'Group already exists'
+        except Group.DoesNotExist:
+            group_create = Group(name=request.POST['name'])
+            group_create.save()
+            return redirect('config:groups-list')
+    else:
+        instance_id = 0
+
+    template = loader.get_template('config/group_add.html')
+    context = { 
+        'hostname_default': hostname_default,
+        'instance_id': instance_id,
+        'instances': all_instances,
+        'error_message' : error_message
+    }   
+    return HttpResponse(template.render(context, request))    
 
 def instance_conntry(request, hostname):
     if not request.user.is_authenticated:
