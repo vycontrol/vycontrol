@@ -31,7 +31,7 @@
                 {% if key == "loopback" %}
                     -
                 {% else %}
-                    <select id="firewall-ipv4-in" name="firewall-ipv4-in.{{ key }}.{{ ifkey }}"><option value="">None</option>
+                    <select id="firewall-ipv4-in" name="firewall-ipv4-in.{{ key }}.{{ ifkey }}"><option value="--remove--">None</option>
                     {% if firewall_all != False %}
                         {% for fkey, fvalue in firewall_all.items %}    
                             {% for fitemkey, fitemvalue in fvalue.items %}
@@ -46,7 +46,7 @@
                 {% if key == "loopback" %}
                     -
                 {% else %}
-                    <select id="firewall-ipv4-out" name="firewall-ipv4-out.{{ key }}.{{ ifkey }}"><option value="">None</option>
+                    <select id="firewall-ipv4-out" name="firewall-ipv4-out.{{ key }}.{{ ifkey }}"><option value="--remove--">None</option>
                     {% if firewall_all != False %}
                         {% for fkey, fvalue in firewall_all.items %}    
                             {% for fitemkey, fitemvalue in fvalue.items %}

@@ -53,7 +53,11 @@ def index(request):
             interface_type = pos[1]
             interface_name = pos[2]
             firewall_name = request.POST[el]
-            result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "in", firewall_name)         
+            if firewall_name == "--remove--":
+                result1 = vyos.delete_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "in")         
+            else:
+                result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "in", firewall_name)         
+
             pprint.pprint(result1)  
             fw_changed = True
         elif el.startswith('firewall-ipv4-out') and request.POST[el]:
@@ -62,7 +66,10 @@ def index(request):
             interface_type = pos[1]
             interface_name = pos[2]
             firewall_name = request.POST[el]
-            result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "out", firewall_name)
+            if firewall_name == "--remove--":
+                result1 = vyos.delete_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "out")
+            else:
+                result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "out", firewall_name)
             pprint.pprint(result1)              
             fw_changed = True
             
