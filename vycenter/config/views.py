@@ -221,7 +221,69 @@ def group_add(request):
         'instances': all_instances,
         'error_message' : error_message
     }   
+    return HttpResponse(template.render(context, request)) 
+
+    
+def user_add(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    error_message = None
+
+    count = 0
+    name = ''
+    if 'name' in request.POST:
+        name = request.POST['name']
+        count += 1
+
+    username = ''
+    if 'username' in request.POST:
+        username = request.POST['username']
+        count += 1
+
+    password = ''
+    if 'password' in request.POST:
+        password = request.POST['password']
+        count += 1
+
+    email = ''
+    if 'email' in request.POST:
+        email = request.POST['email']                        
+        count += 1
+
+    if count >= 4:
+        try:
+            user = User.objects.get(username=username)       
+            error_message = 'Username already exists'
+        except User.DoesNotExist:
+            user_create = User(
+                username=username,
+                email=email,
+                password=password,
+                last_name=name
+            )
+            user_create.save()
+            return redirect('config:users-list')
+
+
+    template = loader.get_template('config/user_add.html')
+    context = { 
+        'hostname_default': hostname_default,
+        'instances': all_instances,
+        'error_message' : error_message,
+        'name' : name,
+        'username' : username,
+        'password' : password,
+        'email' : email,
+
+    }   
     return HttpResponse(template.render(context, request))    
+
+
 
 def instance_conntry(request, hostname):
     if not request.user.is_authenticated:

@@ -21,31 +21,31 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * basic authentication - use django admin to create superuser than http://127.0.0.1:8000/admin/login/?next=/admin/ to create a new user, after that you can use VyControl
 
 ### auth module
-* login - done
-* logout - done
-* lost password - todo
-* create users - admin only todo
-* associate users to groups - admin only done
-* associate groups to vyos servers - admin only todo
+* login - **done**
+* logout - **done**
+* lost password - *todo*
+* create users - admin only *todo*
+* associate users to groups - admin only **done**
+* associate groups to vyos servers - admin only *todo*
 * allow commum users to add vyos servers?
-* start page to create initial superadmin user on new installations - done
+* start page to create initial superadmin user on new installations - **done**
 
 ### interfaces module
 * list interfaces - alpha
 * show interface - alpha
-* unset/set firewall interface - todo
-* change interface parameters - todo
+* unset/set firewall interface - *todo*
+* change interface parameters - *todo*
 
 ### firewall module
-* basic firewall rules creation proof of concept - done
-* basic list firewall rules - done
-* basic add firewall rules - done
-* basic edit firewall rules - done
-* basic firewall create - done
-* change firewall rules order - todo
-* delete firewall rules - todo
+* basic firewall rules creation proof of concept - **done**
+* basic list firewall rules - **done**
+* basic add firewall rules - **done**
+* basic edit firewall rules - **done**
+* basic firewall create - **done**
+* change firewall rules order - *todo*
+* delete firewall rules - *todo*
 
-## other modules - todo
+## other modules - *todo*
 * ospf
 * bgp
 * ipsec
@@ -58,11 +58,11 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * static routes
 
 ### config module
-* VyControl users crud - todo
-* vyos instance using database - done
-* full vyos instances crud - todo
-* add new VyoS instances test connection while adding - todo
-* add new VyoS instances test connection all servers crontab - todo
+* VyControl users crud - *todo*
+* vyos instance using database - **done**
+* full vyos instances crud - *todo*
+* add new VyoS instances test connection while adding - *todo*
+* add new VyoS instances test connection all servers crontab - *todo*
 * associate groups to VyOS instances
 
 ### known issues
