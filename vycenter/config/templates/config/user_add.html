@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block header_title %}Add new user{% endblock %}
+{% block section_title %}Add new user{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'config:user-add' %}" method="post">
+{% csrf_token %}
+
+<p>
+    <label for="alias">Name</label><br>
+    <input type="text" name="name" id="name" value="{{ name }}" size="60">
+</p>
+
+<p>
+    <label for="alias">Email</label><br>
+    <input type="text" name="email" id="email" value="{{ email }}" size="60">
+</p>
+
+<p>
+    <label for="alias">Username</label><br>
+    <input type="text" name="username" id="username" value="{{ name }}" size="30">
+</p>
+
+<p>
+    <label for="alias">Password</label><br>
+    <input type="password" name="password" id="password" value="{{ password }}" size="30">
+</p>
+
+<input type="submit" value="Add user">
+</form>
+
+
+
+{% endblock %}
+
