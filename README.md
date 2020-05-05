@@ -1,5 +1,7 @@
 # VyControl
-[VyOS](https://www.vyos.io/) frontend made in Python / Django using VyOS new 1.3 API server
+* [VyOS](https://www.vyos.io/) frontend made in Python / Django using VyOS new 1.3 API server
+* Check out website at https://www.vycontrol.com/
+
 
 <p align="center">
 <img align="center" width="150" height="150" src="https://storage.googleapis.com/vycontrol/logos/logo_transparent.png">
@@ -135,3 +137,6 @@ http://127.0.0.1:8000/
 ![Add Firewall Rule](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-rule.png)
 
 
+
+# Sponsoring
+* VyControl is being tested at [Under](https://under.com.br) a brazilian provider of Cloud Computing and Datacenters.
