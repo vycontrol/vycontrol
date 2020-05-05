@@ -11,7 +11,7 @@
 It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
 
 ## community
-* Slack Channel https://vyos.slack.com/archives/C012X7DGASY
+* Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
 * Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 ## features
@@ -68,9 +68,9 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 
 
 # dockerhub
-latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycenter
+latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 ```
-docker pull robertoberto/vycenter
+docker pull robertoberto/vycontrol
 ```
 
 # docker composer
