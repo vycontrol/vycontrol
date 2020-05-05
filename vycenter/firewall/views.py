@@ -104,6 +104,7 @@ def addrule(request, firewall_name):
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     
+    changed = False
     if 'action' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
         result1 = vyos.set_config(hostname_default, cmd)
@@ -129,7 +130,7 @@ def addrule(request, firewall_name):
         changed = True
 
     if changed == True:
-        return redirect('firewall:firewall-list')
+        return redirect('firewall:show', firewall_name)
 
 
     template = loader.get_template('firewall/show.html')

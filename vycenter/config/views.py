@@ -16,18 +16,8 @@ from django.contrib.auth.models import Group
 
 from django.template.defaultfilters import register
 
-@register.filter(name='dict_key')
-def dict_key(d, k):
-    '''Returns the given key from a dictionary.'''
-    return d[k]
 
-@register.filter('get_value_from_dict')
-def get_value_from_dict(dict_data, key):
-    """
-    usage example {{ your_dict|get_value_from_dict:your_key }}
-    """
-    if key:
-        return dict_data.get(key)
+
 
 @register.filter
 def get_item(dictionary, key):

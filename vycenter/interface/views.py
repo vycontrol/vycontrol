@@ -4,6 +4,7 @@ from django.template import loader
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.template.defaultfilters import register
 
 
 import vyos
@@ -12,6 +13,12 @@ from config.models import Instance
 
 import pprint
 
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+    
 def index(request):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
@@ -21,18 +28,46 @@ def index(request):
     firewall_all = vyos.get_firewall_all(hostname_default)
     interfaces = vyos.get_interfaces(hostname_default)
 
+    interface_firewall_in = {}
+    interface_firewall_out = {}
+
+    for interface_type in interfaces:
+        for interface_name in interfaces[interface_type]:
+            pprint.pprint(interface_name)
+            try:
+                interface_firewall_in[interface_name] = interfaces[interface_type][interface_name]['firewall']['in']['name']
+            except:
+                pass
+            try:
+                interface_firewall_out[interface_name] = interfaces[interface_type][interface_name]['firewall']['out']['name']
+            except:
+                pass
+
+    fw_changed = False
     for el in request.POST:
+        pprint.pprint(request.POST)
+ 
         if el.startswith('firewall-ipv4-in') and request.POST[el]:
             pos = el.split(".")
             
             interface_type = pos[1]
             interface_name = pos[2]
             firewall_name = request.POST[el]
-            pprint.pprint(request.POST)
-
-            result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "in", firewall_name)
-            print(result1)
-
+            result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "in", firewall_name)         
+            pprint.pprint(result1)  
+            fw_changed = True
+        elif el.startswith('firewall-ipv4-out') and request.POST[el]:
+            pos = el.split(".")
+            
+            interface_type = pos[1]
+            interface_name = pos[2]
+            firewall_name = request.POST[el]
+            result1 = vyos.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name, "out", firewall_name)
+            pprint.pprint(result1)              
+            fw_changed = True
+            
+    if fw_changed == True:
+        return redirect('interface:interface-list')
 
     """
    if 'name' in request.POST:
@@ -60,6 +95,8 @@ def index(request):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'firewall_all' : firewall_all,
+        'interface_firewall_in' : interface_firewall_in,
+        'interface_firewall_out' : interface_firewall_out,
     }
     return HttpResponse(template.render(context, request))
 
@@ -80,6 +117,7 @@ def interfaceshow(request, interface_type, interface_name):
         'interface_name' : interface_name,
         'hostname_default': hostname_default,
         'firewall_all' : firewall_all,
+                
     }   
     return HttpResponse(template.render(context, request))
 
