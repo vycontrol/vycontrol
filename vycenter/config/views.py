@@ -62,30 +62,44 @@ def users_list(request):
     has_group_add = False
     for el in request.POST:
 
+
         if el.startswith('group-') and request.POST[el]:
             pos = el.split("-", 1)
             
             el_username = pos[1]
             el_groupname = request.POST[el]
-            
+
+           
             # test also if username is member of admin or superuser, than this one should not being no group
             if el_groupname not in ['admin']:
+
                 try:
                     el_userid = User.objects.get(username=el_username) 
                 except User.DoesNotExist:
+                    print("zerou") 
                     return redirect('config:users_list')
 
+
+
                 try:
-                    # remove any group user is inside, we support just only group per user
                     if el_userid.groups.exists():
                         for g in el_userid.groups.all():
                             el_userid.groups.remove(g)
+                except Group.DoesNotExist:
+                    print("zerou2") 
+                    return redirect('config:users_list')
 
+                print("kkk", el_groupname, el_username) 
+
+
+                if el_groupname == "--remove--":
+                    has_group_add = has_group_add  + 1
+                else:
                     el_groupadd = Group.objects.get(name=el_groupname) 
                     el_groupadd.user_set.add(el_userid)
                     has_group_add = has_group_add  + 1
-                except Group.DoesNotExist:
-                    return redirect('config:users_list')
+
+
 
     if has_group_add > 0:
         return redirect('config:users-list')

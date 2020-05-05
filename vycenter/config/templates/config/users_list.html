@@ -35,7 +35,7 @@
     {% for user in users %}
     <tr>
         <td>{{ user }}</td>
-        <td><select id="group-{{ user }}" name="group-{{ user }}"><option value="">None</option>
+        <td><select id="group-{{ user }}" name="group-{{ user }}"><option value="--remove--">None</option>
             {% if groups != False %}
                 {% for fkey in groups %}    
                     <option value="{{ fkey }}" {% if user_groups|get_item:user.username == fkey %}selected="selected"{% endif %}>{{ fkey }}</option>
