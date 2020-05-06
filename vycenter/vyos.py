@@ -96,8 +96,9 @@ def api_set(hostname, cmd):
 def get_hostname_prefered(request):
     hostname = None
 
-    if request.session.get('hostname', None) != None:
-        hostname = request.session.get('hostname', None)
+    #if request.session.get('hostname', None) != None:
+    #   hostname = request.session.get('hostname', None)
+    hostname = '179.127.12.142'
         
 
     if hostname == None:
@@ -121,7 +122,7 @@ def conntry(hostname):
     print(get_url_retrieve(hostname))
 
     try:
-        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=15)
+        resp = requests.post(get_url_retrieve(hostname), verify=False, data=post, timeout=10)
     except requests.exceptions.ConnectionError:
         return False
     

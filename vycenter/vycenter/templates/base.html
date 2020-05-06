@@ -22,7 +22,10 @@
           
         </div>
         <div class="col-9">
-          <form action="/config/instance-default" method="get" id="instancedefault">
+          <form action="{% url 'config:instance-change' '__none__' %}" method="post" id="instancedefault">
+            {% csrf_token %}
+
+
             <p class="text-right menu-config">
             
               <select name="vyos-id" id="vyos-id" onchange="this.form.submit();">
@@ -64,11 +67,14 @@
     <h2>Manage Routing</h2>
     <ul>
     <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
+    <!-- 
     <li><a href="{% url 'arp:arp-list' %}">ARP</a></li>
     <li><a href="{% url 'ospf:ospf-list' %}">OSPF</a></li>
     <li><a href="{% url 'bgp:bgp-list' %}">BGP</a></li>
+    -->
     </ul>
 
+    <!--
     <h2>Manage Services</h2>
     <ul>
     <li><a href="{% url 'dhcp:dhcp-list' %}">DHCP</a></li>
@@ -96,7 +102,8 @@
     <ul>
     <li><a href="{% url 'wanlb:wanlb-list' %}">Wan Load Balancing</a></li>
     </ul>        
-   
+    -->
+
     <h2>Manage VyControl</h2>
     <ul>
     <li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>

@@ -162,7 +162,7 @@ def instances(request):
             for i in all_instances:
                 pprint.pprint(i.hostname)
                 instance_default(request, i.hostname)
-            
+                
         else:
             return redirect('config:instance-add')
 
@@ -322,24 +322,38 @@ def instance_conntry(request, hostname):
     }   
     return HttpResponse(template.render(context, request))
 
-
-def instance_default(request, hostname):
+# get default instance or set default instance 
+def instance_change(request, hostname = False):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
 
+    #method = None  
+    if hostname != "__none__":
+        #method = "param"
+        pass
+    elif hostname == "__none__":
+        #method = "get"
+        hostname = request.POST.get('vyos-id', False)
+ 
     # permcheck
-    instance = Instance.objects.get(hostname=hostname)
-    
-    connected = vyos.conntry(hostname)
-    # show some error when not connected
-    if connected == True:
-        request.session['hostname'] = hostname
-        instance.main = True
-        instance.save()
+    if hostname != False:
+        try:
+            instance = Instance.objects.get(hostname=hostname)
+        except Instance.DoesNotExist:
+            print("instance not exists: " + str(hostname))
+            return redirect('config:instances')    
 
-    return redirect('config:instances')
+        if instance:
+            connected = vyos.conntry(hostname)
+            # show some error when not connected
+            if connected == True:
+                request.session['hostname'] = hostname
+                instance.main = True
+                instance.save()
+
+    return redirect('config:instances')    
 
 
 

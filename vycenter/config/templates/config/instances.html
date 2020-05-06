@@ -27,7 +27,7 @@
         <td>show</td>
         <td>{{ instance.https }}</td>
         <td><a href="{% url 'config:instance-conntry' instance.hostname %}">test</a></td>
-        <td>{% if instance.main == True %}default{% else %}<a href="{% url 'config:instance-default' instance.hostname %}">set default</a>{% endif %}</td>
+        <td>{% if instance.main == True %}default{% else %}<a href="{% url 'config:instance-change' instance.hostname %}">set default</a>{% endif %}</td>
         <td>{% if instance.main == True %}-{% else %}<a href="{% url 'config:instance-remove' instance.hostname %}">remove</a>{% endif %}</td>
     </tr>
 
