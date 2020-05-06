@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block header_title %}Add new instance{% endblock %}
 {% block section_title %}Add new instance{% endblock %}
 
@@ -7,7 +8,12 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
+
+<p class="margin-topbottom">To add a new VyOS <a href="https://docs.vyos.io/en/latest/appendix/http-api.html" target="_blank">read documentation.</p>
+
 <form action="{% url 'config:instance-add' %}" method="post">
+
+
 {% csrf_token %}
 
 <p>

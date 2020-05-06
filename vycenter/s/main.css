@@ -108,3 +108,7 @@ input[type=submit] {
 #lostpasswd {
   margin-top: 10px;
 }
+
+.margin-topbottom {
+  margin: 20px 0;  
+}
