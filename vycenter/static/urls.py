@@ -7,6 +7,8 @@ app_name = 'static'
 
 urlpatterns = [
     path('', views.index, name='static-list'),
+    path('static', views.static, name='static'),
+
 ]
 
 

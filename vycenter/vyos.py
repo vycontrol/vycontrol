@@ -47,6 +47,7 @@ def api(type, hostname, cmd):
     else:
         return False
 
+    pprint.pprint(cmd)
     print(json.dumps(cmd))
     post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
     print(post)   
@@ -180,10 +181,14 @@ def insert_firewall_rules(hostname, cmd):
     result1 = api_set(hostname, cmd)
     return result1
 
-
-
-def get_static(hostname):
-    cmd = {"op": "showConfig", "path": ["show","ip","route","static"]}
+def get_route_static(hostname):
+    cmd = {"op": "showConfig", "path": ["show","protocols","route","static"]}
 
     result1 = api_get(hostname, cmd)
     return result1
+
+def set_route_static(hostname, subnet, nexthop):
+    cmd = {"op": "set", "path": ["set","protocols","static","route", subnet, "next-hop", nexthop]}
+
+    result1 = api_set(hostname, cmd)
+    return result1    
