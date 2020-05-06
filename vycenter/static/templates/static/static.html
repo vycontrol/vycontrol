@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block header_title %}Static Routes{% endblock %}
+{% block section_title %}Static Routes{% endblock %}
+
+{% block debug %}
+{{ static_list }}
+{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<h2>Create new static route</h2>
+
+<form action="{% url 'static:static' %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">subnet</label><br>
+        <input type="text" name="subnet" id="subnet" value="{{ subnet }}" size="30">
+    </p>
+
+    <p>
+        <label for="alias">next-hop</label><br>
+        <input type="text" name="nexthop" id="nexthop" value="{{ nexthop }}" size="30">
+    </p>    
+    
+    
+    
+    <input type="submit" value="Add Route">
+    </form>
+
+    
+
+
+
+{% endblock %}
+
