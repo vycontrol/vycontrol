@@ -7,9 +7,9 @@
 
 {% if instance %}
     {% if connected == True %}
-        <div style="background-color: rgb(87, 87, 182); margin-bottom: 20px; padding: 2px 5px;">Instance connected</div>
+        <div class="alert-ok">Instance connected</div>
     {% else %}
-        <div style  ="background-color: rgb(184, 78, 78); margin-bottom: 20px; padding: 2px 5px;">Instance not connected</div>
+        <div class="alert-nok">Instance not connected</div>
     {% endif %}
 
     <table border="1" width="100%">
