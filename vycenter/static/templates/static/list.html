@@ -11,9 +11,37 @@
 
 
 
-<p>
+<p class="margin-topbottom">
     <a href="{% url 'static:static' %}">Create new static route</a>
 </p>
+
+
+{% if static_list %}
+
+    <table border="1" width="100%">
+    <tr>
+        <th>route</th>
+        <th>next-hop (router to use)</th>
+    </tr>
+
+    {% for x in static_list %}
+    <tr>
+        <td>{{ x.route }}</td>
+        <td>
+            {% for y in x.nexthop %}
+                {{ y }}
+            {% endfor %}
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+    </table>   
+{% else %}
+    <p>No static routes.</p>
+{% endif %}
+
 
     
 

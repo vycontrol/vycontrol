@@ -15,9 +15,14 @@ def index(request):
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
-    #static_list = vyos.get_route_static(hostname_default)
-    static_list = None
-    
+    static_dict = vyos.get_route_static(hostname_default)
+    static_list = []
+    for s in static_dict['route']:
+        static_list.append({
+            'route': s,
+            'nexthop': static_dict['route'][s]['next-hop'],
+        })
+
     template = loader.get_template('static/list.html')
     context = { 
         'instances': all_instances,
@@ -36,15 +41,18 @@ def static(request):
     hostname_default = vyos.get_hostname_prefered(request)
     static_list = vyos.get_route_static(hostname_default)
 
+
+
     error_message = None
     if 'subnet' in request.POST and 'nexthop' in request.POST:
-        #return1 = vyos.set_route_static(hostname_default, request.POST['subnet'], request.POST['nexthop'])
-        return1 = False
+        return1 = vyos.set_route_static(hostname_default, request.POST['subnet'], request.POST['nexthop'])
         if return1 == False: 
             error_message = 'Cannot add static route.'
         else:
            return redirect('static:static-list')
 
+
+    ippath = vyos.ip_route(hostname_default)
 
     template = loader.get_template('static/static.html')
     context = { 

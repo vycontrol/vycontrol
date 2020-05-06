@@ -28,6 +28,11 @@ def get_url_configure(hostname):
     url = get_url(hostname) + '/configure'
     return url
 
+def get_url_show(hostname):
+    url = get_url(hostname) + '/show'
+    return url
+
+
 def get_url_retrieve(hostname):
     url = get_url(hostname) + '/retrieve'        
     return url
@@ -44,6 +49,8 @@ def api(type, hostname, cmd):
         url = get_url_manage(hostname)
     elif type == "configure":
         url = get_url_configure(hostname)
+    elif type == "show":
+        url = get_url_show(hostname)        
     else:
         return False
 
@@ -78,6 +85,10 @@ def api(type, hostname, cmd):
 
 def api_get(hostname, cmd):
     return api('retrieve', hostname, cmd)
+
+
+def api_show(hostname, cmd):
+    return api('show', hostname, cmd)    
 
 def api_set(hostname, cmd):
     return api('configure', hostname, cmd)    
@@ -182,13 +193,20 @@ def insert_firewall_rules(hostname, cmd):
     return result1
 
 def get_route_static(hostname):
-    cmd = {"op": "showConfig", "path": ["show","protocols","route","static"]}
+    cmd = {"op": "showConfig", "path": ["protocols","static","route"]}
 
     result1 = api_get(hostname, cmd)
     return result1
 
 def set_route_static(hostname, subnet, nexthop):
-    cmd = {"op": "set", "path": ["set","protocols","static","route", subnet, "next-hop", nexthop]}
+    cmd = {"op": "set", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
 
     result1 = api_set(hostname, cmd)
     return result1    
+
+
+def ip_route(hostname):
+    cmd = {"op": "show", "path": ["ip","route"]}
+
+    result1 = api_show(hostname, cmd)
+    return result1        
