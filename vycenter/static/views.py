@@ -16,7 +16,8 @@ def index(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     #static_list = vyos.get_route_static(hostname_default)
-
+    static_list = None
+    
     template = loader.get_template('static/list.html')
     context = { 
         'instances': all_instances,
