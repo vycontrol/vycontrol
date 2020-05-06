@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block header_title %}Firewall Dashboard{% endblock %}
-{% block section_title %}Firewall Dashboard{% endblock %}
+{% block header_title %}Firewall {{firewall_name}}{% endblock %}
+{% block section_title %}Firewall {{firewall_name}}{% endblock %}
 
 {% block debug %}
 {{ firewall }}
@@ -12,7 +12,7 @@
 
 
 
-{% if firewall %}
+{% if firewall.rule %}
     <table border="1" width="100%">
     <tr><th>rule #</th><th>description</th><th>protocol</th><th>destination port</th><th>source port</th><th>action</th></tr>
 
@@ -33,7 +33,7 @@
 
     </table>
 {% else %}
-    <p>No firewalls.</p>
+    <p>No rules.</p>
 {% endif %}
 
 
