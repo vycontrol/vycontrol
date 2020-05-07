@@ -129,6 +129,24 @@ def addrule(request, firewall_name):
 
 
 
+
+def firewall_removerule(request, firewall_name, firewall_rulenumber):
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    firewall_rule = vyos.get_firewall_rule(hostname_default, firewall_name, firewall_rulenumber)
+
+    if firewall_rule and firewall:
+        vyos.delete_route_rule(hostname_default, firewall_name, firewall_rulenumber)
+
+    return redirect('firewall:show', firewall_name)
+
+
+
+
+
+
 def editrule(request, firewall_name, firewall_rulenumber):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()

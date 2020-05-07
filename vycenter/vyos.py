@@ -209,6 +209,13 @@ def delete_route_static(hostname, subnet, nexthop):
     result1 = api_set(hostname, cmd)
     return result1  
 
+def delete_route_rule(hostname, firewall_name, rule_name):
+    cmd = {"op": "delete", "path": ["firewall", "name", firewall_name, "rule", rule_name]}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+
 def delete_firewall(hostname, name):
     cmd = {"op": "delete", "path": ["firewall","name", name]}
 
