@@ -204,7 +204,8 @@ def set_route_static(hostname, subnet, nexthop):
     return result1  
 
 def delete_route_static(hostname, subnet, nexthop):
-    cmd = {"op": "delete", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
+    #cmd = {"op": "delete", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
+    cmd = {"op": "delete", "path": ["protocols","static","route", subnet]}
 
     result1 = api_set(hostname, cmd)
     return result1  

@@ -31,7 +31,7 @@
         <td>{{ x.route }}</td>
         <td>
             {% for y in x.nexthop %}
-                {{ y }}  <a href=" url 'static:static-remove' route=x.route|routepack nexthop=y ">delete</a></td>
+                {{ y }}  <a href="{% url 'static:static-remove' route=x.route|routepack nexthop=y %}">delete</a></td>
             {% endfor %}
         </td>
     </tr>
