@@ -6,6 +6,7 @@ from django.conf import settings
 from django.urls import reverse
 
 
+
 import vyos
 
 
@@ -71,27 +72,6 @@ def create(request):
     return HttpResponse(template.render(context, request))
 
 
-def show(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
-    #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
-    hostname_default = vyos.get_hostname_prefered(request)
-
-    firewall = vyos.get_firewall(hostname_default, firewall_name)
-    
-
-    template = loader.get_template('firewall/show.html')
-    context = { 
-        #'interfaces': interfaces,
-        'instances': all_instances,
-        'hostname_default': hostname_default,
-        'firewall':  firewall,
-        'firewall_name': firewall_name,
-    }   
-    return HttpResponse(template.render(context, request))
-
 
 
 def addrule(request, firewall_name):
@@ -131,7 +111,7 @@ def addrule(request, firewall_name):
 
     if changed == True:
         return redirect('firewall:show', firewall_name)
-
+        
 
     template = loader.get_template('firewall/show.html')
     context = { 
@@ -200,3 +180,42 @@ def editrule(request, firewall_name, firewall_rulenumber):
     return HttpResponse(template.render(context, request))
 
 
+
+
+
+
+def show(request, firewall_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    
+
+    template = loader.get_template('firewall/show.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'firewall':  firewall,
+        'firewall_name': firewall_name,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+
+def firewall_remove(request, firewall_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    firewall = vyos.delete_firewall(hostname_default, firewall_name)
+    
+    return redirect('firewall:firewall-list')

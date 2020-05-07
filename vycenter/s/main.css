@@ -9,7 +9,7 @@ body {
     color: black;
 }
 .menu { 
-    background-color: #ccc;
+    background-color: #888;
     padding: 5px;
 }
 
@@ -17,7 +17,7 @@ body {
   color: #000;
 }    
 .content { 
-    background-color: rgb(120, 120, 120);
+    background-color: #ccc;
     padding: 0 10px 0 10px;
 }
 .content a {

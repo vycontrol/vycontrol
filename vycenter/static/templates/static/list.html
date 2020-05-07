@@ -1,3 +1,5 @@
+
+
 {% extends "base.html" %}
 
 {% block header_title %}Static Routes{% endblock %}
@@ -12,7 +14,7 @@
 
 
 <p class="margin-topbottom">
-    <a href="{% url 'static:static' %}">Create new static route</a>
+    <a href="{% url 'static:static-add' %}">Create new static route</a>
 </p>
 
 
@@ -29,10 +31,9 @@
         <td>{{ x.route }}</td>
         <td>
             {% for y in x.nexthop %}
-                {{ y }}
+                {{ y }}  <a href=" url 'static:static-remove' route=x.route|routepack nexthop=y ">delete</a></td>
             {% endfor %}
         </td>
-
     </tr>
 
     {% endfor %}

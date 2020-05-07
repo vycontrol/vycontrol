@@ -32,7 +32,6 @@ def get_url_show(hostname):
     url = get_url(hostname) + '/show'
     return url
 
-
 def get_url_retrieve(hostname):
     url = get_url(hostname) + '/retrieve'        
     return url
@@ -85,7 +84,6 @@ def api(type, hostname, cmd):
 
 def api_get(hostname, cmd):
     return api('retrieve', hostname, cmd)
-
 
 def api_show(hostname, cmd):
     return api('show', hostname, cmd)    
@@ -203,7 +201,19 @@ def set_route_static(hostname, subnet, nexthop):
     cmd = {"op": "set", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
 
     result1 = api_set(hostname, cmd)
-    return result1    
+    return result1  
+
+def delete_route_static(hostname, subnet, nexthop):
+    cmd = {"op": "delete", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+def delete_firewall(hostname, name):
+    cmd = {"op": "delete", "path": ["firewall","name", name]}
+
+    result1 = api_set(hostname, cmd)
+    return result1            
 
 
 def ip_route(hostname):

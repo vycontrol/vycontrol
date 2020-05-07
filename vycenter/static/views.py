@@ -6,10 +6,11 @@ from django.conf import settings
 from django.urls import reverse
 
 import vyos
+from filters.vycontrol_filters import routeunpack
 
 
 
-def index(request):
+def static_list(request):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
@@ -33,7 +34,7 @@ def index(request):
 
 
 
-def static(request):
+def static_add(request):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
@@ -54,7 +55,7 @@ def static(request):
 
     ippath = vyos.ip_route(hostname_default)
 
-    template = loader.get_template('static/static.html')
+    template = loader.get_template('static/add.html')
     context = { 
         'instances': all_instances,
         'hostname_default': hostname_default,
@@ -62,4 +63,24 @@ def static(request):
         'error_message' : error_message,
     }   
     return HttpResponse(template.render(context, request))
+
+
+def static_remove(request, route, nexthop):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+    static_list = vyos.get_route_static(hostname_default)
+
+    print(route)
+    print(routeunpack(route))
+
+
+    if route and nexthop:
+        return1 = vyos.delete_route_static(hostname_default, routeunpack(route), nexthop)
+
+
+
+    return redirect('static:static-list')
 

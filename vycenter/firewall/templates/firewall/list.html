@@ -10,6 +10,11 @@
 {% block content %}
 
 
+<p class="margin-topbottom">
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a>
+</p>
+
+
 
 {% if firewall_all %}
     <table border="1" width="100%">
@@ -22,7 +27,7 @@
                 <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.description }}</td>
                 <td>{{ ifvalue.default_action }}</td>
-                <td>delete</td>
+                <td><a href="{% url 'firewall:firewall-remove' ifkey %}">remove</a></td>
             </tr>
         {% endfor %}
         
@@ -34,35 +39,6 @@
 {% endif %}
 
 
-<div class="separe-form">
-    <h2>Create new firewall</h2>
-
-    <form action="{% url 'firewall:firewall-create' %}" method="post">
-        {% csrf_token %}
-        
-        <p>
-            <label for="alias">name</label><br>
-            <input type="text" name="name" id="name" value="{{ name }}" size="30">
-        </p>
-
-        <p>
-            <label for="alias">description</label><br>
-            <input type="text" name="description" id="description" value="{{ description }}" size="60">
-        </p>    
-        
-        <p>
-            <label for="hostname">default action</label><br>
-            <input type="radio" name="action" id="action" value="accept"> accept
-            <input type="radio" name="action" id="action" value="drop"> drop
-            <input type="radio" name="action" id="action" value="reject"> reject        
-        </p>
-
-        
-        
-        <input type="submit" value="Add Firewall">
-        </form>
-</div>
-    
 
 
 {% endblock %}
