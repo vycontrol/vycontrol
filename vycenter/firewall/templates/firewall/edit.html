@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block header_title %}Edit Firewall{% endblock %}
+{% block section_title %}Edit Firewall{% endblock %}
+
+{% block debug %}
+{{ firewall_all }}
+{{ firewall }}
+{% endblock %}
+
+{% block content %}
+
+<h2>Firewall {{ firewall_name }}</h2>
+
+<form action="{% url 'firewall:firewall-edit' firewall_name %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">description</label><br>
+        <input type="text" name="description" id="description" value="{{ firewall.description }}" size="60">
+    </p>    
+    
+    <p>
+        <label for="hostname">default action</label><br>
+        <input type="radio" name="action" id="action" value="accept" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> accept
+        <input type="radio" name="action" id="action" value="drop" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> drop
+        <input type="radio" name="action" id="action" value="reject" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> reject        
+    </p>
+
+    
+    
+    <input type="submit" value="Edit Firewall">
+    </form>
+
+    
+
+
+{% endblock %}
+
+
+

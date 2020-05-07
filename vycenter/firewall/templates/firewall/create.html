@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block header_title %}Firewall Dashboard{% endblock %}
-{% block section_title %}Firewall Dashboard{% endblock %}
+{% block header_title %}Create Firewall{% endblock %}
+{% block section_title %}Create Firewall{% endblock %}
 
 {% block debug %}
 {{ firewall_all }}
@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<h2>Create new firewall</h2>
+<h2>Create new Firewall</h2>
 
 <form action="{% url 'firewall:firewall-create' %}" method="post">
     {% csrf_token %}

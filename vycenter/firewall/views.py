@@ -237,3 +237,40 @@ def firewall_remove(request, firewall_name):
     firewall = vyos.delete_firewall(hostname_default, firewall_name)
     
     return redirect('firewall:firewall-list')
+
+def firewall_edit(request, firewall_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    firewall['defaultaction'] = firewall['default-action']
+
+    changed = False
+    if 'description' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "description", request.POST['description']]}
+        result2 = vyos.set_config(hostname_default, cmd)
+        print(result2)
+        changed = True
+
+    if 'action' in request.POST:
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "default-action", request.POST['action']]}
+        result3 = vyos.set_config(hostname_default, cmd)
+        print(result3)
+        changed = True
+
+    if changed == True:
+        return redirect('firewall:firewall-list')
+
+    template = loader.get_template('firewall/edit.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'firewall_name': firewall_name,
+        'firewall': firewall
+
+    }   
+    return HttpResponse(template.render(context, request))

@@ -27,7 +27,7 @@
                 <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.description }}</td>
                 <td>{{ ifvalue.default_action }}</td>
-                <td><a href="{% url 'firewall:firewall-remove' ifkey %}">remove</a></td>
+                <td><a href="{% url 'firewall:firewall-remove' ifkey %}">remove</a> | <a href="{% url 'firewall:firewall-edit' ifkey %}">edit</a></td>
             </tr>
         {% endfor %}
         
