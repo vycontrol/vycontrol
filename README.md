@@ -9,65 +9,37 @@
 
 
 
-
 It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
 
 ## community
 * Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
 * Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
-## features
-* in alpha stage we're going to provide just essential device config, interfaces and firewall, as proof of concencept, as well config module basic cruds (users, groups and vyOS Servers)
-* basic authentication - use django admin to create superuser than http://127.0.0.1:8000/admin/login/?next=/admin/ to create a new user, after that you can use VyControl
+## roadmap versions
+* 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes - software work as a proof of concept
+* 20.05.02 - working firewall without zones bases firewall - software work for whom want firewall without zones
+* 20.05.03 - zone based firewall
+* 20.05.04 - IPSEC features
+* 20.05.05 - better html css - someone help please :-)
+* 20.06.01 - save/commit/load features and ssh / logins 
+* 20.06.02 - vlans / interfaces deep configuration
+* 20.06.03 - improve permissions to allow users inside same group to have different roles
+
+
+## some notes to send to https://github.com/vycontrol/vycontrol/issues
 
 ### auth module
-* login - **done**
-* logout - **done**
-* lost password - *todo*
-* create users - admin only *todo*
-* associate users to groups - admin only **done**
-* associate groups to vyos servers - admin only *todo*
 * allow commum users to add vyos servers?
-* start page to create initial superadmin user on new installations - **done**
-
-### interfaces module
-* list interfaces - alpha
-* show interface - alpha
-* unset/set firewall interface - *todo*
-* change interface parameters - *todo*
 
 ### firewall module
-* basic firewall rules creation proof of concept - **done**
-* basic list firewall rules - **done**
-* basic add firewall rules - **done**
-* basic edit firewall rules - **done**
-* basic firewall create - **done**
 * change firewall rules order - *todo*
-* delete firewall rules - *todo*
-
-## other modules - *todo*
-* ospf
-* bgp
-* ipsec
-* openvpn
-* reports (maybe collecting using snmp)
-* ssh management 
-* system login managament
-* nat
-* dhcp servers
-* static routes
 
 ### config module
-* VyControl users crud - *todo*
-* vyos instance using database - **done**
-* full vyos instances crud - *todo*
 * add new VyoS instances test connection while adding - *todo*
 * add new VyoS instances test connection all servers crontab - *todo*
-* associate groups to VyOS instances
 
 ### known issues
 * cannot edit firewall rules number using current API
-
 
 # dockerhub
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
@@ -121,22 +93,30 @@ http://127.0.0.1:8000/
 
 # screenshoots (keep in mind we're in early alpha stages)
 
+## Install VyControl
+![Install VyControl](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/install.png)
+
+## List Users
+![List Users](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/list_users.png)
+
 ## List VyOS Instances
-![List VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/list-instances.png)
+![List VyOS Instances](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/list_instances.png)
 
 ## Add VyOS Instances
-![Add VyOS Instances](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/add-instance.png)
-
+![Add VyOS Instances](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/add_instance.png)
+                      
 ## List Interfaces
-![List Interfaces](https://storage.googleapis.com/vycontrol/screenshoots/vycontrol-interfaces.png)
+![List Interfaces](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/list_instances.png)
 
-## Firewall Dashboard
-![Firewall Dashboard](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-dash.png)
+## List Firewall
+![List Dashboard](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/list_firewall.png)
 
 ## Add Firewall Rule
-![Add Firewall Rule](https://storage.googleapis.com/imgvycenter/screenshoot-alfa1/firewall-rule.png)
+![Add Firewall Rule](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/add_firewall_rule.png)
 
+## List Static Routes
+![List Static Routes](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/list_static.png)
 
 
 # Sponsoring
-* VyControl is being tested at [Under](https://under.com.br) a brazilian provider of Cloud Computing and Datacenters.
+* VyControl is being tested at [Under](https://under.com.br) a Brazilian provider of Cloud Computing and Datacenters.
