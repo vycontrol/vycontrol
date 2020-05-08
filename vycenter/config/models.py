@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Group
 
 
 class Instance(models.Model):
@@ -8,6 +9,8 @@ class Instance(models.Model):
     key = models.CharField(max_length=100)
     https = models.BooleanField()
     main = models.BooleanField(default=False)
+    group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
+
     
 
 

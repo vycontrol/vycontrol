@@ -15,6 +15,7 @@ urlpatterns = [
     path('instance-add', views.instance_add, name='instance-add'),
     path('instance-conntry/<str:hostname>', views.instance_conntry, name='instance-conntry'),
     path('instance-remove/<str:hostname>', views.instance_remove, name='instance-remove'),
+    path('instance-changegroup/<str:hostname>', views.instance_changegroup, name='instance-changegroup'),
     path('instances', views.instances, name='instances'),
 
 ]

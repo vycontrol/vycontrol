@@ -31,6 +31,10 @@ def index(request):
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
+    for instance in all_instances:
+        if group == None:
+            all_instance[instance]['group'] = "admin"
+            
     hostname_default = vyos.get_hostname_prefered(request)
 
 
@@ -166,11 +170,14 @@ def instances(request):
         else:
             return redirect('config:instance-add')
 
+    groups = Group.objects.all()
+
+
     template = loader.get_template('config/instances.html')
     context = { 
         'instances': all_instances,
         'hostname_default': hostname_default,
-
+        'groups' : groups,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -372,6 +379,32 @@ def instance_remove(request, hostname):
     instance.delete()
 
     return redirect('config:instances')
+
+
+def instance_changegroup(request, hostname):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    all_instances = vyos.instance_getall()
+
+    group_name = request.POST.get('group')
+    print(group_name, hostname)
+
+    if group_name == "__admin__":
+        instance = Instance.objects.get(hostname=hostname)
+        instance.group = None
+        instance.save()
+    else:
+        group = Group.objects.get(name=group_name)
+        instance = Instance.objects.get(hostname=hostname)
+        instance.group = group
+        instance.save()
+
+
+    return redirect('config:instances')
+
+
+
 
 
 
