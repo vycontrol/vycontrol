@@ -30,6 +30,7 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.06.01 - save/commit/load features and ssh / logins 
 * 20.06.02 - vlans / interfaces deep configuration
 * 20.06.03 - improve permissions to allow users inside same group to have different roles
+* 20.06.04 - OSPF
 
 
 # installation 
