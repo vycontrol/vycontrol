@@ -11,16 +11,18 @@
 
 It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
 
-## community
+# community, help and development 
 * Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
-* Forum Post https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
+* VyControl discussion at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
+* Feature requests, bugs please add at https://github.com/vycontrol/vycontrol/issues
+* Forks and pull requests are welcome!
 
 ## roadmap versions
 
-### active develpment version
+## active develpment version
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes - software work as a proof of concept **almost done**
 
-### future vesions
+## future vesions
 * 20.05.02 - working firewall without zones bases firewall - software work for whom want firewall without zones
 * 20.05.03 - zone based firewall
 * 20.05.04 - IPSEC features
