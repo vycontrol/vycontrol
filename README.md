@@ -30,28 +30,15 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.06.03 - improve permissions to allow users inside same group to have different roles
 
 
-## some notes to send to https://github.com/vycontrol/vycontrol/issues
+# installation 
 
-### auth module
-* allow commum users to add vyos servers?
-
-### firewall module
-* change firewall rules order - *todo*
-
-### config module
-* add new VyoS instances test connection while adding - *todo*
-* add new VyoS instances test connection all servers crontab - *todo*
-
-### known issues
-* cannot edit firewall rules number using current API
-
-# dockerhub
+## by dockerhub
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 ```
 docker pull robertoberto/vycontrol
 ```
 
-# docker composer
+## by docker composer
 
 Right now we are using db.sqlite3, but I used composer so we can change to mySQL if needed.
 
@@ -60,22 +47,22 @@ docker-compose build
 docker-compose  up
 ```
 
-# manual install instructions
+## manual install instructions
 
-## setup virtual env and pip requirements
+### setup virtual env and pip requirements
 ```
 virtualenv env
 source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
-## setup initial database
+### setup initial database
 ```
 cd vycenter
 python3 manage.py migrate
 ```
 
-## run webserver
+### run webserver
 ```
 python3 manage.py runserver
 ```
@@ -90,10 +77,12 @@ http://127.0.0.1:8000/
 * click on *List Instances*
 * click on *Test Connection*
 
+
 # references
 * https://docs.vyos.io/en/latest/appendix/http-api.html
 * https://forum.vyos.io/t/http-api-for-show/3922
 * https://blog.vyos.io/vyos-rolling-release-has-got-an-http-api 
+
 
 # screenshoots (keep in mind we're in early alpha stages)
 
