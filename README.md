@@ -30,7 +30,11 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.06.01 - save/commit/load features and ssh / logins 
 * 20.06.02 - vlans / interfaces deep configuration
 * 20.06.03 - improve permissions to allow users inside same group to have different roles
-* 20.06.04 - OSPF
+* 20.06.04-LTS - OSPF
+
+## lifecycle
+* initially LTS (Long Term Support) versions will be supported by 6 months just to bugfixes
+* in the future we will extend the time span of LTS versions
 
 
 # installation 
