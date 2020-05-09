@@ -94,9 +94,8 @@ def api_set(hostname, cmd):
 def get_hostname_prefered(request):
     hostname = None
 
-    #if request.session.get('hostname', None) != None:
-    #   hostname = request.session.get('hostname', None)
-    hostname = '179.127.12.142'
+    if request.session.get('hostname', None) != None:
+       hostname = request.session.get('hostname', None)
         
 
     if hostname == None:
