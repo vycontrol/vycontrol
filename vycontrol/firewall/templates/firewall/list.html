@@ -26,12 +26,14 @@
     {% for key, value in firewall_all.items %}
         
         {% for ifkey, ifvalue in value.items %}
+            {% if ifkey != "address-group" and ifkey != "network-group" %}
             <tr>
                 <td><a href="{% url 'firewall:show' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.description }}</td>
                 <td>{{ ifvalue.default_action }}</td>
                 <td><a href="{% url 'firewall:firewall-remove' ifkey %}">remove</a> | <a href="{% url 'firewall:firewall-edit' ifkey %}">edit</a></td>
             </tr>
+            {% endif %}
         {% endfor %}
         
     {% endfor %}

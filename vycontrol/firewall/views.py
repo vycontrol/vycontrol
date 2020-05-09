@@ -6,15 +6,16 @@ from django.conf import settings
 from django.urls import reverse
 
 
-
 import vyos
+from performance import timer
+from perms import is_authenticated
 
 
 
+@timer
+@is_authenticated
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -39,10 +40,8 @@ def index(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
+@is_authenticated
 def create(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -75,10 +74,8 @@ def create(request):
 
 
 
-
+@is_authenticated
 def addrule(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -126,12 +123,7 @@ def addrule(request, firewall_name):
     return HttpResponse(template.render(context, request))
 
 
-
-
-
-
-
-
+@is_authenticated
 def firewall_removerule(request, firewall_name, firewall_rulenumber):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -144,11 +136,7 @@ def firewall_removerule(request, firewall_name, firewall_rulenumber):
 
     return redirect('firewall:show', firewall_name)
 
-
-
-
-
-
+@is_authenticated
 def editrule(request, firewall_name, firewall_rulenumber):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -200,13 +188,8 @@ def editrule(request, firewall_name, firewall_rulenumber):
     return HttpResponse(template.render(context, request))
 
 
-
-
-
-
+@is_authenticated
 def show(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -225,10 +208,8 @@ def show(request, firewall_name):
     }   
     return HttpResponse(template.render(context, request))
 
-
+@is_authenticated
 def firewall_networkgroup_list(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
@@ -241,15 +222,9 @@ def firewall_networkgroup_list(request):
 
 
 
-
-
+@is_authenticated
 def firewall_networkgroup_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
     hostname_default = vyos.get_hostname_prefered(request)
-
-
 
     if request.POST.get('name', None) != None and request.POST.get('network', None) != None:
         vyos.set_firewall_networkgroup_add(hostname_default, request.POST.get('name'), request.POST.get('network'))
@@ -267,11 +242,8 @@ def firewall_networkgroup_add(request):
     return HttpResponse(template.render(context, request))
 
 
-
-
+@is_authenticated
 def firewall_addressgroup_list(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
@@ -283,10 +255,8 @@ def firewall_addressgroup_list(request):
     return HttpResponse(template.render(context, request))
 
 
-
+@is_authenticated
 def firewall_addressgroup_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     hostname_default = vyos.get_hostname_prefered(request)
 
@@ -312,25 +282,13 @@ def firewall_addressgroup_add(request):
     }   
     return HttpResponse(template.render(context, request))
 
+#@is_authenticated
+#def firewall_networkbook(request):
+#    return redirect('firewall:firewall-list')
 
 
-
-def firewall_networkbook(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
-    return redirect('firewall:firewall-list')
-
-
-
-
-
-
-
-def firewall_config(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+@is_authenticated
+def firewall_config(request, firewall_name):  
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -349,11 +307,9 @@ def firewall_config(request, firewall_name):
     return HttpResponse(template.render(context, request))
 
 
-
+@is_authenticated
 def firewall_global(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+   
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -372,11 +328,9 @@ def firewall_global(request):
     return redirect('firewall:firewall-list')
 
 
-
+@is_authenticated
 def firewall_remove(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -385,10 +339,9 @@ def firewall_remove(request, firewall_name):
     
     return redirect('firewall:firewall-list')
 
+@is_authenticated
 def firewall_edit(request, firewall_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+   
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)

@@ -5,7 +5,6 @@ import sys
 
 from config.models import Instance
 
-
 def repvar(s):
     return s.replace("-", "_")
 

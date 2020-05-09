@@ -8,6 +8,8 @@ from django.template.defaultfilters import register
 
 
 import vyos
+from perms import is_authenticated
+
 
 from config.models import Instance
 
@@ -18,11 +20,9 @@ import pprint
 def get_item(dictionary, key):
     return dictionary.get(key)
 
-    
+@is_authenticated    
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall()
     firewall_all = vyos.get_firewall_all(hostname_default)
@@ -107,9 +107,8 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
+@is_authenticated    
 def interfaceshow(request, interface_type, interface_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -129,9 +128,8 @@ def interfaceshow(request, interface_type, interface_name):
     return HttpResponse(template.render(context, request))
 
 
+@is_authenticated    
 def interfacefirewall(request, interface_type, interface_name):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
 

@@ -6,14 +6,12 @@ from django.conf import settings
 from django.urls import reverse
 
 import vyos
+from perms import is_authenticated
 from filters.vycontrol_filters import routeunpack
 
 
-
+@is_authenticated    
 def static_list(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     static_dict = vyos.get_route_static(hostname_default)
@@ -33,10 +31,8 @@ def static_list(request):
     return HttpResponse(template.render(context, request))
 
 
-
+@is_authenticated    
 def static_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -64,10 +60,8 @@ def static_add(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
+@is_authenticated    
 def static_remove(request, route, nexthop):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)

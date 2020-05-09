@@ -17,6 +17,7 @@ from django.contrib.auth.models import Group
 from django.template.defaultfilters import register
 
 
+from perms import is_authenticated
 
 
 @register.filter
@@ -24,11 +25,9 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
-
+@is_authenticated
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     for instance in all_instances:
@@ -47,10 +46,9 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+@is_authenticated
 def users_list(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -128,12 +126,8 @@ def users_list(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
+@is_authenticated
 def groups_list(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-
-
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -150,11 +144,8 @@ def groups_list(request):
     return HttpResponse(template.render(context, request))
 
 
-
-
+@is_authenticated
 def instances(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -181,9 +172,8 @@ def instances(request):
     }   
     return HttpResponse(template.render(context, request))
 
+@is_authenticated
 def instance_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -213,10 +203,8 @@ def instance_add(request):
     return HttpResponse(template.render(context, request))
 
 
-
+@is_authenticated
 def group_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -244,10 +232,8 @@ def group_add(request):
     }   
     return HttpResponse(template.render(context, request)) 
 
-    
+@is_authenticated    
 def user_add(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -305,11 +291,9 @@ def user_add(request):
     return HttpResponse(template.render(context, request))    
 
 
-
+@is_authenticated
 def instance_conntry(request, hostname):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
@@ -330,9 +314,8 @@ def instance_conntry(request, hostname):
     return HttpResponse(template.render(context, request))
 
 # get default instance or set default instance 
+@is_authenticated
 def instance_change(request, hostname = False):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
 
@@ -363,10 +346,8 @@ def instance_change(request, hostname = False):
     return redirect('config:instances')    
 
 
-
+@is_authenticated
 def instance_remove(request, hostname):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
         
     all_instances = vyos.instance_getall()
 
@@ -380,11 +361,9 @@ def instance_remove(request, hostname):
 
     return redirect('config:instances')
 
-
+@is_authenticated
 def instance_changegroup(request, hostname):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-        
+       
     all_instances = vyos.instance_getall()
 
     group_name = request.POST.get('group')
