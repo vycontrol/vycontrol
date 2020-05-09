@@ -8,6 +8,7 @@ from django.urls import reverse
 import vyos
 from perms import is_authenticated
 from filters.vycontrol_filters import routeunpack
+import perms
 
 
 @is_authenticated    
@@ -15,6 +16,8 @@ def static_list(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     static_dict = vyos.get_route_static(hostname_default)
+    is_superuser = perms.get_is_superuser(request.user)
+
     static_list = []
     for s in static_dict['route']:
         static_list.append({
@@ -28,6 +31,7 @@ def static_list(request):
         'hostname_default': hostname_default,
         'static_list' : static_list,
         'username': request.user,
+        'is_superuser' : is_superuser,     
     }   
     return HttpResponse(template.render(context, request))
 
@@ -38,7 +42,7 @@ def static_add(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     static_list = vyos.get_route_static(hostname_default)
-
+    is_superuser = perms.get_is_superuser(request.user)
 
 
     error_message = None
@@ -59,6 +63,7 @@ def static_add(request):
         'static_list' : static_list,
         'error_message' : error_message,
         'username': request.user,
+        'is_superuser' : is_superuser,     
     }   
     return HttpResponse(template.render(context, request))
 

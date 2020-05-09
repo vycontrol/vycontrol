@@ -9,6 +9,7 @@ from django.urls import reverse
 import vyos
 from performance import timer
 from perms import is_authenticated
+import perms
 
 
 
@@ -17,6 +18,7 @@ def index(request):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
 
 
@@ -36,6 +38,7 @@ def index(request):
         'hostname_default': hostname_default,
         'firewall_all':  firewall_all,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -45,6 +48,7 @@ def create(request):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
     if 'name' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", request.POST['name']]}
@@ -69,6 +73,7 @@ def create(request):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -80,6 +85,7 @@ def addrule(request, firewall_name):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     
@@ -120,6 +126,7 @@ def addrule(request, firewall_name):
         'firewall':  firewall,
         'firewall_name': firewall_name,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }  
     return HttpResponse(template.render(context, request))
 
@@ -142,6 +149,7 @@ def editrule(request, firewall_name, firewall_rulenumber):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     firewall_rule = vyos.get_firewall_rule(hostname_default, firewall_name, firewall_rulenumber)
@@ -186,6 +194,7 @@ def editrule(request, firewall_name, firewall_rulenumber):
         'firewall_rule': firewall_rule,
         'firewall_rulenumber' : firewall_rulenumber,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }  
     return HttpResponse(template.render(context, request))
 
@@ -196,6 +205,7 @@ def show(request, firewall_name):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     
@@ -208,6 +218,7 @@ def show(request, firewall_name):
         'firewall':  firewall,
         'firewall_name': firewall_name,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -217,7 +228,7 @@ def firewall_networkgroup_list(request):
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
     all_instances = vyos.instance_getall_by_group(request)
-
+    is_superuser = perms.get_is_superuser(request.user)
 
     template = loader.get_template('firewall/networkgroup-list.html')
     context = { 
@@ -225,6 +236,7 @@ def firewall_networkgroup_list(request):
         'hostname_default': hostname_default,
         'username': request.user, 
         'instances': all_instances,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -234,7 +246,7 @@ def firewall_networkgroup_list(request):
 def firewall_networkgroup_add(request):
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall_by_group(request)
-
+    is_superuser = perms.get_is_superuser(request.user)
 
     if request.POST.get('name', None) != None and request.POST.get('network', None) != None:
         vyos.set_firewall_networkgroup_add(hostname_default, request.POST.get('name'), request.POST.get('network'))
@@ -251,6 +263,7 @@ def firewall_networkgroup_add(request):
         'hostname_default': hostname_default,
         'username': request.user,        
         'instances': all_instances,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -261,7 +274,7 @@ def firewall_addressgroup_list(request):
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
     all_instances = vyos.instance_getall_by_group(request)
-
+    is_superuser = perms.get_is_superuser(request.user)
 
     template = loader.get_template('firewall/addressgroup-list.html')
     context = { 
@@ -269,6 +282,7 @@ def firewall_addressgroup_list(request):
         'hostname_default': hostname_default,
         'username': request.user,        
         'instances': all_instances,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -278,7 +292,7 @@ def firewall_addressgroup_add(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall_by_group(request)
-
+    is_superuser = perms.get_is_superuser(request.user)
 
     if request.POST.get('addresstype', None) == "single" and request.POST.get('name', None) != None and request.POST.get('address', None) != None:
         vyos.set_firewall_addressgroup_add(hostname_default, request.POST.get('name'), request.POST.get('address'))
@@ -302,6 +316,7 @@ def firewall_addressgroup_add(request):
         'hostname_default': hostname_default,
         'username': request.user,        
         'instances': all_instances,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -315,7 +330,8 @@ def firewall_config(request, firewall_name):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
-
+    is_superuser = perms.get_is_superuser(request.user)
+    
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     
 
@@ -327,6 +343,7 @@ def firewall_config(request, firewall_name):
         'firewall':  firewall,
         'firewall_name': firewall_name,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -371,6 +388,7 @@ def firewall_edit(request, firewall_name):
     hostname_default = vyos.get_hostname_prefered(request)
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     firewall['defaultaction'] = firewall['default-action']
+    is_superuser = perms.get_is_superuser(request.user)
 
     changed = False
     if 'description' in request.POST:
@@ -396,5 +414,6 @@ def firewall_edit(request, firewall_name):
         'firewall_name': firewall_name,
         'firewall': firewall,
         'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))

@@ -9,6 +9,7 @@ from django.template.defaultfilters import register
 
 import vyos
 from perms import is_authenticated
+import perms
 
 
 from config.models import Instance
@@ -27,6 +28,7 @@ def index(request):
     all_instances = vyos.instance_getall()
     firewall_all = vyos.get_firewall_all(hostname_default)
     interfaces = vyos.get_interfaces(hostname_default)
+    is_superuser = perms.get_is_superuser(request.user)
 
     interface_firewall_in = {}
     interface_firewall_out = {}
@@ -104,7 +106,8 @@ def index(request):
         'firewall_all' : firewall_all,
         'interface_firewall_in' : interface_firewall_in,
         'interface_firewall_out' : interface_firewall_out,
-        'username': request.user,        
+        'username': request.user,   
+        'is_superuser' : is_superuser,     
     }
     return HttpResponse(template.render(context, request))
 
@@ -115,7 +118,8 @@ def interfaceshow(request, interface_type, interface_name):
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_all = vyos.get_firewall_all(hostname_default)   
     interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
-    
+    is_superuser = perms.get_is_superuser(request.user)
+  
     template = loader.get_template('interface/show.html')
     context = { 
         'interface': interface,
@@ -124,7 +128,8 @@ def interfaceshow(request, interface_type, interface_name):
         'interface_name' : interface_name,
         'hostname_default': hostname_default,
         'firewall_all' : firewall_all,
-        'username': request.user,                       
+        'username': request.user,        
+        'is_superuser' : is_superuser,               
     }   
     return HttpResponse(template.render(context, request))
 
@@ -133,6 +138,7 @@ def interfaceshow(request, interface_type, interface_name):
 def interfacefirewall(request, interface_type, interface_name):
         
     all_instances = vyos.instance_getall()
+    is_superuser = perms.get_is_superuser(request.user)
 
     hostname_default = vyos.get_hostname_prefered(request)
     
@@ -145,7 +151,8 @@ def interfacefirewall(request, interface_type, interface_name):
         'hostname_default': hostname_default,
         'interface_type' : interface_type,
         'interface_name' : interface_name,        
-        'username': request.user,        
+        'username': request.user,      
+        'is_superuser' : is_superuser,  
     }   
     return HttpResponse(template.render(context, request))
 
