@@ -104,6 +104,7 @@ def index(request):
         'firewall_all' : firewall_all,
         'interface_firewall_in' : interface_firewall_in,
         'interface_firewall_out' : interface_firewall_out,
+        'username': request.user,        
     }
     return HttpResponse(template.render(context, request))
 
@@ -123,7 +124,7 @@ def interfaceshow(request, interface_type, interface_name):
         'interface_name' : interface_name,
         'hostname_default': hostname_default,
         'firewall_all' : firewall_all,
-                
+        'username': request.user,                       
     }   
     return HttpResponse(template.render(context, request))
 
@@ -144,6 +145,7 @@ def interfacefirewall(request, interface_type, interface_name):
         'hostname_default': hostname_default,
         'interface_type' : interface_type,
         'interface_name' : interface_name,        
+        'username': request.user,        
     }   
     return HttpResponse(template.render(context, request))
 

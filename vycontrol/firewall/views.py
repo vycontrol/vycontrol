@@ -68,6 +68,7 @@ def create(request):
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -118,6 +119,7 @@ def addrule(request, firewall_name):
         'hostname_default': hostname_default,
         'firewall':  firewall,
         'firewall_name': firewall_name,
+        'username': request.user,
     }  
     return HttpResponse(template.render(context, request))
 
@@ -182,7 +184,8 @@ def editrule(request, firewall_name, firewall_rulenumber):
         'firewall':  firewall,
         'firewall_name': firewall_name,
         'firewall_rule': firewall_rule,
-        'firewall_rulenumber' : firewall_rulenumber
+        'firewall_rulenumber' : firewall_rulenumber,
+        'username': request.user,
     }  
     return HttpResponse(template.render(context, request))
 
@@ -204,6 +207,7 @@ def show(request, firewall_name):
         'hostname_default': hostname_default,
         'firewall':  firewall,
         'firewall_name': firewall_name,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -212,10 +216,15 @@ def firewall_networkgroup_list(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
+    all_instances = vyos.instance_getall_by_group(request)
+
 
     template = loader.get_template('firewall/networkgroup-list.html')
     context = { 
         'firewall_networkgroup': firewall_networkgroup,
+        'hostname_default': hostname_default,
+        'username': request.user, 
+        'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -224,6 +233,8 @@ def firewall_networkgroup_list(request):
 @is_authenticated
 def firewall_networkgroup_add(request):
     hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = vyos.instance_getall_by_group(request)
+
 
     if request.POST.get('name', None) != None and request.POST.get('network', None) != None:
         vyos.set_firewall_networkgroup_add(hostname_default, request.POST.get('name'), request.POST.get('network'))
@@ -237,6 +248,9 @@ def firewall_networkgroup_add(request):
 
     template = loader.get_template('firewall/networkgroup-add.html')
     context = { 
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -246,10 +260,15 @@ def firewall_addressgroup_list(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
     firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
+    all_instances = vyos.instance_getall_by_group(request)
+
 
     template = loader.get_template('firewall/addressgroup-list.html')
     context = { 
         'firewall_addressgroup': firewall_addressgroup,
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -258,6 +277,8 @@ def firewall_addressgroup_list(request):
 def firewall_addressgroup_add(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = vyos.instance_getall_by_group(request)
+
 
     if request.POST.get('addresstype', None) == "single" and request.POST.get('name', None) != None and request.POST.get('address', None) != None:
         vyos.set_firewall_addressgroup_add(hostname_default, request.POST.get('name'), request.POST.get('address'))
@@ -278,6 +299,9 @@ def firewall_addressgroup_add(request):
 
     template = loader.get_template('firewall/addressgroup-add.html')
     context = { 
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -302,6 +326,7 @@ def firewall_config(request, firewall_name):
         'hostname_default': hostname_default,
         'firewall':  firewall,
         'firewall_name': firewall_name,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -369,7 +394,7 @@ def firewall_edit(request, firewall_name):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'firewall_name': firewall_name,
-        'firewall': firewall
-
+        'firewall': firewall,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
