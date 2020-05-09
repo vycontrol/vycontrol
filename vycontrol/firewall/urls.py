@@ -14,11 +14,16 @@ urlpatterns = [
     path('firewall-edit/<str:firewall_name>', views.firewall_edit, name='firewall-edit'),
     path('firewall-config/<str:firewall_name>', views.firewall_config, name='firewall-config'),
     path('firewall-global', views.firewall_global, name='firewall-global'),
+
     path('firewall-addressgroup-list', views.firewall_addressgroup_list, name='firewall-addressgroup-list'),
     path('firewall-addressgroup-add', views.firewall_addressgroup_add, name='firewall-addressgroup-add'),
+    path('firewall-addressgroup-del/<str:groupname>', views.firewall_addressgroup_del, name='firewall-addressgroup-del'),
+    path('firewall-addressgroup-desc/<str:groupname>', views.firewall_addressgroup_desc, name='firewall-addressgroup-desc'),
 
     path('firewall-networkgroup-list', views.firewall_networkgroup_list, name='firewall-networkgroup-list'),
     path('firewall-networkgroup-add', views.firewall_networkgroup_add, name='firewall-networkgroup-add'),
+    path('firewall-networkgroup-del/<str:groupname>', views.firewall_networkgroup_del, name='firewall-networkgroup-del'),
+    path('firewall-networkgroup-desc/<str:groupname>', views.firewall_networkgroup_desc, name='firewall-networkgroup-desc'),    
 
 
 

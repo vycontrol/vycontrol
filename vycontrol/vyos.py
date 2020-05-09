@@ -19,8 +19,6 @@ def get_hostname_prefered(*args, **kwargs):
 def instance_getall_by_group(*args, **kwargs):
     return perms.instance_getall_by_group(*args, **kwargs)
 
-
-
 def repvar(s):
     return s.replace("-", "_")
 
@@ -134,10 +132,6 @@ def conntry(hostname):
     pprint.pprint(resp.json())
 
     return False
-
-
-
-
 
 
 def get_firewall_all(hostname):
@@ -257,6 +251,19 @@ def set_firewall_addressgroup_add(hostname, group_name, address):
 
     result1 = api_set(hostname, cmd)
     return result1 
+
+def set_firewall_addressgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'address-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_networkgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'network-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+
+
 
 def set_firewall_addressgroup_rangeadd(hostname, group_name, address_start, address_end):
     address = str(address_start) + "-" + str(address_end)

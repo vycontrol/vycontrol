@@ -269,6 +269,18 @@ def firewall_networkgroup_add(request):
 
 
 @is_authenticated
+def firewall_networkgroup_del(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    vyos.set_firewall_networkgroup_del(hostname_default, groupname)
+    return redirect('firewall:firewall-networkgroup-list')
+
+@is_authenticated
+def firewall_networkgroup_desc(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    return redirect('firewall:firewall-networkgroup-list')
+
+
+@is_authenticated
 def firewall_addressgroup_list(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
@@ -320,9 +332,19 @@ def firewall_addressgroup_add(request):
     }   
     return HttpResponse(template.render(context, request))
 
-#@is_authenticated
-#def firewall_networkbook(request):
-#    return redirect('firewall:firewall-list')
+@is_authenticated
+def firewall_addressgroup_del(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    vyos.set_firewall_addressgroup_del(hostname_default, groupname)
+    return redirect('firewall:firewall-addressgroup-list')
+
+@is_authenticated
+def firewall_addressgroup_desc(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    return redirect('firewall:firewall-addressgroup-list')
+
+
 
 
 @is_authenticated
