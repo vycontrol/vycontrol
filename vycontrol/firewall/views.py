@@ -274,10 +274,7 @@ def firewall_networkgroup_del(request, groupname):
     vyos.set_firewall_networkgroup_del(hostname_default, groupname)
     return redirect('firewall:firewall-networkgroup-list')
 
-@is_authenticated
-def firewall_networkgroup_desc(request, groupname):
-    hostname_default = vyos.get_hostname_prefered(request)
-    return redirect('firewall:firewall-networkgroup-list')
+
 
 
 @is_authenticated
@@ -341,9 +338,48 @@ def firewall_addressgroup_del(request, groupname):
 @is_authenticated
 def firewall_addressgroup_desc(request, groupname):
     hostname_default = vyos.get_hostname_prefered(request)
+    firewall_addressgroup = vyos.get_firewall_addressgroup_one(hostname_default, groupname)
+    all_instances = vyos.instance_getall_by_group(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
-    return redirect('firewall:firewall-addressgroup-list')
+    if request.POST.get('description', None) != None:
+        vyos.set_firewall_addressgroup_description(hostname_default, groupname, request.POST.get('description'))
+        return redirect('firewall:firewall-addressgroup-list')
 
+
+    template = loader.get_template('firewall/addressgroup-desc.html')
+    context = { 
+        'firewall_addressgroup': firewall_addressgroup,
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
+        'is_superuser' : is_superuser,
+        'groupname': groupname,
+    }   
+    return HttpResponse(template.render(context, request))
+        
+
+@is_authenticated
+def firewall_networkgroup_desc(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    firewall_networkgroup = vyos.get_firewall_networkgroup_one(hostname_default, groupname)
+    all_instances = vyos.instance_getall_by_group(request)
+    is_superuser = perms.get_is_superuser(request.user)
+
+    if request.POST.get('description', None) != None:
+        vyos.set_firewall_networkgroup_description(hostname_default, groupname, request.POST.get('description'))
+        return redirect('firewall:firewall-networkgroup-list')
+
+    template = loader.get_template('firewall/networkgroup-desc.html')
+    context = { 
+        'firewall_networkgroup': firewall_networkgroup,
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
+        'is_superuser' : is_superuser,
+        'groupname': groupname,
+    }   
+    return HttpResponse(template.render(context, request))
 
 
 

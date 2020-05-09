@@ -233,17 +233,38 @@ def set_firewall_allping_disable(hostname):
     result1 = api_set(hostname, cmd)
     return result1  
 
+
 def get_firewall_addressgroup(hostname):
     cmd = {"op": "showConfig", "path": ["firewall","group","address-group"]}
-
     result1 = api_get(hostname, cmd)
-    return result1
+    return result1    
 
 def get_firewall_networkgroup(hostname):
     cmd = {"op": "showConfig", "path": ["firewall","group","network-group"]}
-
     result1 = api_get(hostname, cmd)
     return result1
+
+def get_firewall_addressgroup_one(hostname, group_name):
+    cmd = {"op": "showConfig", "path": ["firewall","group","address-group", group_name]}
+    result1 = api_get(hostname, cmd)
+    return result1
+
+def get_firewall_networkgroup_one(hostname, group_name):
+    cmd = {"op": "showConfig", "path": ["firewall","group","network-group", group_name]}
+    result1 = api_get(hostname, cmd)
+    return result1
+
+
+def set_firewall_networkgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'network-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_addressgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'address-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1     
+
 
 
 def set_firewall_addressgroup_add(hostname, group_name, address):

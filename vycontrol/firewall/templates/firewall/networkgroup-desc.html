@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header_title %}Edit Addressgroup{% endblock %}
+{% block section_title %}Edit Addressgroup{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+{{ firewall_all }}
+{{ firewall_networkgroup }}
+{% endblock %}
+
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a>     | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> 
+</p>
+<p class="submenu2">
+    <a href="{% url 'firewall:firewall-networkgroup-add' %}">Add network Group</a>
+</p>
+
+<form action="{% url 'firewall:firewall-networkgroup-desc' groupname %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">description</label><br>
+        <input type="text" name="description" id="description" value="{{ firewall_networkgroup.description }}" size="60">
+    </p>    
+    
+    
+    <input type="submit" value="Edit Group">
+    </form>
+
+    
+
+
+{% endblock %}
+
+
+
