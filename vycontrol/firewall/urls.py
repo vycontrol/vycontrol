@@ -17,7 +17,11 @@ urlpatterns = [
     path('firewall-addressgroup-list', views.firewall_addressgroup_list, name='firewall-addressgroup-list'),
     path('firewall-addressgroup-add', views.firewall_addressgroup_add, name='firewall-addressgroup-add'),
 
-    path('firewall-networkbook', views.firewall_networkbook, name='firewall-networkbook'),
+    path('firewall-networkgroup-list', views.firewall_networkgroup_list, name='firewall-networkgroup-list'),
+    path('firewall-networkgroup-add', views.firewall_networkgroup_add, name='firewall-networkgroup-add'),
+
+
+
 
     path('addrule/<str:firewall_name>', views.addrule, name='addrule'),
     path('editrule/<str:firewall_name>/<str:firewall_rulenumber>', views.editrule, name='editrule'),

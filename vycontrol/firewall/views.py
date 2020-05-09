@@ -226,6 +226,47 @@ def show(request, firewall_name):
     return HttpResponse(template.render(context, request))
 
 
+def firewall_networkgroup_list(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    hostname_default = vyos.get_hostname_prefered(request)
+    firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
+
+    template = loader.get_template('firewall/networkgroup-list.html')
+    context = { 
+        'firewall_networkgroup': firewall_networkgroup,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+
+
+def firewall_networkgroup_add(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    hostname_default = vyos.get_hostname_prefered(request)
+
+
+
+    if request.POST.get('name', None) != None and request.POST.get('network', None) != None:
+        vyos.set_firewall_networkgroup_add(hostname_default, request.POST.get('name'), request.POST.get('network'))
+
+        if request.POST.get('description', None) != None:
+            vyos.set_firewall_networkgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+
+        return redirect('firewall:firewall-networkgroup-list')
+
+
+
+    template = loader.get_template('firewall/networkgroup-add.html')
+    context = { 
+    }   
+    return HttpResponse(template.render(context, request))
+
+
 
 
 def firewall_addressgroup_list(request):
@@ -251,9 +292,17 @@ def firewall_addressgroup_add(request):
 
     if request.POST.get('addresstype', None) == "single" and request.POST.get('name', None) != None and request.POST.get('address', None) != None:
         vyos.set_firewall_addressgroup_add(hostname_default, request.POST.get('name'), request.POST.get('address'))
+
+        if request.POST.get('description', None) != None:
+            vyos.set_firewall_addressgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+
         return redirect('firewall:firewall-addressgroup-list')
     elif request.POST.get('addresstype', None) == "range" and request.POST.get('name', None) != None and request.POST.get('address-start', None) != None and request.POST.get('address-end', None) != None:
         vyos.set_firewall_addressgroup_rangeadd(hostname_default, request.POST.get('name'), request.POST.get('address-start'), request.POST.get('address-end'))
+
+        if request.POST.get('description', None) != None:
+            vyos.set_firewall_addressgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+
         return redirect('firewall:firewall-addressgroup-list')
 
 

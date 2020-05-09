@@ -4,7 +4,7 @@
 {% block section_title %}Firewall Group List{% endblock %}
 
 {% block debug %}
-{{ firewall_addressgroup }}
+{{ firewall_networkgroup }}
 {% endblock %}
 
 {% block content %}
@@ -12,22 +12,22 @@
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a>   
 </p>
 <p class="submenu2">
-    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Add Address Group</a>
+    <a href="{% url 'firewall:firewall-networkgroup-add' %}">Add network Group</a>
 </p>
 
 
-{% if firewall_addressgroup %}
+{% if firewall_networkgroup %}
     <table border="1" width="100%">
-        <tr><th width="25%">name</th><th width="25%">address</th><th width="50%">description</th></tr>
+        <tr><th width="25%">name</th><th width="25%">network</th><th width="50%">description</th></tr>
 
-    {% for key, value in firewall_addressgroup.items %}       
+    {% for key, value in firewall_networkgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
                 <td>{{ ifkey }}</a></td>
-                <td>{{ ifvalue.address }}</td>
+                <td>{{ ifvalue.network }}</td>
                 <td>{{ ifvalue.description }}</td>
             </tr>
         {% endfor %}

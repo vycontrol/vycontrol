@@ -13,7 +13,7 @@
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
-    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>
 </p>
 <p class="submenu2"></p>
 
@@ -23,8 +23,14 @@
 
 
     <p>
-    <label for="name">group name:</label><br>
-    <input type="input" name="name" id="name" value="" size="30" />
+        <label for="name">group name:</label><br>
+        <input type="input" name="name" id="name" value="" size="30" />
+    </p>
+
+
+    <p>
+        <label for="name">description:</label><br>
+        <input type="input" name="description" id="description" value="" size="100" />
     </p>
 
     <p>

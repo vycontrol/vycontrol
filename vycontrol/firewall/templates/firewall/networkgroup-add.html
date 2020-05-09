@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Add New Address Group{% endblock %}
+{% block section_title %}Firewall Add New Address Group{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>
+</p>
+<p class="submenu2"></p>
+
+
+<form action="{% url 'firewall:firewall-networkgroup-add' %}" method="post">
+    {% csrf_token %}
+
+
+    <p>
+    <label for="name">group name:</label><br>
+    <input type="input" name="name" id="name" value="" size="30" />
+    </p>
+
+    <p>
+        <label for="name">description:</label><br>
+        <input type="input" name="description" id="description" value="" size="100" />
+    </p>
+    
+    <p>
+        <label for="network">network (CIDR notation):</label><br>
+        <input type="input" name="network" value=""/> (eg 10.10.10.0/24)
+    </p>
+
+    <input type="submit" value="Add Group">
+</form>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
