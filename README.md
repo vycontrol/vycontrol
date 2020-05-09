@@ -19,18 +19,24 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 
 # roadmap 
 
-## active develpment version
-* 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes - software work as a proof of concept **almost done**
+## current version
+* 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-* 20.05.02 - working firewall without zones bases firewall - software work for whom want firewall without zones
-* 20.05.03 - zone based firewall
-* 20.05.04 - IPSEC features
-* 20.05.05 - better html css - someone help please :-)
-* 20.06.01 - save/commit/load features and ssh / logins 
-* 20.06.02 - vlans / interfaces deep configuration
-* 20.06.03 - improve permissions to allow users inside same group to have different roles
-* **20.06.04-LTS** - OSPF features 
+* 20.05.02 - working firewall without zones bases firewall
+* 20.05.07 - vlans / interfaces deep configuration
+* 20.05.10 - zone based firewall
+* 20.06.01 - important features group c
+* 20.06.03 - improve permissions
+* 20.06.09 - save/commit/load features and ssh / logins
+* 20.06.10 - lost password
+* 20.06.13 - ipsec features
+* 20.06.15 - layout
+* **20.06.20-LTS** - OSPF features
+* 20.08.01 - cool features
+* 20.12.10 - ipv6 milestone
+* 20.12.20 - depend on a third party
+
 
 ## lifecycle
 * initially LTS (Long Term Support) versions will be supported by 6 months just to bugfixes
