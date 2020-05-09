@@ -32,7 +32,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'vycenter'
 
 urlpatterns = [
-    path('', include('accounts.urls')),
+    path('', include('accounts.urls'), name="main-page"),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
     #path('', views.vycenter_login, name='vycenter-login'),

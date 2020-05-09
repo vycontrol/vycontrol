@@ -8,7 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "main.css" %}?16">
+    <link rel="stylesheet" href="{% static "main.css" %}?17">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <title>{% block header_title %}{% endblock %} - VyControl</title>
@@ -39,7 +39,7 @@
               </select>
             
 
-              <span id="vycenter-config-menu"><a href="{% url 'registration-logout' %}">Logout</a></span>
+              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycenter-config-menu"> <a href="{% url 'registration-logout' %}">Logout</a></span>
 
 
           </p>
@@ -107,12 +107,12 @@
 
     <h2>Manage VyControl</h2>
     <ul>
-    <li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>
+      {% if is_superuser %}<li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>{% endif %}
     <li><a href="{% url 'config:instances' %}">List instances</a></li>
-    <li><a href="{% url 'config:users-list' %}">List users</a></li>
-    <li><a href="{% url 'config:user-add' %}">Add new user</a></li>
-    <li><a href="{% url 'config:groups-list' %}">List groups</a></li>
-    <li><a href="{% url 'config:group-add' %}">Add new group</a></li>
+    {% if is_superuser %}<li><a href="{% url 'config:users-list' %}">List users</a></li>{% endif %}
+    {% if is_superuser %}<li><a href="{% url 'config:user-add' %}">Add new user</a></li>{% endif %}
+    {% if is_superuser %}<li><a href="{% url 'config:groups-list' %}">List groups</a></li>{% endif %}
+    {% if is_superuser %}<li><a href="{% url 'config:group-add' %}">Add new group</a></li>{% endif %}
 
   </ul>
 

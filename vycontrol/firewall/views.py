@@ -12,12 +12,10 @@ from perms import is_authenticated
 
 
 
-@timer
 @is_authenticated
 def index(request):
-       
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
 
@@ -37,6 +35,7 @@ def index(request):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'firewall_all':  firewall_all,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 

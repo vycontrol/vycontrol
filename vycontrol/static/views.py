@@ -26,7 +26,8 @@ def static_list(request):
     context = { 
         'instances': all_instances,
         'hostname_default': hostname_default,
-        'static_list' : static_list
+        'static_list' : static_list,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -57,6 +58,7 @@ def static_add(request):
         'hostname_default': hostname_default,
         'static_list' : static_list,
         'error_message' : error_message,
+        'username': request.user,
     }   
     return HttpResponse(template.render(context, request))
 

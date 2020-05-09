@@ -2,6 +2,7 @@
 
 {% block header_title %}List instances{% endblock %}
 {% block section_title %}List instances{% endblock %}
+{% block username %}{{ username }}{% endblock %}
 
 {% block debug %}
     {% for instance in instances %}
@@ -23,7 +24,7 @@
         <th>test connection</th>
         <th>default</th>
         <th>group access</th>
-        <th>remove</th>
+        {% if is_superuser %}<th>remove</th>{% endif %}
     </tr>
 
     {% for instance in instances %}
@@ -35,6 +36,7 @@
         <td>{{ instance.https }}</td>
         <td><a href="{% url 'config:instance-conntry' instance.hostname %}">test</a></td>
         <td>{% if instance.main == True %}default{% else %}<a href="{% url 'config:instance-change' instance.hostname %}">set default</a>{% endif %}</td>
+        {%if is_superuser %}
         <td><form action="{% url 'config:instance-changegroup' instance.hostname %}" method="post">
             {% csrf_token %}
 
@@ -47,7 +49,12 @@
             </select>
         </form>
         </td>
-        <td>{% if instance.main == True %}-{% else %}<a href="{% url 'config:instance-remove' instance.hostname %}">remove</a>{% endif %}</td>
+        {% else %}
+        <td>{{ instance.group }}</td>
+        {% endif %}
+        {% if is_superuser %}
+            <td>{% if instance.main == True %}-{% else %}<a href="{% url 'config:instance-remove' instance.hostname %}">remove</a>{% endif %}</td>
+        {% endif %}
     </tr>
 
     {% endfor %}

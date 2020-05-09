@@ -7,58 +7,17 @@ from config.models import Instance
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 
-def get_hostname_prefered(request):
-    # get username    
-    username = request.user
-    hostname = None
 
-    # get usergroup - VyControl groups is one to one
-    try:
-        usergroup = Group.objects.get(user=username)
-    except Group.DoesNotExist:
-        usergroup = None
+import perms
 
-    # check if username is admin
-    useradmin = User.objects.filter(
-        username=username,
-        is_active=True,
-        is_superuser=True
-    )
-    is_admin = False
-    if useradmin.count() > 0:
-        is_admin = True
+def instance_getall(*args, **kwargs):
+    return perms.instance_getall(*args, **kwargs)
 
-    # get session hostname and validate if group has permission
-    if request.session.get('hostname', None) != None and usergroup != None:
-        hostname = request.session.get('hostname', None)
-        try:
-            instance = Instance.objects.get(hostname=hostname, group=usergroup)
-            return instance.hostname
-        except Instance.DoesNotExist:
-            pass
+def get_hostname_prefered(*args, **kwargs):
+    return perms.get_hostname_prefered(*args, **kwargs)
 
-    # if we have no hostname yet try to get the default one from database
-    if hostname == None:
-        try:
-            instance = Instance.objects.get(main=True, group=usergroup)
-            request.session['hostname'] = instance.hostname
-            return instance.hostname
-        except Instance.DoesNotExist:
-            pass
-
-
-        # if superuser get any instance
-        if is_admin:
-            try:
-                instance = Instance.objects.all()
-                for i in instance:
-                    request.session['hostname'] = i.hostname
-                    return i.hostname
-
-
-            except Instance.DoesNotExist:
-                pass
-    return None
+def instance_getall_by_group(*args, **kwargs):
+    return perms.instance_getall_by_group(*args, **kwargs)
 
 
 
@@ -176,9 +135,10 @@ def conntry(hostname):
 
     return False
 
-def instance_getall():
-    instances = Instance.objects.all()
-    return instances
+
+
+
+
 
 def get_firewall_all(hostname):
     cmd = {"op": "showConfig", "path": ["firewall"]}

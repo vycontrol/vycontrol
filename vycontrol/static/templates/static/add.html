@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "base.html"%}
 
 {% block header_title %}Static Routes{% endblock %}
 {% block section_title %}Static Routes{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
 
 {% block debug %}
 {{ static_list }}
@@ -9,12 +11,20 @@
 
 {% block content %}
 
+<p class="submenu1">
+    <a href="{% url 'static:static-list' %}">List static routes</a>
+</p>
+<p class="submenu2">
+    
+</p>
+
+
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 
 <h2>Create new static route</h2>
 
-<form action="{% url 'static:static-add  %}" method="post">
+<form action="{% url 'static:static-add'  %}" method="post">
     {% csrf_token %}
     
     <p>

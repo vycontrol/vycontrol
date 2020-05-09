@@ -4,6 +4,8 @@
 
 {% block header_title %}Static Routes{% endblock %}
 {% block section_title %}Static Routes{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
 
 {% block debug %}
 {{ static_list }}
@@ -12,10 +14,13 @@
 {% block content %}
 
 
-
-<p class="margin-topbottom">
+<p class="submenu1">
     <a href="{% url 'static:static-add' %}">Create new static route</a>
 </p>
+<p class="submenu2">
+    
+</p>
+
 
 
 {% if static_list %}

@@ -32,7 +32,7 @@ body {
 }
 
 #menu-logotop a {
-  color: #af1d1d;
+  color:#af1d1d ;
 }
 
 #menu-topline {
@@ -140,3 +140,8 @@ input[type=submit] {
 }
 
 
+
+#menu-username {
+  margin-right: 10px;
+  color:#af1d1d ;
+}

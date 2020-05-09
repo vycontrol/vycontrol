@@ -18,6 +18,7 @@ from django.template.defaultfilters import register
 
 
 from perms import is_authenticated
+import perms
 
 
 @register.filter
@@ -26,7 +27,9 @@ def get_item(dictionary, key):
 
 @is_authenticated
 def index(request):
-       
+
+    is_superuser = perms.get_is_superuser(request.user)
+ 
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     for instance in all_instances:
@@ -41,12 +44,17 @@ def index(request):
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
+@perms.is_superuser
 @is_authenticated
 def users_list(request):
-       
+    is_superuser = perms.get_is_superuser(request.user)
+
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -120,12 +128,17 @@ def users_list(request):
         'hostname_default': hostname_default,
         'users' : users,
         'groups': group_show,
-        'user_groups': user_groups
+        'user_groups': user_groups,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
+@perms.is_superuser
 @is_authenticated
 def groups_list(request):
+    is_superuser = perms.get_is_superuser(request.user)
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -138,14 +151,18 @@ def groups_list(request):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'groups' : groups,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
 @is_authenticated
 def instances(request):
+    is_superuser = perms.get_is_superuser(request.user)
         
-    all_instances = vyos.instance_getall()
+    all_instances = perms.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
+    is_superuser = perms.get_is_superuser(request.user)
 
     print(all_instances)
 
@@ -166,11 +183,15 @@ def instances(request):
         'instances': all_instances,
         'hostname_default': hostname_default,
         'groups' : groups,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
+@perms.is_superuser
 @is_authenticated
 def instance_add(request):
+    is_superuser = perms.get_is_superuser(request.user)
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -196,11 +217,15 @@ def instance_add(request):
         'hostname_default': hostname_default,
         'instance_id': instance_id,
         'instances': all_instances,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
+@perms.is_superuser
 @is_authenticated
 def group_add(request):
+    is_superuser = perms.get_is_superuser(request.user)
         
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
@@ -224,13 +249,17 @@ def group_add(request):
         'hostname_default': hostname_default,
         'instance_id': instance_id,
         'instances': all_instances,
-        'error_message' : error_message
-    }   
+        'error_message' : error_message,
+        'username': request.user,
+        'is_superuser' : is_superuser,
+    }
     return HttpResponse(template.render(context, request)) 
 
+@perms.is_superuser
 @is_authenticated    
 def user_add(request):
-        
+    is_superuser = perms.get_is_superuser(request.user)
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -282,15 +311,21 @@ def user_add(request):
         'username' : username,
         'password' : password,
         'email' : email,
+        'username': request.user,
+        'is_superuser' : is_superuser,
 
     }   
     return HttpResponse(template.render(context, request))    
 
 @is_authenticated
 def instance_conntry(request, hostname):
+    is_superuser = perms.get_is_superuser(request.user)
        
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
+
+    if perms.user_has_hostname_access(request.user, hostname) == False:
+        return redirect('config:instances')
 
     # permcheck
     instance = Instance.objects.get(hostname=hostname)
@@ -305,6 +340,8 @@ def instance_conntry(request, hostname):
         "connected": connected,
         'instances': all_instances,
         'hostname_default': hostname_default,
+        'username': request.user,
+        'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -324,6 +361,9 @@ def instance_change(request, hostname = False):
  
     # permcheck
     if hostname != False:
+        if perms.user_has_hostname_access(request.user, hostname) == False:
+            return redirect('config:instances')
+
         try:
             instance = Instance.objects.get(hostname=hostname)
         except Instance.DoesNotExist:
@@ -340,6 +380,7 @@ def instance_change(request, hostname = False):
 
     return redirect('config:instances')    
 
+@perms.is_superuser
 @is_authenticated
 def instance_remove(request, hostname):
         
@@ -355,6 +396,7 @@ def instance_remove(request, hostname):
 
     return redirect('config:instances')
 
+@perms.is_superuser
 @is_authenticated
 def instance_changegroup(request, hostname):
        
