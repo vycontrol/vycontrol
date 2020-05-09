@@ -10,10 +10,15 @@
 
 {% block content %}
 
-
-<p class="margin-topbottom">
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+</p>
+<p class="submenu2">
     <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
 </p>
+
 
 <h3>Firewall Properties</h3>
 

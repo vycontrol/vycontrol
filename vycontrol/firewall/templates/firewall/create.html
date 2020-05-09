@@ -9,7 +9,13 @@
 
 {% block content %}
 
-<h2>Create new Firewall</h2>
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+</p>
+<p class="submenu2"></p>
+
 
 <form action="{% url 'firewall:firewall-create' %}" method="post">
     {% csrf_token %}

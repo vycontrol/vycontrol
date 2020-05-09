@@ -243,9 +243,25 @@ def set_firewall_allping_disable(hostname):
     result1 = api_set(hostname, cmd)
     return result1  
 
+def get_firewall_addressgroup(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall","group","address-group"]}
+
+    result1 = api_get(hostname, cmd)
+    return result1
 
 
+def set_firewall_addressgroup_add(hostname, group_name, address):
+    cmd = {"op": "set", "path": ["firewall","group",'address-group', group_name, "address", address]}
 
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_addressgroup_rangeadd(hostname, group_name, address_start, address_end):
+    address = str(address_start) + "-" + str(address_end)
+    cmd = {"op": "set", "path": ["firewall","group",'address-group', group_name, "address", address]}
+
+    result1 = api_set(hostname, cmd)
+    return result1     
 
 
 def delete_route_static(hostname, subnet, nexthop):

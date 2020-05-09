@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block header_title %}Firewall {{firewall_name}}{% endblock %}
-{% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a>{% endblock %}
+{% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a> - create new rule{% endblock %}
 
 {% block debug %}
 {{ firewall }}
@@ -11,8 +11,16 @@
 {% block content %}
 
 
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+</p>
+<p class="submenu2">
+    
+</p>
 
-<h2>Create new rule</h2>
+
 
 <form action="{% url 'firewall:addrule' firewall_name %}" method="post">
     {% csrf_token %}

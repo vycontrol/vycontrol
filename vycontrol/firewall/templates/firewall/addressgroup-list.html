@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Group List{% endblock %}
+{% block section_title %}Firewall Group List{% endblock %}
+
+{% block debug %}
+{{ firewall_addressgroup }}
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+</p>
+<p class="submenu2">
+    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Add Address Group</a>
+</p>
+
+
+{% if firewall_addressgroup %}
+    <table border="1" width="100%">
+    <tr><th>name</th><th>addresss</th></tr>
+
+    {% for key, value in firewall_addressgroup.items %}       
+        {% for ifkey, ifvalue in value.items %}
+            <tr>
+                <td>{{ ifkey }}</a></td>
+                <td>{{ ifvalue.address }}</td>
+            </tr>
+        {% endfor %}
+        
+    {% endfor %}
+
+    </table>
+{% else %}
+    <p>No firewalls.</p>
+{% endif %}
+
+
+
+{% endblock %}
+
+
+

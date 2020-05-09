@@ -228,6 +228,55 @@ def show(request, firewall_name):
 
 
 
+def firewall_addressgroup_list(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    hostname_default = vyos.get_hostname_prefered(request)
+    firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
+
+    template = loader.get_template('firewall/addressgroup-list.html')
+    context = { 
+        'firewall_addressgroup': firewall_addressgroup,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+def firewall_addressgroup_add(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    if request.POST.get('addresstype', None) == "single" and request.POST.get('name', None) != None and request.POST.get('address', None) != None:
+        vyos.set_firewall_addressgroup_add(hostname_default, request.POST.get('name'), request.POST.get('address'))
+        return redirect('firewall:firewall-addressgroup-list')
+    elif request.POST.get('addresstype', None) == "range" and request.POST.get('name', None) != None and request.POST.get('address-start', None) != None and request.POST.get('address-end', None) != None:
+        vyos.set_firewall_addressgroup_rangeadd(hostname_default, request.POST.get('name'), request.POST.get('address-start'), request.POST.get('address-end'))
+        return redirect('firewall:firewall-addressgroup-list')
+
+
+
+    template = loader.get_template('firewall/addressgroup-add.html')
+    context = { 
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+
+def firewall_networkbook(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    return redirect('firewall:firewall-list')
+
+
+
+
+
+
 
 def firewall_config(request, firewall_name):
     if not request.user.is_authenticated:
@@ -239,12 +288,6 @@ def firewall_config(request, firewall_name):
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     
-
-    if request.POST.get('allping') == 1:
-        pass
-
-    if request.POST.get('syncookies') == 1:
-        pass    
 
     template = loader.get_template('firewall/show.html')
     context = { 

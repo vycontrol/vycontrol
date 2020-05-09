@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Add New Address Group{% endblock %}
+{% block section_title %}Firewall Add New Address Group{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
+    <a href="{% url 'firewall:firewall-networkbook' %}">Network Book</a>
+</p>
+<p class="submenu2"></p>
+
+
+<form action="{% url 'firewall:firewall-addressgroup-add' %}" method="post">
+    {% csrf_token %}
+
+
+    <p>
+    <label for="name">group name:</label><br>
+    <input type="input" name="name" id="name" value="" size="30" />
+    </p>
+
+    <p>
+    address type: <br>
+    <input type="radio" name="addresstype" value="single" id="addresstype_single" class="addresstype" /> <label for="addresstype">single address</label>
+    <input type="radio" name="addresstype" value="range" id="addresstype_range" class="addresstype"/> <label for="addresstype">range address</label>
+    </p>
+    
+
+
+    <div id="addresstype_single_block" style="display: none">
+        <table width="100%">
+            <tr>
+                <th width="25%">ip address:</td><td><input type="input" name="address" value=""/> </th>
+            </tr>
+        </table>
+    </div>
+
+    <div id="addresstype_range_block" style="display: none">
+        <table width="100%">
+            <tr>
+                <th width="25%">ip block address start:</td><td><input type="input" name="address-start" value=""/> (eg 10.10.10.1)</th>
+            </tr>
+            <tr>
+                <th width="25%">ip block address end:</td><td><input type="input" name="address-end" value=""/>  (eg 10.10.10.20)</th>
+            </tr>
+        </table>
+    </div>
+
+
+    <input type="submit" value="Add Group">
+</form>
+
+<script>
+$(document).ready(function () {                            
+    $(".addresstype").change(function () {
+        if ($("#addresstype_single").is(":checked")) {
+            $('#addresstype_single_block').show();
+            $('#addresstype_range_block').hide();
+        }
+        else if ($("#addresstype_range").is(":checked")) {
+            $('#addresstype_single_block').hide();
+            $('#addresstype_range_block').show();
+        }
+    });        
+});
+</script>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
