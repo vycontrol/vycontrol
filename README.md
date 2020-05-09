@@ -39,6 +39,9 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 
 # installation 
 
+* for your security edit SECRET_KEY and change to something random 
+
+
 ## by dockerhub
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 ```
