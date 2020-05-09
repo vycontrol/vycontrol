@@ -4,6 +4,63 @@ import pprint
 import sys
 
 from config.models import Instance
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+
+def get_hostname_prefered(request):
+    # get username    
+    username = request.user
+    hostname = None
+
+    # get usergroup - VyControl groups is one to one
+    try:
+        usergroup = Group.objects.get(user=username)
+    except Group.DoesNotExist:
+        usergroup = None
+
+    # check if username is admin
+    useradmin = User.objects.filter(
+        username=username,
+        is_active=True,
+        is_superuser=True
+    )
+    is_admin = False
+    if useradmin.count() > 0:
+        is_admin = True
+
+    # get session hostname and validate if group has permission
+    if request.session.get('hostname', None) != None and usergroup != None:
+        hostname = request.session.get('hostname', None)
+        try:
+            instance = Instance.objects.get(hostname=hostname, group=usergroup)
+            return instance.hostname
+        except Instance.DoesNotExist:
+            pass
+
+    # if we have no hostname yet try to get the default one from database
+    if hostname == None:
+        try:
+            instance = Instance.objects.get(main=True, group=usergroup)
+            request.session['hostname'] = instance.hostname
+            return instance.hostname
+        except Instance.DoesNotExist:
+            pass
+
+
+        # if superuser get any instance
+        if is_admin:
+            try:
+                instance = Instance.objects.all()
+                for i in instance:
+                    request.session['hostname'] = i.hostname
+                    return i.hostname
+
+
+            except Instance.DoesNotExist:
+                pass
+    return None
+
+
 
 def repvar(s):
     return s.replace("-", "_")
@@ -93,23 +150,6 @@ def api_show(hostname, cmd):
 
 def api_set(hostname, cmd):
     return api('configure', hostname, cmd)    
-
-def get_hostname_prefered(request):
-    hostname = None
-
-    if request.session.get('hostname', None) != None:
-       hostname = request.session.get('hostname', None)
-        
-
-    if hostname == None:
-        try:
-            instance = Instance.objects.get(main=True)
-        except Instance.DoesNotExist:
-            return None
-
-        hostname = instance.hostname
-
-    return hostname 
     
 def conntry(hostname): 
     cmd = {"op": "showConfig", "path": ["interfaces"]}
@@ -184,9 +224,6 @@ def get_firewall(hostname, name):
 
     result1 = api_get(hostname, cmd)
     return result1
-
-  
- 
 
 def get_firewall_rule(hostname, name, rulenumber):
     cmd = {"op": "showConfig", "path": ["firewall", "name", name, "rule", rulenumber]}

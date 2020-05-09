@@ -24,7 +24,6 @@ from perms import is_authenticated
 def get_item(dictionary, key):
     return dictionary.get(key)
 
-
 @is_authenticated
 def index(request):
        
@@ -44,7 +43,6 @@ def index(request):
         'hostname_default': hostname_default,
     }   
     return HttpResponse(template.render(context, request))
-
 
 @is_authenticated
 def users_list(request):
@@ -143,7 +141,6 @@ def groups_list(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
 @is_authenticated
 def instances(request):
         
@@ -201,7 +198,6 @@ def instance_add(request):
         'instances': all_instances,
     }   
     return HttpResponse(template.render(context, request))
-
 
 @is_authenticated
 def group_add(request):
@@ -290,7 +286,6 @@ def user_add(request):
     }   
     return HttpResponse(template.render(context, request))    
 
-
 @is_authenticated
 def instance_conntry(request, hostname):
        
@@ -344,7 +339,6 @@ def instance_change(request, hostname = False):
                 instance.save()
 
     return redirect('config:instances')    
-
 
 @is_authenticated
 def instance_remove(request, hostname):
