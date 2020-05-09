@@ -19,6 +19,8 @@ def index(request):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
 
+
+
     firewall_all = vyos.get_firewall_all(hostname_default)
     if firewall_all == False:
         return redirect('firewall:firewall-create')
@@ -33,7 +35,7 @@ def index(request):
         #'interfaces': interfaces,
         'instances': all_instances,
         'hostname_default': hostname_default,
-        'firewall_all':  firewall_all
+        'firewall_all':  firewall_all,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -225,6 +227,57 @@ def show(request, firewall_name):
 
 
 
+
+
+def firewall_config(request, firewall_name):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    
+
+    if request.POST.get('allping') == 1:
+        pass
+
+    if request.POST.get('syncookies') == 1:
+        pass    
+
+    template = loader.get_template('firewall/show.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances': all_instances,
+        'hostname_default': hostname_default,
+        'firewall':  firewall,
+        'firewall_name': firewall_name,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+def firewall_global(request):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
+        
+    #interfaces = vyos.get_interfaces()
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
+
+    if int(request.POST.get('allping', 0)) == 1:
+        vyos.set_firewall_allping_enable(hostname_default)
+    else:
+        vyos.set_firewall_allping_disable(hostname_default)
+
+    if int(request.POST.get('syncookies', 0)) == 1:
+        vyos.set_firewall_syncookies_enable(hostname_default)
+    else:
+        vyos.set_firewall_syncookies_disable(hostname_default)
+
+    
+    return redirect('firewall:firewall-list')
 
 
 

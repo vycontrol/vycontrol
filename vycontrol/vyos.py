@@ -5,6 +5,10 @@ import sys
 
 from config.models import Instance
 
+
+def repvar(s):
+    return s.replace("-", "_")
+
 def get_url(hostname):
     # permcheck
     instance = Instance.objects.get(hostname=hostname)
@@ -140,7 +144,15 @@ def instance_getall():
 def get_firewall_all(hostname):
     cmd = {"op": "showConfig", "path": ["firewall"]}
     firewall_list = api_get(hostname, cmd)
-    return firewall_list
+
+    nfirewall_list = {}
+
+    for f in firewall_list:
+        s = repvar(f)
+        nfirewall_list[s] = firewall_list[f]
+        nfirewall_list[f] = firewall_list[f]        
+
+    return nfirewall_list
 
 def set_interface_firewall_ipv4(hostname, interface_type, interface_name, direction, firewall_name):
     cmd = {"op": "set", "path": ["interfaces", interface_type, interface_name, "firewall", direction, "name", firewall_name]}
@@ -174,6 +186,9 @@ def get_firewall(hostname, name):
     result1 = api_get(hostname, cmd)
     return result1
 
+  
+ 
+
 def get_firewall_rule(hostname, name, rulenumber):
     cmd = {"op": "showConfig", "path": ["firewall", "name", name, "rule", rulenumber]}
 
@@ -201,6 +216,37 @@ def set_route_static(hostname, subnet, nexthop):
 
     result1 = api_set(hostname, cmd)
     return result1  
+
+
+def set_firewall_syncookies_enable(hostname):
+    cmd = {"op": "set", "path": ["firewall","syn-cookies",'enable']}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+def set_firewall_syncookies_disable(hostname):
+    cmd = {"op": "set", "path": ["firewall","syn-cookies",'disable']}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+
+def set_firewall_allping_enable(hostname):
+    cmd = {"op": "set", "path": ["firewall","all-ping",'enable']}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+def set_firewall_allping_disable(hostname):
+    cmd = {"op": "set", "path": ["firewall","all-ping",'disable']}
+
+    result1 = api_set(hostname, cmd)
+    return result1  
+
+
+
+
+
 
 def delete_route_static(hostname, subnet, nexthop):
     #cmd = {"op": "delete", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}

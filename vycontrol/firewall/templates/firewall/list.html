@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block header_title %}Firewall Dashboard{% endblock %}
-{% block section_title %}Firewall Dashboard{% endblock %}
+{% block header_title %}Firewall List{% endblock %}
+{% block section_title %}Firewall List{% endblock %}
 
 {% block debug %}
 {{ firewall_all }}
@@ -13,7 +13,6 @@
 <p class="margin-topbottom">
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a>
 </p>
-
 
 
 {% if firewall_all %}
@@ -37,6 +36,25 @@
 {% else %}
     <p>No firewalls.</p>
 {% endif %}
+
+
+<h3>Global Firewall Properties</h3>
+
+<form action="{% url 'firewall:firewall-global' %}" method="post">
+    {% csrf_token %}
+
+    <table width="100%">
+        <tr>
+            <th width="100%"><input type="checkbox" name="allping" value="1" {% if firewall_all.all_ping == "enable" %}checked="checked"{% endif %}/> all-ping</th>
+        </tr>
+        <tr>
+            <th width="100%"><input type="checkbox" name="syncookies" value="1" {% if firewall_all.syn_cookies == "enable" %}checked="checked"{% endif %}/> syn-cookies</th>
+        </tr>
+    </table>
+    <input type="submit" value="Save">
+</form>
+
+
 
 
 

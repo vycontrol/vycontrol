@@ -81,6 +81,11 @@ form.instancedefault {
 
 #central h2 {
   margin-top: 20px;
+  font-size: 16px;
+}
+
+#central h3 {
+  margin-top: 20px;
   font-size: 14px;
 }
 

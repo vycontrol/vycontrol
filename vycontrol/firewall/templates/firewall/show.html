@@ -15,6 +15,23 @@
     <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
 </p>
 
+<h3>Firewall Properties</h3>
+
+<form action="{% url 'firewall:firewall-config' firewall_name %}" method="post">
+    {% csrf_token %}
+
+    <table width="100%">
+        <tr>
+            <th width="100%"><input type="checkbox" name="allping" value="1" /> all-ping</th>
+        </tr>
+        <tr>
+            <th width="100%"><input type="checkbox" name="syncookies" value="1" /> syn-cookies</th>
+        </tr>
+    </table>
+    <input type="submit" value="Save">
+</form>
+
+<h3>Rules</h3>
 
 
 {% if firewall.rule %}
