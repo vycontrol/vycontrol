@@ -113,7 +113,7 @@ def addrule(request, firewall_name):
         return redirect('firewall:show', firewall_name)
         
 
-    template = loader.get_template('firewall/show.html')
+    template = loader.get_template('firewall/addrule.html')
     context = { 
         #'interfaces': interfaces,
         'instances': all_instances,
@@ -222,6 +222,8 @@ def show(request, firewall_name):
         'firewall_name': firewall_name,
     }   
     return HttpResponse(template.render(context, request))
+
+
 
 
 

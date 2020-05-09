@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall {{firewall_name}}{% endblock %}
+{% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a>{% endblock %}
+
+{% block debug %}
+{{ firewall }}
+{{ firewall_name }}
+{% endblock %}
+
+{% block content %}
+
+
+
+<h2>Create new rule</h2>
+
+<form action="{% url 'firewall:addrule' firewall_name %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="alias">rule number</label><br>
+        <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+    </p>
+    
+    <p>
+        <label for="hostname">action</label><br>
+        <input type="radio" name="action" id="action" value="accept"> accept
+        <input type="radio" name="action" id="action" value="drop"> drop
+        <input type="radio" name="action" id="action" value="reject"> reject        
+    </p>
+
+    <p>
+        <label for="hostname">protocol</label><br>
+        <input type="radio" name="protocol" id="protocol" value="tcp"> tcp
+        <input type="radio" name="protocol" id="protocol" value="udp"> udp
+    </p>   
+    
+    <p>
+        <label for="alias">destination port</label><br>
+        <input type="text" name="destinationport" id="destinationport" value="{{ destinationport }}" size="5">
+    </p>
+    
+    <p>
+        <label for="alias">source port</label><br>
+        <input type="text" name="sourceport" id="sourceport" value="{{ sourceport }}" size="5">
+    </p>    
+    
+    
+    <input type="submit" value="Add Rule">
+    </form>
+
+    
+    
+
+
+{% endblock %}
+
+
+
