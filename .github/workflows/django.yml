@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python vycenter/manage.py test
+        python vycontrol/manage.py test
