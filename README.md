@@ -23,9 +23,9 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-* 20.05.02 - working firewall without zones bases firewall
+* 20.05.02 - working firewall without zones 
 * 20.05.07 - vlans / interfaces deep configuration
-* 20.05.10 - zone based firewall
+* 20.05.10 - working firewall with zones 
 * 20.06.01 - important features group c
 * 20.06.03 - improve permissions
 * 20.06.09 - save/commit/load features and ssh / logins
