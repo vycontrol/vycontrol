@@ -26,14 +26,14 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.05.02 - working firewall without zones 
 * 20.05.07 - vlans / interfaces deep configuration
 * 20.05.10 - working firewall with zones 
-* 20.06.01 - important features group c
-* 20.06.03 - improve permissions
+* 20.06.01 - commit, save, load and system login
+* 20.06.03 - granular permissions and improvements
 * 20.06.09 - save/commit/load features and ssh / logins
 * 20.06.10 - lost password
 * 20.06.13 - ipsec features
 * 20.06.15 - layout
 * **20.06.20-LTS** - OSPF features
-* 20.08.01 - cool features
+* 20.08.01 - s3 backup scheduler and commit confirm
 * 20.12.10 - ipv6 milestone
 * 20.12.20 - depend on a third party
 
