@@ -225,37 +225,6 @@
     <h3><input type="checkbox" id="criteria_address" value="1"> Matching criteria - address</h3>
     <div class="container" id="criteria_address_block" style="display: none">
 
-
-        <div class="row">
-            <div class="col">    
-                <h4>Valid address examples</h4>
-            </div>
-        </div>
- 
-        <div class="row">
-            <div class="col">
-                <dl>
-                    <dt>address</dt>
-                    <dd>1.1.1.1</dd>
-                </dl>
-            </div>
-
-            <div class="col">
-                <dl>
-                    <dt>address range</dt>
-                    <dd>1.1.1.1-1.1.1.10</dd>
-                </dl>
-            </div>
-            
-            <div class="col">
-                <dl>
-                    <dt>CIDR</dt>
-                    <dd>1.1.1.0/24</dd>   
-                </dl>
-            </div>
-            
-        </div>
-    
         <div class="row">
             <div class="col">
                 <p>
@@ -266,7 +235,6 @@
                 <p>
                     <input type="checkbox" name="sdaddress_source_negate" id="sdaddress_source_negate" value="1"> <label for="sdaddress_source_negate">negate source address</label>
                 </p>         
-
             </div>
 
             <div class="col">
@@ -278,12 +246,29 @@
                 <p>
                     <input type="checkbox" name="sdaddress_destination_negate" id="sdaddress_destination_negate" value="1"> <label for="sdaddress_destination_negate">negate destination address</label>
                 </p>         
-
-          </div>
+             </div>
         </div>
 
-    </div> 
-  
+
+        <div class="row">
+            <div class="col">    
+                <h4>Valid address examples</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <dl>
+                    <dt>address</dt>
+                    <dd>192.0.2.1</dd>
+                    <dt>address range</dt>
+                    <dd>192.0.2.0-192.0.2.10</dd>
+                    <dt>CIDR</dt>
+                    <dd>192.0.2.0/24</dd>   
+                </dl>
+            </div>
+        </div>
+    </div>
     
     <h3><input type="checkbox" id="criteria_addressgroup" value="1"> Matching criteria - address-group</h3>
     <div class="container" id="criteria_addressgroup_block" style="display: none">    
