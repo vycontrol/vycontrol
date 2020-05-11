@@ -20,10 +20,9 @@ from django.template.defaultfilters import register
 from perms import is_authenticated
 import perms
 
+from filters.vycontrol_filters import get_item
 
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
+
 
 @is_authenticated
 def index(request):

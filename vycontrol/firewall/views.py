@@ -5,13 +5,16 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.urls import reverse
 
-
 import vyos
 from performance import timer
 from perms import is_authenticated
 import perms
+import network
+import json
 
-
+from filters.vycontrol_filters import get_item
+from filters.vycontrol_filters import get_item_port
+from filters.vycontrol_filters import get_item_network
 
 @is_authenticated
 def index(request):
@@ -86,9 +89,16 @@ def addrule(request, firewall_name):
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
-
     firewall = vyos.get_firewall(hostname_default, firewall_name)
-    
+    firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
+    firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
+    firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
+    firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
+
+    netservices = network.get_services()
+    netservices_js = json.dumps(netservices)
+
+
     changed = False
     if 'action' in request.POST:
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
@@ -118,6 +128,10 @@ def addrule(request, firewall_name):
         return redirect('firewall:show', firewall_name)
         
 
+
+
+
+
     template = loader.get_template('firewall/addrule.html')
     context = { 
         #'interfaces': interfaces,
@@ -127,6 +141,13 @@ def addrule(request, firewall_name):
         'firewall_name': firewall_name,
         'username': request.user,
         'is_superuser' : is_superuser,
+        'services' : netservices['services'],
+        'services_common' : netservices['common'],
+        'firewall_networkgroup': firewall_networkgroup['network-group'],
+        'firewall_addressgroup': firewall_addressgroup['address-group'],
+        'firewall_networkgroup_js': firewall_networkgroup_js,
+        'firewall_addressgroup_js': firewall_addressgroup_js,
+        'netservices_js' : netservices_js,
     }  
     return HttpResponse(template.render(context, request))
 

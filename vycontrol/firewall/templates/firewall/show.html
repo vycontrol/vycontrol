@@ -42,18 +42,22 @@
 
 {% if firewall.rule %}
     <table border="1" width="100%">
-    <tr><th>rule #</th><th>description</th><th>protocol</th><th>destination port</th><th>source port</th><th>firewall action</th></tr>
+    <tr><th>rule #</th><th>description</th><th>protocol</th><th>destination port</th><th>source port</th><th>firewall action</th><th>admin action</th></tr>
 
     {% for key, value in firewall.items %}
         
         {% for ifkey, ifvalue in value.items %}
             <tr>
-            <td><a href="{% url 'firewall:editrule' firewall_name ifkey %}">{{ ifkey }}</a> <a href="{% url 'firewall:firewall-removerule' firewall_name ifkey %}">remove rule</a></td>
+            <td><a href="{% url 'firewall:editrule' firewall_name ifkey %}">{{ ifkey }}</a></td>
             <td>{{ ifvalue.description }}</td>
             <td>{{ ifvalue.protocol }}</td>
             <td>{{ ifvalue.destination.port }}</td>
             <td>{{ ifvalue.source.port }}</td>
-            <td>{{ ifvalue.action }}</td>                        
+            <td>{{ ifvalue.action }}</td>       
+            <td>
+                <a href="{% url 'firewall:editrule' firewall_name ifkey %}">edit</a> | 
+                <a href="{% url 'firewall:firewall-removerule' firewall_name ifkey %}">remove</a>
+            </td>
             </tr>
         {% endfor %}
         
