@@ -49,7 +49,7 @@
 
 
 
-<form action="{% url 'firewall:addrule' firewall_name %}" method="post">
+<form action="{% url 'firewall:addrule' firewall_name %}" method="post" id="form_addrule">
     {% csrf_token %}
     
 
@@ -67,7 +67,7 @@
             <div class="col">
                 <p>
                     <label for="status">status</label><br>
-                    <input type="radio" name="status" id="status" value="enabled"> enabled
+                    <input type="radio" name="status" id="status" value="enabled" checked="checked"> enabled
                     <input type="radio" name="status" id="status" value="disabled"> disabled
                 </p>
             </div>         
@@ -75,9 +75,9 @@
             <div class="col">
                 <p>
                     <label for="action">action</label><br>
-                    <input type="radio" name="action" id="action" value="accept"> accept
-                    <input type="radio" name="action" id="action" value="drop"> drop
-                    <input type="radio" name="action" id="action" value="reject"> reject        
+                    <input type="radio" class="fwaction" name="action" id="action" value="accept"> accept
+                    <input type="radio" class="fwaction" name="action" id="action" value="drop"> drop
+                    <input type="radio" class="fwaction" name="action" id="action" value="reject"> reject        
                 </p>
             </div>
         </div>
@@ -102,12 +102,12 @@
 
             <div class="col">
                 <p>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_all" value="1"> all protocols<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp" value="1"> tcp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_udp" value="1"> udp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp_udp" value="1"> tcp and udp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_icmp" value="1"> icmp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="1"> other  
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_all" value="all"> all protocols<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp" value="tcp"> tcp<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_udp" value="udp"> udp<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp_udp" value="tcp_udp"> tcp and udp<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_icmp" value="icmp"> icmp<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="other"> other  
                 </p>
 
 
@@ -117,16 +117,17 @@
                 
 
                 <p id="protocol_custom_block" style="display: none">
-                    <label for="protocol_custom">add other protocol</label><br>
+                    <label for="protocol_custom">other protocol</label><br>
                     <input type="text" name="protocol_custom" id="protocol_custom" value="{{ protocol_custom }}" size="5"> 
-                    <input type="button" name="destinationport_custom_add" value="add" />
                 </p>                     
                     
-
+                {% comment %}
+                <!-- require https://phabricator.vyos.net/T2451 be fixed -->
                 <p>
-                    <input type="checkbox" name="protocols_negate" id="protocols_negate" value="1">
-                    <label for="protocols_negate">negate </label>
+                    <input type="checkbox" name="protocol_negate" id="protocol_negate" value="1">
+                    <label for="protocol_negate">negate </label>
                 </p>
+                {% endcomment %}
             </div>
         </div>
     </div>
@@ -541,9 +542,20 @@
             else if ($("#criteria_packetstate").not(":checked")) {
                 $('#criteria_packetstate_block').hide();
             }
-        });                                                        
+        });   
 
-           
+        // form basic validations
+        $("#form_addrule").submit(function(e){
+            if ($('#rulenumber').val() < 1){
+                alert('Rule numed must be definied.');
+                e.preventDefault();
+                return false;
+            } else if (!$('.fwaction').is(':checked')){
+                alert('Rule action must be selected.');
+                e.preventDefault();
+                return false;
+            } 
+        });
                      
         
 

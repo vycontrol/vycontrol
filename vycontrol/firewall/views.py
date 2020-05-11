@@ -98,34 +98,94 @@ def addrule(request, firewall_name):
     netservices = network.get_services()
     netservices_js = json.dumps(netservices)
 
-
     changed = False
-    if 'action' in request.POST:
+
+    print("hereuyy")    
+    # verifing basic informations
+    if (request.POST.get('rulenumber',None) != None and 
+        request.POST.get('rulenumber') != "" and 
+        int(request.POST.get('rulenumber')) > 0 and
+        request.POST.get('status',None) != None and
+        request.POST.get('status',None) in ("enabled", "disabled") and
+        request.POST.get('action',None) in ("accept","drop","reject")):
+        
         cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "action", request.POST['action']]}
         result1 = vyos.set_config(hostname_default, cmd)
         print(result1)
-        changed = True
+        #if result1['success'] == True:
+        #    changed = True 
 
-    if 'protocol' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", request.POST['protocol']]}
-        result2 = vyos.set_config(hostname_default, cmd)
-        print(result2)
-        changed = True
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "status", request.POST['status']]}
+        result1 = vyos.set_config(hostname_default, cmd)
+        print(result1)
+        #if result1['success'] == True:
+        #    changed = True 
 
-    if 'destinationport' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "destination", "port", request.POST['destinationport']]}
-        result3 = vyos.set_config(hostname_default, cmd)
-        print(result3)
-        changed = True
+        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "description", request.POST['description']]}
+        result1 = vyos.set_config(hostname_default, cmd)
+        print(result1)
+        #if result1['success'] == True:
+        #    changed = True 
 
-    if 'sourceport' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "source", "port", request.POST['sourceport']]}
-        result3 = vyos.set_config(hostname_default, cmd)
-        print(result3)        
-        changed = True
+        print("herexxx")
 
-    if changed == True:
-        return redirect('firewall:show', firewall_name)
+
+        if request.POST.get('protocol_criteria', None) != None:
+            print("here",request.POST.get('protocol_criteria', None))
+            protocol_criteria = None
+            protocol_negate = False
+
+            if request.POST.get('protocol_criteria') == "other":
+                if request.POST.get('protocol_custom', None) != None:
+                    protocol_criteria = request.POST.get('protocol_custom')
+            else:
+                protocol_criteria = request.POST.get('protocol_criteria')
+
+            if request.POST.get('protocol_negate', None) == "1":
+                protocol_negate = True
+
+
+            print(protocol_criteria, protocol_negate)
+
+            if protocol_criteria != None:
+                protocol_criteria_txt = ""
+                if protocol_negate == True:
+                    protocol_criteria_txt = "!" + protocol_criteria
+                else:
+                    protocol_criteria_txt = protocol_criteria
+
+                cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", protocol_criteria_txt]}
+                result1 = vyos.set_config(hostname_default, cmd)
+                print(result1)
+                #if result1['success'] == True:
+                changed = True 
+
+
+            #set firewall name WAN-IN-v4 rule 11 protocol !tcp_udp
+
+
+
+
+        """if 'protocol' in request.POST:
+            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", request.POST['protocol']]}
+            result2 = vyos.set_config(hostname_default, cmd)
+            print(result2)
+            changed = True
+
+        if 'destinationport' in request.POST:
+            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "destination", "port", request.POST['destinationport']]}
+            result3 = vyos.set_config(hostname_default, cmd)
+            print(result3)
+            changed = True
+
+        if 'sourceport' in request.POST:
+            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "source", "port", request.POST['sourceport']]}
+            result3 = vyos.set_config(hostname_default, cmd)
+            print(result3)        
+            changed = True"""
+
+        if changed == True:
+            return redirect('firewall:show', firewall_name)
         
 
 
