@@ -54,7 +54,6 @@
     
 
     <h3>Rule Config</h3>
-
     <div class="container">
         <div class="row">
             <div class="col">
@@ -139,14 +138,8 @@
 
                 
                 <p>
-                    <label for="destinationport">destination ports filtered (click to remove)</label><br>
-                    <select name="destinationport" size="10" style="width: 200px;">
-                    </select>
-                </p>
-
-                <p>
                     <label for="destinationport_common">common destinations ports to add</label><br>
-                    <select name="destinationport_common" size="1">
+                    <select name="destinationport_common" id="destinationport_common" size="1">
                         {% for p in services_common %}
                         <option>{{ p }} - {{ services|get_item_port:p }} </option>
                         {% endfor %}
@@ -154,7 +147,7 @@
 
                     <input type="checkbox" name="destinationport_common_negate" id="destinationport_common_negate" value="1">
                     <label for="destinationport_common_negate">negate </label>
-                    <input type="button" name="destinationport_common_add" value="add" />
+                    <input type="button" name="destinationport_common_add" id="destinationport_common_add" value="add" />
                 </p>
 
 
@@ -163,30 +156,31 @@
                     <input type="text" name="destinationport_custom" id="destinationport_custom" value="{{ destinationport_custom }}" size="14"> 
                     <input type="checkbox" name="destinationport_custom_negate" id="destinationport_custom_negate" value="1"> 
                     <label for="destinationport_custom_negate">negate </label>
-                    <input type="button" name="destinationport_custom_add" value="add" />
+                    <input type="button" name="destinationport_custom_add" id="destinationport_custom_add" value="add" />
                 </p>                     
-                    
+                
+                <p>
+                    <label for="destinationport">destination ports filtered (click to remove)</label><br>
+                    <select name="destinationport" id="destinationport" size="10" style="width: 200px;">
+                    </select>
+                </p>
+                
 
             </div>
           
             <div class="col">
                 <p>
-                    <label for="sourceport">common source filtered (click to remove)</label><br>
-                    <select name="sourceport" size="10" style="width: 200px;">
-                    </select>
-                </p>
-
-                <p>
                     <label for="sourceport_common">common source ports to add</label><br>
-                    <select name="sourceport_common" size="1">
+                    <select name="sourceport_common" id="sourceport_common" size="1">
+                        <option value="">select one</option>
                         {% for p in services_common %}
-                        <option>{{ p }} - {{ services|get_item_port:p }} </option>
+                        <option value="{{ services|get_item_port:p }}">{{ p }} - {{ services|get_item_port:p }}</option>
                         {% endfor %}
                     </select>
 
                     <input type="checkbox" name="sourceport_common_negate" id="sourceport_common_negate" value="1">
                     <label for="sourceport_common_negate">negate </label>
-                    <input type="button" name="sourceport_common_add" value="add" />
+                    <input type="button" name="sourceport_common_add" id="sourceport_common_add" value="add" />
                 </p>   
 
                 <p>
@@ -194,10 +188,16 @@
                     <input type="text" name="sourceport_custom" id="sourceport_custom" value="{{ destinationport_custom }}" size="14"> 
                     <input type="checkbox" name="sourceport_custom_negate" id="sourceport_custom_negate" value="1"> 
                     <label for="sourceport_custom_negate">negate </label>
-                    <input type="button" name="sourceport_custom_add" value="add" />
+                    <input type="button" name="sourceport_custom_add" id="sourceport_custom_add" value="add" />
                 </p>       
                
-                
+                <p>
+                    <label for="sourceport">source ports filtered (click to remove)</label><br>
+                    <select name="sourceport" size="10" style="width: 200px;" id="sourceport">
+                    </select>
+                </p>
+
+
             </div>
         </div>
 
@@ -556,8 +556,107 @@
                 return false;
             } 
         });
-                     
+
         
+        $("#sourceport_common_add").click(function () {
+            port = $("#sourceport_common").children("option:selected").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#sourceport_common_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#sourceport option[value='" + port_text + "']").length == 0) {
+                $('#sourceport').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+        $("#sourceport_custom_add").click(function () {
+            port = $("#sourceport_custom").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#sourceport_custom_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#sourceport option[value='" + port_text + "']").length == 0) {
+                $('#sourceport').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+
+        $("#destinationport_common_add").click(function () {
+            port = $("#destinationport_common").children("option:selected").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#destinationport_common_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#destinationport option[value='" + port_text + "']").length == 0) {
+                $('#destinationport').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+        $("#destinationport_custom_add").click(function () {
+            port = $("#destinationport_custom").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#destinationport_custom_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#destinationport option[value='" + port_text + "']").length == 0) {
+                $('#destinationport').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+        
+
+
+        $('#sourceport').click(function() {
+            $(this).find('option:selected').remove();
+        });
+        $('#destinationport').click(function() {
+            $(this).find('option:selected').remove();
+        });        
+                
 
     });
 </script>
