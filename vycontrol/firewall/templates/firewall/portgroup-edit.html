@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Edit Port Group {{ groupname }}{% endblock %}
+{% block section_title %}Firewall Edit Port Group {{ groupname }}{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+
+{{ services_common }}
+
+{{ portgroups_json }}
+
+{{ description }}
+
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<script type="text/javascript">
+    var portgroups_json = JSON.parse('{{portgroups_json|safe}}');
+    console.log(portgroups_json['port']);
+</script>
+
+
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+</p>
+<p class="submenu2"></p>
+
+
+
+
+<form action="{% url 'firewall:firewall-portgroup-edit' groupname %}" method="post" id="form_addportgroup">
+    <input type="hidden" name="portgroup_ports_hidden" id="portgroup_ports_hidden" value="">
+    {% csrf_token %}
+
+
+    <p>
+        <label for="name">description:</label><br>
+        <input type="input" name="description" id="description" value="{{ description }}" size="100" />
+    </p>
+    
+
+
+    <h3>Ports inside group</h3>
+    <div class="container" id="criteria_port_block">
+        <div class="row">  
+          
+            <div class="col">
+                <p>
+                    <label for="portgroup_common">common source ports to add</label><br>
+                    <select name="portgroup_common" id="portgroup_common" size="1">
+                        <option value="">select one</option>
+                        {% for p in services_common %}
+                        <option value="{{ services|get_item_port:p }}">{{ p }} - {{ services|get_item_port:p }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="checkbox" name="portgroup_common_negate" id="portgroup_common_negate" value="1">
+                    <label for="portgroup_common_negate">negate </label>
+                    <input type="button" name="portgroup_common_add" id="portgroup_common_add" value="add" />
+                </p>   
+
+                <p>
+                    <label for="portgroup_custom">add custom destination ports (use single 100 or range 100-200)</label><br>
+                    <input type="text" name="portgroup_custom" id="portgroup_custom" value="{{ destinationport_custom }}" size="14"> 
+                    <input type="checkbox" name="portgroup_custom_negate" id="portgroup_custom_negate" value="1"> 
+                    <label for="portgroup_custom_negate">negate </label>
+                    <input type="button" name="portgroup_custom_add" id="portgroup_custom_add" value="add" />
+                </p>       
+               
+                <p>
+                    <label for="portgroup">source ports filtered (click to remove)</label><br>
+                    <select name="portgroup" size="10" style="width: 200px;" id="portgroup">
+                    </select>
+                </p>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <input type="submit" value="Edit Group">
+</form>
+
+
+
+   
+<script>
+    $(document).ready(function () {  
+        
+        for (var port in portgroups_json["port"]) {
+            port_text = portgroups_json["port"][port];
+
+            if ($("#portgroup option[value='" + port_text + "']").length == 0) {
+                $('#portgroup').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        }
+
+
+        $("#portgroup_common_add").click(function () {
+            port = $("#portgroup_common").children("option:selected").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#portgroup_common_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#portgroup option[value='" + port_text + "']").length == 0) {
+                $('#portgroup').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+        $("#portgroup_custom_add").click(function () {
+            port = $("#portgroup_custom").val();
+            if (port == "") {
+                return false;
+            }
+
+            if ($("#portgroup_custom_negate").is(":checked")) {
+                negate = "!";
+            } else {
+                negate = "";
+            }
+
+            port_text = negate + port;
+
+            if ($("#portgroup option[value='" + port_text + "']").length == 0) {
+                $('#portgroup').append($('<option>', {
+                    value: port_text,
+                    text: port_text
+                }));
+            }
+        });
+
+
+
+        $('#portgroup').click(function() {
+            $(this).find('option:selected').remove();
+        });
+
+
+        $("#portgroup_common, #portgroup_common_negate").keypress(function(event) { 
+            if (event.keyCode === 13) { 
+                $("#portgroup_common_add").click(); 
+                return false;
+            } 
+        }); 
+
+        $("#portgroup_custom, #portgroup_custom_negate").keypress(function(event) { 
+            if (event.keyCode === 13) { 
+                $("#portgroup_custom_add").click(); 
+                return false;
+            } 
+        }); 
+
+        // form basic validations
+        $("#form_addportgroup").submit(function(e){
+            var ports = [];
+
+            $("#portgroup option").each(function() {
+                x=$(this).val();
+                ports.push(x);
+            });
+
+            $('#portgroup_ports_hidden').val(JSON.stringify(ports));
+
+            if (ports.length <= 0) {
+                alert('Need at least one port.');
+                e.preventDefault();
+                return false;
+            }
+
+        });
+        
+
+
+
+    });
+</script>
+
+
+{% endblock %}
+
+
+

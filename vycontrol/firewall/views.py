@@ -80,8 +80,6 @@ def create(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
-
 @is_authenticated
 def addrule(request, firewall_name):
         
@@ -100,7 +98,6 @@ def addrule(request, firewall_name):
 
     changed = False
 
-    print("hereuyy")    
     # verifing basic informations
     if (request.POST.get('rulenumber',None) != None and 
         request.POST.get('rulenumber') != "" and 
@@ -127,11 +124,9 @@ def addrule(request, firewall_name):
         #if result1['success'] == True:
         #    changed = True 
 
-        print("herexxx")
 
 
         if request.POST.get('protocol_criteria', None) != None:
-            print("here",request.POST.get('protocol_criteria', None))
             protocol_criteria = None
             protocol_negate = False
 
@@ -145,7 +140,6 @@ def addrule(request, firewall_name):
                 protocol_negate = True
 
 
-            print(protocol_criteria, protocol_negate)
 
             if protocol_criteria != None:
                 protocol_criteria_txt = ""
@@ -186,11 +180,6 @@ def addrule(request, firewall_name):
 
         if changed == True:
             return redirect('firewall:show', firewall_name)
-        
-
-
-
-
 
     template = loader.get_template('firewall/addrule.html')
     context = { 
@@ -210,7 +199,6 @@ def addrule(request, firewall_name):
         'netservices_js' : netservices_js,
     }  
     return HttpResponse(template.render(context, request))
-
 
 @is_authenticated
 def firewall_removerule(request, firewall_name, firewall_rulenumber):
@@ -279,7 +267,6 @@ def editrule(request, firewall_name, firewall_rulenumber):
     }  
     return HttpResponse(template.render(context, request))
 
-
 @is_authenticated
 def show(request, firewall_name):
         
@@ -304,6 +291,132 @@ def show(request, firewall_name):
     return HttpResponse(template.render(context, request))
 
 @is_authenticated
+def firewall_portgroup_list(request):
+        
+    hostname_default = vyos.get_hostname_prefered(request)
+    firewall_portgroup = vyos.get_firewall_portgroup(hostname_default)
+    all_instances = vyos.instance_getall_by_group(request)
+    is_superuser = perms.get_is_superuser(request.user)
+
+    template = loader.get_template('firewall/portgroup-list.html')
+    context = { 
+        'firewall_portgroup': firewall_portgroup,
+        'hostname_default': hostname_default,
+        'username': request.user, 
+        'instances': all_instances,
+        'is_superuser' : is_superuser,
+    }   
+    return HttpResponse(template.render(context, request))
+
+@is_authenticated
+def firewall_portgroup_del(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    vyos.set_firewall_portgroup_del(hostname_default, groupname)
+    return redirect('firewall:firewall-portgroup-list')
+
+@is_authenticated
+def firewall_portgroup_add(request):
+    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = vyos.instance_getall_by_group(request)
+    is_superuser = perms.get_is_superuser(request.user)
+    netservices = network.get_services()
+
+    if request.POST.get('name', None) != None and request.POST.get('portgroup_ports_hidden', None) != None and request.POST.get('portgroup_ports_hidden') != '':
+
+        try:
+            ports = json.loads(request.POST.get('portgroup_ports_hidden'))
+        except ValueError:
+            return redirect('firewall:firewall-portgroup-list')
+
+        for port in ports:
+            vyos.set_firewall_portgroup_add(hostname_default, request.POST.get('name'), port)
+
+        if request.POST.get('description', None) != None:
+            vyos.set_firewall_portgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+
+        return redirect('firewall:firewall-portgroup-list')
+
+
+
+    template = loader.get_template('firewall/portgroup-add.html')
+    context = { 
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
+        'is_superuser' : is_superuser,
+        'services_common' : netservices['common'],
+        'services' : netservices['services'],
+    }   
+    return HttpResponse(template.render(context, request))
+
+@is_authenticated
+def firewall_portgroup_edit(request, groupname):
+    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = vyos.instance_getall_by_group(request)
+    is_superuser = perms.get_is_superuser(request.user)
+    netservices = network.get_services()
+    portgroups = vyos.get_firewall_portgroup(hostname_default)
+    portgroups_json = json.dumps(portgroups['port-group'][groupname], separators=(',', ':'))
+    description = portgroups['port-group'][groupname]['description']
+
+    if request.POST.get('description', None) != None:
+        vyos.set_firewall_portgroup_description(hostname_default, groupname, request.POST.get('description'))
+
+    if request.POST.get('portgroup_ports_hidden', None) != None and request.POST.get('portgroup_ports_hidden') != '':
+
+        try:
+            ports = json.loads(request.POST.get('portgroup_ports_hidden'))
+        except ValueError:
+            return redirect('firewall:firewall-portgroup-list')
+
+        port_remove = []
+        port_add = []
+        # each port in vyos database
+        for port in portgroups['port-group'][groupname]['port']:
+            # vyos port not in form
+            if port not in ports:
+                # so mark to remove
+                port_remove.append(port)
+
+        # each port comming from form
+        for port in ports:
+            # form port not in vyos database
+            if port not in portgroups['port-group'][groupname]['port']:
+                # so mark to add
+                port_add.append(port)
+
+        # add ports to vyos database
+        for port in port_add:
+            vyos.set_firewall_portgroup_add(hostname_default, groupname, port)
+
+        # remove ports to vyos database
+        for port in port_remove:
+            vyos.set_firewall_portgroup_delete_port(hostname_default, groupname, port)
+
+        if request.POST.get('description', None) != None:
+            vyos.set_firewall_portgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+
+        return redirect('firewall:firewall-portgroup-list')
+
+
+
+
+    template = loader.get_template('firewall/portgroup-edit.html')
+    context = { 
+        'hostname_default': hostname_default,
+        'username': request.user,        
+        'instances': all_instances,
+        'is_superuser' : is_superuser,
+        'groupname' : groupname,
+        'services_common' : netservices['common'],
+        'services' : netservices['services'],
+        'description' : description,
+        'portgroups_json' : portgroups_json,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+@is_authenticated
 def firewall_networkgroup_list(request):
         
     hostname_default = vyos.get_hostname_prefered(request)
@@ -320,8 +433,6 @@ def firewall_networkgroup_list(request):
         'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
-
-
 
 @is_authenticated
 def firewall_networkgroup_add(request):
@@ -348,15 +459,11 @@ def firewall_networkgroup_add(request):
     }   
     return HttpResponse(template.render(context, request))
 
-
 @is_authenticated
 def firewall_networkgroup_del(request, groupname):
     hostname_default = vyos.get_hostname_prefered(request)
     vyos.set_firewall_networkgroup_del(hostname_default, groupname)
     return redirect('firewall:firewall-networkgroup-list')
-
-
-
 
 @is_authenticated
 def firewall_addressgroup_list(request):
@@ -375,7 +482,6 @@ def firewall_addressgroup_list(request):
         'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
-
 
 @is_authenticated
 def firewall_addressgroup_add(request):
@@ -438,7 +544,6 @@ def firewall_addressgroup_desc(request, groupname):
         'groupname': groupname,
     }   
     return HttpResponse(template.render(context, request))
-        
 
 @is_authenticated
 def firewall_networkgroup_desc(request, groupname):
@@ -462,8 +567,6 @@ def firewall_networkgroup_desc(request, groupname):
     }   
     return HttpResponse(template.render(context, request))
 
-
-
 @is_authenticated
 def firewall_config(request, firewall_name):  
     #interfaces = vyos.get_interfaces()
@@ -486,7 +589,6 @@ def firewall_config(request, firewall_name):
     }   
     return HttpResponse(template.render(context, request))
 
-
 @is_authenticated
 def firewall_global(request):
    
@@ -506,7 +608,6 @@ def firewall_global(request):
 
     
     return redirect('firewall:firewall-list')
-
 
 @is_authenticated
 def firewall_remove(request, firewall_name):

@@ -233,6 +233,32 @@ def set_firewall_allping_disable(hostname):
     result1 = api_set(hostname, cmd)
     return result1  
 
+def get_firewall_portgroup(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall","group","port-group"]}
+    result1 = api_get(hostname, cmd)
+    return result1
+
+def set_firewall_portgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'port-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_portgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'port-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_portgroup_add(hostname, group_name, port):
+    cmd = {"op": "set", "path": ["firewall","group",'port-group', group_name, "port", port]}
+
+    result1 = api_set(hostname, cmd)
+    return result1    
+
+def set_firewall_portgroup_delete_port(hostname, group_name, port):
+    cmd = {"op": "delete", "path": ["firewall","group",'port-group', group_name, "port", port]}
+
+    result1 = api_set(hostname, cmd)
+    return result1         
 
 def get_firewall_addressgroup(hostname):
     cmd = {"op": "showConfig", "path": ["firewall","group","address-group"]}

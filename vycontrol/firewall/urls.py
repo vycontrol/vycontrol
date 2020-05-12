@@ -25,6 +25,10 @@ urlpatterns = [
     path('firewall-networkgroup-del/<str:groupname>', views.firewall_networkgroup_del, name='firewall-networkgroup-del'),
     path('firewall-networkgroup-desc/<str:groupname>', views.firewall_networkgroup_desc, name='firewall-networkgroup-desc'),    
 
+    path('firewall-portgroup-list', views.firewall_portgroup_list, name='firewall-portgroup-list'),
+    path('firewall-portgroup-add', views.firewall_portgroup_add, name='firewall-portgroup-add'),
+    path('firewall-portgroup-del/<str:groupname>', views.firewall_portgroup_del, name='firewall-portgroup-del'),
+    path('firewall-portgroup-edit/<str:groupname>', views.firewall_portgroup_edit, name='firewall-portgroup-edit'),
 
 
 

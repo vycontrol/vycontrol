@@ -5,7 +5,7 @@
 {% block username %}{{ username }}{% endblock %}
 
 {% block debug %}
-{{ firewall_networkgroup }}
+{{ firewall_portgroup }}
 {% endblock %}
 
 {% block content %}
@@ -13,27 +13,30 @@
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
-    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> 
 </p>
 <p class="submenu2">
-    <a href="{% url 'firewall:firewall-networkgroup-add' %}">Add network Group</a>
+    <a href="{% url 'firewall:firewall-portgroup-add' %}">Add port group</a>
 </p>
 
 
-{% if firewall_networkgroup %}
+{% if firewall_portgroup %}
     <table border="1" width="100%">
-        <tr><th width="25%">name</th><th width="20%">address</th><th width="30%">description</th><th width="25%">actions</th></tr>
+        <tr>
+            <th width="25%">name</th>
+            <th width="30%">description</th>
+            <th width="25%">actions</th>
+        </tr>
 
-    {% for key, value in firewall_networkgroup.items %}       
+    {% for key, value in firewall_portgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
                 <td>{{ ifkey }}</a></td>
-                <td>{{ ifvalue.network }}</td>
                 <td>{{ ifvalue.description }}</td>
                 <td>
-                    <a href="{% url 'firewall:firewall-networkgroup-desc' ifkey %}">Edit</a> | 
-                    <a href="{% url 'firewall:firewall-networkgroup-del' ifkey %}">Remove</a>
+                    <a href="{% url 'firewall:firewall-portgroup-edit' ifkey %}">Edit</a> | 
+                    <a href="{% url 'firewall:firewall-portgroup-del' ifkey %}">Remove</a>
                 </td>                
             </tr>
         {% endfor %}
@@ -42,7 +45,7 @@
 
     </table>
 {% else %}
-    <p>No firewalls.</p>
+    <p>No port groups.</p>
 {% endif %}
 
 
