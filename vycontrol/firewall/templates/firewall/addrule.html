@@ -279,7 +279,7 @@
             <div class="col">
                 <p>
                     <label for="sdaddressgroup_source">source address-group</label><br>
-                    <select name="sdaddressgroup_source" size="10">
+                    <select name="sdaddressgroup_source" size="10"  style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}      
@@ -291,7 +291,7 @@
             <div class="col">
                 <p>
                     <label for="sdaddressgroup_destination">destination address-group</label><br>
-                    <select name="sdaddressgroup_destination" size="10">
+                    <select name="sdaddressgroup_destination" size="10" style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}        
@@ -311,7 +311,7 @@
             <div class="col">
                 <p>
                     <label for="sdnetworkgroup_source">source network-group</label><br>
-                    <select name="sdnetworkgroup_source" size="10">
+                    <select name="sdnetworkgroup_source" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}
@@ -323,7 +323,7 @@
             <div class="col">
                 <p>
                     <label for="sdnetworkgroup_destination">destination network-group</label><br>
-                    <select name="sdnetworkgroup_destination" size="10">
+                    <select name="sdnetworkgroup_destination" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}
@@ -342,11 +342,10 @@
             <div class="col">
                 <p>
                     <label for="sdportgroup_source">source port group</label><br>
-                    <select name="sdportgroup_source" size="10">
-                        <option>http - 80</option>
-                        <option>https - 443</option>
-                        <option>smtp - 25</option>
-                        <option>ssh - 22</option>
+                    <select name="sdportgroup_source" size="10" style="width: 200px;">
+                        {% for f in portgroups_groups %}
+                        <option>{{ f }}</option>
+                        {% endfor %}
                     </select>
                 </p>
 
@@ -355,11 +354,10 @@
             <div class="col">
                 <p>
                     <label for="sdportgroup_destination">destination port group</label><br>
-                    <select name="sdportgroup_destination" size="10">
-                        <option>http - 80</option>
-                        <option>https - 443</option>
-                        <option>smtp - 25</option>
-                        <option>ssh - 22</option>
+                    <select name="sdportgroup_destination" size="10" style="width: 200px;">
+                        {% for f in portgroups_groups %}
+                        <option>{{ f }}</option>
+                        {% endfor %}
                     </select>
                 </p>
 

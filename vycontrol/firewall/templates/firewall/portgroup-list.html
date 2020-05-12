@@ -32,7 +32,7 @@
     {% for key, value in firewall_portgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
-                <td>{{ ifkey }}</a></td>
+                <td><a href="{% url 'firewall:firewall-portgroup-edit' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.description }}</td>
                 <td>
                     <a href="{% url 'firewall:firewall-portgroup-edit' ifkey %}">Edit</a> | 

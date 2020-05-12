@@ -92,6 +92,9 @@ def addrule(request, firewall_name):
     firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
     firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
     firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
+    portgroups = vyos.get_firewall_portgroup(hostname_default)
+    portgroups_groups = portgroups['port-group']
+
 
     netservices = network.get_services()
     netservices_js = json.dumps(netservices)
@@ -197,6 +200,7 @@ def addrule(request, firewall_name):
         'firewall_networkgroup_js': firewall_networkgroup_js,
         'firewall_addressgroup_js': firewall_addressgroup_js,
         'netservices_js' : netservices_js,
+        'portgroups_groups': portgroups_groups,
     }  
     return HttpResponse(template.render(context, request))
 
