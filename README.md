@@ -46,7 +46,10 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 
 # installation 
 
-* for your security edit SECRET_KEY and change to something random 
+* for your security edit SECRET_KEY in inside Django settings.py and change to something random, maybe using 
+```
+openssl rand -hex 32
+```
 
 
 ## by dockerhub
