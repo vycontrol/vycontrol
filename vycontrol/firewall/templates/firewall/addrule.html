@@ -277,7 +277,7 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_source">source address-group</label><br>
+                    <label for="sdaddressgroup_source">select at max one source address-group</label><br>
                     <select name="sdaddressgroup_source" size="10"  style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option>{{ f }}</option>
@@ -289,7 +289,7 @@
 
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_destination">destination address-group</label><br>
+                    <label for="sdaddressgroup_destination">select at max one destination address-group</label><br>
                     <select name="sdaddressgroup_destination" size="10" style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option>{{ f }}</option>
@@ -308,7 +308,7 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_source">source network-group</label><br>
+                    <label for="sdnetworkgroup_source">select at max one source network-group</label><br>
                     <select name="sdnetworkgroup_source" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>
@@ -320,7 +320,7 @@
 
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_destination">destination network-group</label><br>
+                    <label for="sdnetworkgroup_destination">select at max one destination network-group</label><br>
                     <select name="sdnetworkgroup_destination" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>

@@ -272,8 +272,27 @@ def addrule(request, firewall_name):
                         description = "set sdaddress_destination_txt",
                     )
 
+            # if criteria port set, save it
+            if request.POST.get('criteria_addressgroup', None) == "1":
+                if request.POST.get('sdaddressgroup_source', None) != None:              
+                    sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
+                    v = vyos2.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "address-group", sdaddressgroup_source],
+                            description = "set sdaddressgroup_source",
+                    )
 
-
+                if request.POST.get('sdaddressgroup_destination', None) != None:              
+                    sdaddressgroup_destination = request.POST.get('sdaddressgroup_destination')                    
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "address-group", sdaddressgroup_destination],
+                        description = "set sdaddressgroup_destination",
+                    )
 
 
 
