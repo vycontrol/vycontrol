@@ -60,7 +60,7 @@
             <div class="col">
                 <p>
                     <label for="alias">rule number</label><br>
-                    <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+                    <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}111" size="5">
                 </p>
             </div>
 
@@ -75,9 +75,9 @@
             <div class="col">
                 <p>
                     <label for="action">action</label><br>
-                    <input type="radio" class="fwaction" name="action" id="action" value="accept"> accept
-                    <input type="radio" class="fwaction" name="action" id="action" value="drop"> drop
-                    <input type="radio" class="fwaction" name="action" id="action" value="reject"> reject        
+                    <input type="radio" class="fwaction" name="ruleaction" id="action" value="accept"> accept
+                    <input type="radio" class="fwaction" name="ruleaction" id="action" value="drop"> drop
+                    <input type="radio" class="fwaction" name="ruleaction" id="action" value="reject"> reject        
                 </p>
             </div>
         </div>
@@ -86,7 +86,7 @@
             <div class="col">
                 <p>
                     <label for="alias">description</label><br>
-                    <input type="text" name="description" id="description" value="{{ description }}" size="60">
+                    <input type="text" name="description" id="description" value="{{ description }}xxx" size="60">
                 </p>
             </div>
 
@@ -95,7 +95,7 @@
     </div>
 
 
-    <h3><input type="checkbox" id="criteria_protocol" value="1"> <label for="criteria_protocol" class="label_for_h3">Matching criteria - protocol</label></h3>
+    <h3><input type="checkbox" name="criteria_protocol" value="1" id="criteria_protocol"> <label for="criteria_protocol" class="label_for_h3">Matching criteria - protocol</label></h3>
     <div class="container" id="criteria_protocol_block" style="display: none">
 
         <div class="row">
@@ -132,7 +132,7 @@
         </div>
     </div>
 
-    <h3><input type="checkbox" id="criteria_port" value="1" id="criteria_port"> <label for="criteria_port" class="label_for_h3">Matching criteria - port</label></h3>
+    <h3 id="criteria_port_block_header" style="display: none"><input type="checkbox" name="criteria_port" value="1" id="criteria_port"> <label for="criteria_port" class="label_for_h3">Matching criteria - port</label></h3>
     <div class="container" id="criteria_port_block" style="display: none">
         <div class="row">  
             <div class="col">
@@ -141,13 +141,17 @@
                 <p>
                     <label for="destinationport_common">common destinations ports to add</label><br>
                     <select name="destinationport_common" id="destinationport_common" size="1">
+                        <option value="">select one</option>
                         {% for p in services_common %}
-                        <option>{{ p }} - {{ services|get_item_port:p }} </option>
+                        <option value="{{ services|get_item_port:p }}">{{ p }} - {{ services|get_item_port:p }} </option>
                         {% endfor %}
                     </select>
 
+                    {% comment %}
                     <input type="checkbox" name="destinationport_common_negate" id="destinationport_common_negate" value="1">
                     <label for="destinationport_common_negate">negate </label>
+                    {% endcomment %}
+
                     <input type="button" name="destinationport_common_add" id="destinationport_common_add" value="add" />
                 </p>
 
@@ -155,8 +159,12 @@
                 <p>
                     <label for="destinationport_custom">add custom destination ports (use single 100 or range 100-200)</label><br>
                     <input type="text" name="destinationport_custom" id="destinationport_custom" value="{{ destinationport_custom }}" size="14"> 
+                    
+                    {% comment %}
                     <input type="checkbox" name="destinationport_custom_negate" id="destinationport_custom_negate" value="1"> 
                     <label for="destinationport_custom_negate">negate </label>
+                    {% endcomment %}
+
                     <input type="button" name="destinationport_custom_add" id="destinationport_custom_add" value="add" />
                 </p>                     
                 
@@ -164,6 +172,9 @@
                     <label for="destinationport">destination ports filtered (click to remove)</label><br>
                     <select name="destinationport" id="destinationport" size="10" style="width: 200px;">
                     </select>
+
+
+                    <input type="hidden" name="destinationport_json" id="destinationport_json" value="" >
                 </p>
                 
 
@@ -196,6 +207,10 @@
                     <label for="sourceport">source ports filtered (click to remove)</label><br>
                     <select name="sourceport" size="10" style="width: 200px;" id="sourceport">
                     </select>
+
+                    <input type="hidden" name="sourceport_json" id="sourceport_json" value="" >
+
+
                 </p>
 
 
@@ -224,7 +239,7 @@
     </div>
     -->
 
-    <h3><input type="checkbox" id="criteria_address" value="1" id="criteria_address"> <label for="criteria_address" class="label_for_h3">Matching criteria - address</label></h3>
+    <h3><input type="checkbox" id="criteria_address" value="1" name="criteria_address"> <label for="criteria_address" class="label_for_h3">Matching criteria - address</label></h3>
     <div class="container" id="criteria_address_block" style="display: none">
 
         <div class="row">
@@ -272,7 +287,7 @@
         </div>
     </div>
     
-    <h3><input type="checkbox" id="criteria_addressgroup" value="1" id="criteria_addressgroup"> <label for="criteria_addressgroup" class="label_for_h3">Matching criteria - address-group</label></h3>    
+    <h3><input type="checkbox" id="criteria_addressgroup" value="1" name="criteria_addressgroup"> <label for="criteria_addressgroup" class="label_for_h3">Matching criteria - address-group</label></h3>    
     <div class="container" id="criteria_addressgroup_block" style="display: none">    
 
         <div class="row">
@@ -305,7 +320,7 @@
     </div>
 
 
-    <h3><input type="checkbox" id="criteria_networkgroup" value="1" id="criteria_networkgroup"> <label for="criteria_networkgroup" class="label_for_h3">Matching criteria - network-group</label></h3>    
+    <h3><input type="checkbox" id="criteria_networkgroup" value="1" name="criteria_networkgroup"> <label for="criteria_networkgroup" class="label_for_h3">Matching criteria - network-group</label></h3>    
     <div class="container" id="criteria_networkgroup_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -336,7 +351,7 @@
 
     </div>    
 
-    <h3><input type="checkbox" id="criteria_portgroup" value="1" id="criteria_portgroup"> <label for="criteria_portgroup" class="label_for_h3">Matching criteria - port group</label></h3>    
+    <h3><input type="checkbox" id="criteria_portgroup" value="1" name="criteria_portgroup"> <label for="criteria_portgroup" class="label_for_h3">Matching criteria - port group</label></h3>    
     <div class="container" id="criteria_portgroup_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -367,7 +382,7 @@
 
     </div>    
 
-    <h3><input type="checkbox" id="criteria_sourcemac" value="1" id="criteria_sourcemac"> <label for="criteria_sourcemac" class="label_for_h3">Matching criteria - source mac address</label></h3>    
+    <h3><input type="checkbox" id="criteria_sourcemac" value="1" name="criteria_sourcemac"> <label for="criteria_sourcemac" class="label_for_h3">Matching criteria - source mac address</label></h3>    
     <div class="container" id="criteria_sourcemac_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -385,7 +400,7 @@
 
     </div>
 
-    <h3><input type="checkbox" id="criteria_tcpflags" value="1" id="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
+    <h3><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
     <div class="container" id="criteria_tcpflags_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -428,7 +443,7 @@
         </div>
     </div>
 
-    <h3><input type="checkbox" id="criteria_packetstate" value="1" id="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
+    <h3><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
     <div class="container" id="criteria_packetstate_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -455,6 +470,17 @@
             }
             else if ($("#addresstype_range").not(":checked")) {
                 $('#protocol_custom_block').hide();
+            }
+
+            protocol_criteria = $('.protocol_criteria:checked').val();
+
+
+            if (['tcp', 'udp', 'tcp_udp'].includes(protocol_criteria) == false) {
+                $("#criteria_port").prop("checked", false);
+                $("#criteria_port_block_header").hide();
+                $("#criteria_port_block").hide();
+            } else {
+                $("#criteria_port_block_header").show();
             }
         });
 
@@ -512,7 +538,6 @@
             }
         });                                        
 
-
         $("#criteria_sourcemac").change(function () {
             if ($("#criteria_sourcemac").is(":checked")) {
                 $('#criteria_sourcemac_block').show();
@@ -531,7 +556,6 @@
             }
         });
 
-
         $("#criteria_packetstate").change(function () {
             if ($("#criteria_packetstate").is(":checked")) {
                 $('#criteria_packetstate_block').show();
@@ -541,22 +565,55 @@
             }
         });   
 
+        function isNumeric(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+
         // form basic validations
         $("#form_addrule").submit(function(e){
-            if ($('#rulenumber').val() < 1){
-                alert('Rule numed must be definied.');
+            rulenumber = $('#rulenumber').val();
+            
+
+            if (rulenumber == "" || isNumeric(rulenumber) == false) {
+                alert('Rule number must be definied and be numeric.');
                 e.preventDefault();
                 return false;
-            } else if (!$('.fwaction').is(':checked')){
+            } else if (rulenumber < 1 && rulenumber > 9999) {
+                alert('Rule number must be between 1 and 9999.');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (!$('.fwaction').is(':checked')){
                 alert('Rule action must be selected.');
                 e.preventDefault();
                 return false;
             } 
+
+            var destinationport_values = []
+            $("#destinationport option").each(function() {
+                destinationport_values.push($(this).val());
+            });
+            var destinationport_json = JSON.stringify(destinationport_values);
+            $("#destinationport_json").val(destinationport_json);
+
+            var sourceport_values = []
+            $("#sourceport option").each(function() {
+                sourceport_values.push($(this).val());
+            });            
+            var sourceport_json = JSON.stringify(sourceport_values);
+            $("#sourceport_json").val(sourceport_json);
+
+            console.log(sourceport_json)
+
+
+            //e.preventDefault();
         });
 
         
         $("#sourceport_common_add").click(function () {
             port = $("#sourceport_common").children("option:selected").val();
+            text = $("#sourceport_common").children("option:selected").text();            
             if (port == "") {
                 return false;
             }
@@ -567,12 +624,13 @@
                 negate = "";
             }
 
-            port_text = negate + port;
+            v = negate + port;
+            t = negate + text;
 
-            if ($("#sourceport option[value='" + port_text + "']").length == 0) {
+            if ($("#sourceport option[value='" + v + "']").length == 0) {
                 $('#sourceport').append($('<option>', {
-                    value: port_text,
-                    text: port_text
+                    value: v,
+                    text: t
                 }));
             }
         });
@@ -599,9 +657,9 @@
             }
         });
 
-
         $("#destinationport_common_add").click(function () {
             port = $("#destinationport_common").children("option:selected").val();
+            text = $("#destinationport_common").children("option:selected").text();
             if (port == "") {
                 return false;
             }
@@ -612,12 +670,13 @@
                 negate = "";
             }
 
-            port_text = negate + port;
+            v = negate + port;
+            t = negate + text;
 
-            if ($("#destinationport option[value='" + port_text + "']").length == 0) {
+            if ($("#destinationport option[value='" + v + "']").length == 0) {
                 $('#destinationport').append($('<option>', {
-                    value: port_text,
-                    text: port_text
+                    value: v,
+                    text: t
                 }));
             }
         });
@@ -644,18 +703,15 @@
             }
         });
 
-        
-
-
         $('#sourceport').click(function() {
             $(this).find('option:selected').remove();
         });
+
         $('#destinationport').click(function() {
             $(this).find('option:selected').remove();
         });        
-                
 
-    });
+ });
 </script>
           
 

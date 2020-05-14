@@ -28,7 +28,7 @@
     {% for key, value in firewall_addressgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
-                <td>{{ ifkey }}</a></td>
+                <td><a href="{% url 'firewall:firewall-addressgroup-desc' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.address }}</td>
                 <td>{{ ifvalue.description }}</td>
                 <td>
