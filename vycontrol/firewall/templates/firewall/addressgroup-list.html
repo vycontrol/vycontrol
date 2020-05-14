@@ -23,13 +23,17 @@
 
 {% if firewall_addressgroup %}
     <table border="1" width="100%">
-        <tr><th width="25%">name</th><th width="20%">address</th><th width="30%">description</th><th width="25%">actions</th></tr>
+        <tr>
+            <th width="25%">name</th>
+            <th width="30%">description</th>
+            <th width="25%">actions</th>
+        </tr>
 
     {% for key, value in firewall_addressgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
                 <td><a href="{% url 'firewall:firewall-addressgroup-desc' ifkey %}">{{ ifkey }}</a></td>
-                <td>{{ ifvalue.address }}</td>
+                {% comment %}<td>{{ ifvalue.address }}</td>{% endcomment %}
                 <td>{{ ifvalue.description }}</td>
                 <td>
                     <a href="{% url 'firewall:firewall-addressgroup-desc' ifkey %}">Edit</a> | 

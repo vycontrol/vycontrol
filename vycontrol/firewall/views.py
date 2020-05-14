@@ -643,14 +643,7 @@ def firewall_networkgroup_add(request):
                     description = "set network-group description",
                 )
 
-
-
-        vyos.set_firewall_networkgroup_add(hostname_default, request.POST.get('name'), request.POST.get('network'))
-
-        if request.POST.get('description', None) != None:
-            vyos.set_firewall_networkgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
-
-        return redirect('firewall:firewall-networkgroup-list')
+                return redirect('firewall:firewall-networkgroup-list')
 
 
 
@@ -689,26 +682,48 @@ def firewall_addressgroup_list(request):
 
 @is_authenticated
 def firewall_addressgroup_add(request):
-        
     hostname_default = vyos.get_hostname_prefered(request)
     all_instances = vyos.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    if request.POST.get('addresstype', None) == "single" and request.POST.get('name', None) != None and request.POST.get('address', None) != None:
-        vyos.set_firewall_addressgroup_add(hostname_default, request.POST.get('name'), request.POST.get('address'))
+    if (    request.POST.get('name', None) != None 
+        and request.POST.get('addressgroup_json', None) != None):
 
-        if request.POST.get('description', None) != None:
-            vyos.set_firewall_addressgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+        group =         request.POST.get('name', None)
+        description =   request.POST.get('description', None)
+        try:
+            networks = json.loads(request.POST.get('addressgroup_json'))
+        except ValueError:
+            networks = {}
 
-        return redirect('firewall:firewall-addressgroup-list')
-    elif request.POST.get('addresstype', None) == "range" and request.POST.get('name', None) != None and request.POST.get('address-start', None) != None and request.POST.get('address-end', None) != None:
-        vyos.set_firewall_addressgroup_rangeadd(hostname_default, request.POST.get('name'), request.POST.get('address-start'), request.POST.get('address-end'))
 
-        if request.POST.get('description', None) != None:
-            vyos.set_firewall_addressgroup_description(hostname_default, request.POST.get('name'), request.POST.get('description'))
+        changed = False
 
-        return redirect('firewall:firewall-addressgroup-list')
+        vyos2.log('networks', networks)
 
+        for network in networks:
+            v = vyos2.api (
+                hostname =  hostname_default,
+                api =       "post",
+                op =        "set",
+                cmd =       ["firewall", "group", "address-group", group, "address", network],
+                description = "add address-group network",
+            )
+            if v.success and changed == False:
+                changed = True
+            
+        # set network description if it was created
+        if changed == True:
+            if description != None:
+                v = vyos2.api (
+                    hostname=   hostname_default,
+                    api =       "post",
+                    op =        "set",
+                    cmd =       ["firewall", "group", "address-group", group, "description", description],
+                    description = "set address-group description",
+                )
+
+            return redirect('firewall:firewall-addressgroup-list')
 
 
     template = loader.get_template('firewall/addressgroup-add.html')
@@ -720,6 +735,7 @@ def firewall_addressgroup_add(request):
     }   
     return HttpResponse(template.render(context, request))
 
+
 @is_authenticated
 def firewall_addressgroup_del(request, groupname):
     hostname_default = vyos.get_hostname_prefered(request)
@@ -729,25 +745,98 @@ def firewall_addressgroup_del(request, groupname):
 @is_authenticated
 def firewall_addressgroup_desc(request, groupname):
     hostname_default = vyos.get_hostname_prefered(request)
-    firewall_addressgroup = vyos.get_firewall_addressgroup_one(hostname_default, groupname)
     all_instances = vyos.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    if request.POST.get('description', None) != None:
-        vyos.set_firewall_addressgroup_description(hostname_default, groupname, request.POST.get('description'))
-        return redirect('firewall:firewall-addressgroup-list')
+    v = vyos2.api (
+        hostname=   hostname_default,
+        api =       "get",
+        op =        "showConfig",
+        cmd =       ["firewall", "group", "address-group", groupname],
+        description = "show address-group config",
+    )
+    groupinfo = v.data
+    if 'address' not in groupinfo:
+        networks_original = []
+    else:
+        networks_original = groupinfo['address']
+
+        if type(networks_original) is str:
+            vyos2.log("tipo", type(networks_original))
+            networks_original = [groupinfo['address']]
+        else:
+            networks_original = groupinfo['address']
+
+    vyos2.log("networks_original", networks_original)
+
+    networks_json = json.dumps(networks_original)
 
 
-    template = loader.get_template('firewall/addressgroup-desc.html')
-    context = { 
-        'firewall_addressgroup': firewall_addressgroup,
-        'hostname_default': hostname_default,
-        'username': request.user,        
-        'instances': all_instances,
-        'is_superuser' : is_superuser,
-        'groupname': groupname,
-    }   
-    return HttpResponse(template.render(context, request))
+    changed = False
+
+    if v.success:
+        if request.POST.get('description', None) != None:
+            v = vyos2.api (
+                hostname=   hostname_default,
+                api =       "post",
+                op =        "set",
+                cmd =       ["firewall", "group", "address-group", groupname, "description", request.POST.get('description')],
+                description = "set network-group description",
+            )
+            changed = True
+
+
+        if request.POST.get('networkgroup_json', None) != None:
+            try:
+                networks_new = json.loads(request.POST.get('networkgroup_json'))
+            except ValueError:
+                networks_new = {}
+
+            vyos2.log('networks new', networks_new)
+
+            for network in networks_new:
+                v = vyos2.api (
+                    hostname=   hostname_default,
+                    api =       "post",
+                    op =        "set",
+                    cmd =       ["firewall", "group", "address-group", groupname, "address", network],
+                    description = "edit address-group network",
+                )
+                if v.success and changed == False:
+                    changed = True
+            
+            vyos2.log('networks original', networks_original)
+
+            for network in networks_original:
+                if network not in networks_new:
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "delete",
+                        cmd =       ["firewall", "group", "address-group", groupname, "address", network],
+                        description = "delete address-group network",
+                    )
+                    if v.success and changed == False:
+                        changed = True
+
+        if changed == True:
+            return redirect('firewall:firewall-addressgroup-list')
+
+
+        template = loader.get_template('firewall/addressgroup-desc.html')
+        context = { 
+            'groupinfo': groupinfo,
+            'hostname_default': hostname_default,
+            'username': request.user,        
+            'instances': all_instances,
+            'is_superuser' : is_superuser,
+            'groupname': groupname,
+            'networks_json' : networks_json,
+        }   
+        return HttpResponse(template.render(context, request))
+    else:
+        return redirect('firewall:firewall-addressgroup-list')    
+
 
 @is_authenticated
 def firewall_networkgroup_desc(request, groupname):

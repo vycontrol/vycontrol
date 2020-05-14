@@ -14,74 +14,101 @@
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Network Group</a> | 
     <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2"></p>
 
 
-<form action="{% url 'firewall:firewall-addressgroup-add' %}" method="post">
+<form action="{% url 'firewall:firewall-addressgroup-add' %}" method="post" id="formng">
     {% csrf_token %}
 
 
     <p>
-        <label for="name">group name:</label><br>
-        <input type="input" name="name" id="name" value="" size="30" />
+    <label for="name">group name:</label><br>
+    <input type="input" name="name" id="name" value="" size="30" />
     </p>
-
 
     <p>
         <label for="name">description:</label><br>
         <input type="input" name="description" id="description" value="" size="100" />
     </p>
+    
+    <p>
+        <label for="network">addresses (IP or interval):</label><br>
+        <input type="input" name="network" id="network" value=""/> (eg 192.168.0.1 or 192.168.0.1-192.168.0.10) 
+        <input type="button" value="add" id="addressgroup_add">
+    </p>
 
     <p>
-    address type: <br>
-    <input type="radio" name="addresstype" value="single" id="addresstype_single" class="addresstype" /> <label for="addresstype">single address</label>
-    <input type="radio" name="addresstype" value="range" id="addresstype_range" class="addresstype"/> <label for="addresstype">range address</label>
+        <label for="addressgroup">addresses (click to remove)</label><br>
+        <select name="addressgroup" id="addressgroup" size="10" style="width: 200px;">
+        </select>
+
+
+        <input type="hidden" name="addressgroup_json" id="addressgroup_json" value="" >
     </p>
-    
-
-
-    <div id="addresstype_single_block" style="display: none">
-        <table width="100%">
-            <tr>
-                <th width="25%">ip address:</td><td><input type="input" name="address" value=""/> </th>
-            </tr>
-        </table>
-    </div>
-
-    <div id="addresstype_range_block" style="display: none">
-        <table width="100%">
-            <tr>
-                <th width="25%">ip block address start:</td><td><input type="input" name="address-start" value=""/> (eg 10.10.10.1)</th>
-            </tr>
-            <tr>
-                <th width="25%">ip block address end:</td><td><input type="input" name="address-end" value=""/>  (eg 10.10.10.20)</th>
-            </tr>
-        </table>
-    </div>
 
 
     <input type="submit" value="Add Group">
 </form>
 
+
 <script>
-$(document).ready(function () {                            
-    $(".addresstype").change(function () {
-        if ($("#addresstype_single").is(":checked")) {
-            $('#addresstype_single_block').show();
-            $('#addresstype_range_block').hide();
+$(document).ready(function () {
+    $("#addressgroup_add").click(function () {
+        network = $("#network").val();
+
+        if (network !=  "") {
+            if ($("#addressgroup option[value='" + network + "']").length == 0) {
+                $('#addressgroup').append($('<option>', {
+                    value: network,
+                    text: network
+                }));
+            }
         }
-        else if ($("#addresstype_range").is(":checked")) {
-            $('#addresstype_single_block').hide();
-            $('#addresstype_range_block').show();
+    });
+
+
+    $('#addressgroup').click(function() {
+            $(this).find('option:selected').remove();
+    });
+
+    // form basic validations
+    $("#formng").submit(function(e){
+        size = $("#addressgroup option").length
+        if (size < 1) {
+            alert('Minimum networks is 1');
+            e.preventDefault();
+            return false;
         }
-    });        
-});
+        
+        groupname = $("#name").val()
+        if (groupname.length > 31) {
+            alert('Maximum group name 31 characters or less');
+            e.preventDefault();
+            return false;
+        }
+
+
+
+        var groupa = []
+        $("#addressgroup option").each(function() {
+            groupa.push($(this).val());
+        });
+
+        var groupa_json = JSON.stringify(groupa);
+        $("#addressgroup_json").val(groupa_json);
+
+        console.log(groupa_json)
+    });
+
+})
+
+
+
+
 </script>
-
-
 
 
 

@@ -6,34 +6,118 @@
 
 {% block debug %}
 {{ firewall_all }}
-{{ firewall_addressgroup }}
+{{ firewall_networkgroup }}
 {% endblock %}
 
 
 {% block content %}
 
+
+<script type="text/javascript">
+    var networkgroup_data = JSON.parse('{{networks_json|safe}}');
+    console.log(networkgroup_data);
+</script>
+
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a>     | 
     <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>  | 
     <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2">
-    <a href="{% url 'firewall:firewall-networkgroup-add' %}">Add network Group</a>
+    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Add network Group</a>
 </p>
 
-<form action="{% url 'firewall:firewall-addressgroup-desc' groupname %}" method="post">
+
+
+
+
+<form action="{% url 'firewall:firewall-addressgroup-desc' groupname %}" method="post" id="formng">
     {% csrf_token %}
+
+    <p>
+        <label for="name">description:</label><br>
+        <input type="input" name="description" id="description" value="{{ groupinfo.description }}" size="100" />
+    </p>
     
     <p>
-        <label for="alias">description</label><br>
-        <input type="text" name="description" id="description" value="{{ firewall_addressgroup.description }}" size="60">
-    </p>    
-    
-    
+        <label for="network">network (CIDR notation):</label><br>
+        <input type="input" name="network" id="network" value=""/> (eg 10.10.10.0/24) 
+        <input type="button" value="add" id="networkgroup_add">
+    </p>
+
+    <p>
+        <label for="networkgroup">networks (click to remove)</label><br>
+        <select name="networkgroup" id="networkgroup" size="10" style="width: 200px;">
+        </select>
+
+
+        <input type="hidden" name="networkgroup_json" id="networkgroup_json" value="" >
+    </p>
+
+
     <input type="submit" value="Edit Group">
-    </form>
+</form>
+
+
+<script>
+$(document).ready(function () {
+
+    for (network in networkgroup_data) {
+        $('#networkgroup').append($('<option>', {
+            value: networkgroup_data[network],
+            text: networkgroup_data[network]
+        }));
+    }
+
+    $("#networkgroup_add").click(function () {
+        network = $("#network").val();
+
+        if (network !=  "") {
+            if ($("#networkgroup option[value='" + network + "']").length == 0) {
+                $('#networkgroup').append($('<option>', {
+                    value: network,
+                    text: network
+                }));
+            }
+        }
+    });
+
+
+    $('#networkgroup').click(function() {
+            $(this).find('option:selected').remove();
+    });
+
+    // form basic validations
+    $("#formng").submit(function(e){
+        size = $("#networkgroup option").length
+        if (size < 1) {
+            alert('Minimum networks is 1');
+            e.preventDefault();
+            return false;
+        }
+        
+        var groupa = []
+        $("#networkgroup option").each(function() {
+            groupa.push($(this).val());
+        });
+
+        var groupa_json = JSON.stringify(groupa);
+        $("#networkgroup_json").val(groupa_json);
+
+        console.log(groupa_json)
+        //e.preventDefault();
+        //return false;
+
+    });
+
+})
+
+
+
+
+</script>
 
     
 
