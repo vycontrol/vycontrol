@@ -158,3 +158,7 @@ input[type=submit] {
 .label_for_h3 {
   margin-bottom: 0;
 }
+
+.matching_criteria { 
+  padding: 3px;
+}

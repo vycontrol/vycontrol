@@ -76,7 +76,7 @@ def api(type, hostname, cmd):
     print(post)   
 
     try:
-        resp = requests.post(url, verify=False, data=post, timeout=5)
+        resp = requests.post(url, verify=False, data=post, timeout=10)
     except requests.exceptions.ConnectionError:
         return False
 

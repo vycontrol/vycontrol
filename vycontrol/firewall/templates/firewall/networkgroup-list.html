@@ -23,13 +23,17 @@
 
 {% if firewall_networkgroup %}
     <table border="1" width="100%">
-        <tr><th width="25%">name</th><th width="20%">address</th><th width="30%">description</th><th width="25%">actions</th></tr>
+        <tr>
+            <th width="25%">name</th>
+            <th width="30%">description</th>
+            <th width="25%">actions</th>
+        </tr>
 
     {% for key, value in firewall_networkgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
-                <td>{{ ifkey }}</a></td>
-                <td>{{ ifvalue.network }}</td>
+                <td><a href="{% url 'firewall:firewall-networkgroup-desc' ifkey %}">{{ ifkey }}</a></td>
+                {% comment %}<td>{{ ifvalue.network }}</td>{% endcomment %}
                 <td>{{ ifvalue.description }}</td>
                 <td>
                     <a href="{% url 'firewall:firewall-networkgroup-desc' ifkey %}">Edit</a> | 

@@ -45,7 +45,8 @@ API_LIST = {}
 API_LIST["get"] = {}
 API_LIST["get"]["description"]              = 'Show config'
 API_LIST["get"]["path"]                     = 'retrieve'
-API_LIST["get"]["showConfig"]               = 'path'
+API_LIST["get"]["op"] = {}
+API_LIST["get"]["op"]["showConfig"]         = 'path'
 
 API_LIST["post"] = {}
 API_LIST["post"]["description"]              = 'Configuration mode requests'
@@ -142,12 +143,14 @@ def api(hostname, api, op, cmd, description = ""):
     }
 
     try:
-        resp = requests.post(api_data['api_url'], verify=False, data=post, timeout=5)
+        resp = requests.post(api_data['api_url'], verify=False, data=post, timeout=10)
     except requests.exceptions.ConnectionError:
         v = vyapi(result = False, reason= {
             'exception'     : 'requests.exceptions.ConnectionError',
             'respcode'      : resp.status_code
         })
+        log("failed to post url", api_data['api_url'])
+
         return v
 
 
@@ -165,7 +168,7 @@ def api(hostname, api, op, cmd, description = ""):
 
     log("api resp", [v.result, v.reason, v.data])
 
-    return v
+
 
 
     log_vars = {
@@ -180,5 +183,7 @@ def api(hostname, api, op, cmd, description = ""):
     }
 
     log("api " + description, log_vars)
+
+    return v
 
     
