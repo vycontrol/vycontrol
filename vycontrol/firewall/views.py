@@ -159,7 +159,7 @@ def addrule(request, firewall_name):
                     description = "set rule description",
                 )     
 
-            # if criteria protocol set, save it
+            # if criteria_protocol set, save it
             if request.POST.get('criteria_protocol', None) == "1":
                 # other protocol - todo validate data
                 if request.POST.get('protocol_criteria', None) == "other":
@@ -190,7 +190,7 @@ def addrule(request, firewall_name):
                         description = "set rule protocol",
                     )                                
 
-            # if criteria port set, save it
+            # if criteria+port set, save it
             if request.POST.get('criteria_port', None) == "1":
                 destinationport_json =  request.POST.get('destinationport_json', None)
                 sourceport_json =       request.POST.get('sourceport_json', None)
@@ -232,7 +232,7 @@ def addrule(request, firewall_name):
                         description = "set sourceport port",
                     )
 
-            # if criteria port set, save it
+            # if criteria_address set, save it
             if request.POST.get('criteria_address', None) == "1":
                 # negate sdaddress_source
                 if request.POST.get('sdaddress_source_negate', None) == "1":
@@ -272,7 +272,7 @@ def addrule(request, firewall_name):
                         description = "set sdaddress_destination_txt",
                     )
 
-            # if criteria port set, save it
+            # if criteria_addressgroup set, save it
             if request.POST.get('criteria_addressgroup', None) == "1":
                 if request.POST.get('sdaddressgroup_source', None) != None:              
                     sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
@@ -294,6 +294,28 @@ def addrule(request, firewall_name):
                         description = "set sdaddressgroup_destination",
                     )
 
+
+            # if criteria_networkgroup set, save it
+            if request.POST.get('criteria_networkgroup', None) == "1":
+                if request.POST.get('sdnetworkgroup_source', None) != None:              
+                    sdnetworkgroup_source = request.POST.get('sdnetworkgroup_source')
+                    v = vyos2.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "network-group", sdnetworkgroup_source],
+                            description = "set sdnetworkgroup_source",
+                    )
+
+                if request.POST.get('sdnetworkgroup_destination', None) != None:              
+                    sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "network-group", sdnetworkgroup_destination],
+                        description = "set sdnetworkgroup_destination",
+                    )                    
 
 
     """
