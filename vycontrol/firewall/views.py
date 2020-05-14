@@ -232,38 +232,53 @@ def addrule(request, firewall_name):
                         description = "set sourceport port",
                     )
 
+            # if criteria port set, save it
+            if request.POST.get('criteria_address', None) == "1":
+                # negate sdaddress_source
+                if request.POST.get('sdaddress_source_negate', None) == "1":
+                    sdaddress_source_negate = "!"
+                else:
+                    sdaddress_source_negate = ""
+
+                # negate sdaddress_destination_negate
+                if request.POST.get('sdaddress_destination_negate', None) == "1":
+                    sdaddress_destination_negate = "!"
+                else:
+                    sdaddress_destination_negate = ""                    
+
+
+                if request.POST.get('sdaddress_source', None) != None:              
+                    sdaddress_source = request.POST.get('sdaddress_source')
+                    sdaddress_source_txt = sdaddress_source_negate + sdaddress_source
+                    
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "address", sdaddress_source_txt],
+                        description = "set sdaddress_source",
+                    )
+
+
+                if request.POST.get('sdaddress_destination', None) != None:              
+                    sdaddress_destination = request.POST.get('sdaddress_destination')                    
+                    sdaddress_destination_txt = sdaddress_destination_negate + sdaddress_destination
+
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "address", sdaddress_destination_txt],
+                        description = "set sdaddress_destination_txt",
+                    )
+
+
+
+
 
 
     """
   
-
-
-            #  optional matching crieteria criteria_port
-            if request.POST.get('criteria_port', None) == "1":
-                #destinationport_json
-                #sourceport_json
-
-                if request.POST.get('destinationport_json', None) != None:
-                    try:
-                        destinationports = json.loads(request.POST.get('destinationport_json'))
-                    except ValueError:
-                        return redirect('firewall:firewall-list')
-
-                    print("###################")
-                    pprint.pprint(destinationports)
-
-                    for destinationport in destinationports:
-                        #cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", protocol_criteria_txt]}
-                        #result1 = vyos.set_config(hostname_default, cmd)
-                        #print(result1)
-                        print("###################")
-                        pprint.pprint(destinationport)
-                        #if result1['success'] == True:
-                        changed = True 
-
-            
-
-
 
 
 

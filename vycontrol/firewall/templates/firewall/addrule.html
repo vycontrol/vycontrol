@@ -94,8 +94,12 @@
         </div>       
     </div>
 
-
-    <h3><input type="checkbox" name="criteria_protocol" value="1" id="criteria_protocol"> <label for="criteria_protocol" class="label_for_h3">Matching criteria - protocol</label></h3>
+    <style>
+        .matching_criteria { 
+            padding: 3px;
+        }
+    </style>
+    <h3 class="matching_criteria"><input type="checkbox" name="criteria_protocol" value="1" id="criteria_protocol"> <label for="criteria_protocol" class="label_for_h3">Matching criteria - protocol</label></h3>
     <div class="container" id="criteria_protocol_block" style="display: none">
 
         <div class="row">
@@ -132,7 +136,7 @@
         </div>
     </div>
 
-    <h3 id="criteria_port_block_header" style="display: none"><input type="checkbox" name="criteria_port" value="1" id="criteria_port"> <label for="criteria_port" class="label_for_h3">Matching criteria - port</label></h3>
+    <h3  class="matching_criteria" id="criteria_port_block_header" style="display: none"><input type="checkbox" name="criteria_port" value="1" id="criteria_port"> <label for="criteria_port" class="label_for_h3">Matching criteria - port</label></h3>
     <div class="container" id="criteria_port_block" style="display: none">
         <div class="row">  
             <div class="col">
@@ -219,27 +223,7 @@
 
     </div>
 
-
-    <!--
-    <h3>Matching criteria</h3>
-
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <p>
-                    <input type="radio" name="matching" id="sdaddress" value="sdaddress"> source address / destination address<br>
-                    <input type="radio" name="matching" id="smac" value="smac"> source mac-address<br>
-                    <input type="radio" name="matching" id="sdaddressgroup" value="sdaddressgroup"> source group address-group  / destination group address-group<br>
-                    <input type="radio" name="matching" id="adnetworkgroup" value="adnetworkgroup"> source group network-group / destination group network-group<br>
-                    <input type="radio" name="matching" id="sdportgroup" value="sdportgroup"> source group port-group / destination group port-group        
-                </p>
-
-            </div>
-        </div>
-    </div>
-    -->
-
-    <h3><input type="checkbox" id="criteria_address" value="1" name="criteria_address"> <label for="criteria_address" class="label_for_h3">Matching criteria - address</label></h3>
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_address" value="1" name="criteria_address"> <label for="criteria_address" class="label_for_h3">Matching criteria - address</label></h3>
     <div class="container" id="criteria_address_block" style="display: none">
 
         <div class="row">
@@ -287,7 +271,7 @@
         </div>
     </div>
     
-    <h3><input type="checkbox" id="criteria_addressgroup" value="1" name="criteria_addressgroup"> <label for="criteria_addressgroup" class="label_for_h3">Matching criteria - address-group</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_addressgroup" value="1" name="criteria_addressgroup"> <label for="criteria_addressgroup" class="label_for_h3">Matching criteria - address-group</label></h3>    
     <div class="container" id="criteria_addressgroup_block" style="display: none">    
 
         <div class="row">
@@ -319,8 +303,7 @@
 
     </div>
 
-
-    <h3><input type="checkbox" id="criteria_networkgroup" value="1" name="criteria_networkgroup"> <label for="criteria_networkgroup" class="label_for_h3">Matching criteria - network-group</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_networkgroup" value="1" name="criteria_networkgroup"> <label for="criteria_networkgroup" class="label_for_h3">Matching criteria - network-group</label></h3>    
     <div class="container" id="criteria_networkgroup_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -351,7 +334,7 @@
 
     </div>    
 
-    <h3><input type="checkbox" id="criteria_portgroup" value="1" name="criteria_portgroup"> <label for="criteria_portgroup" class="label_for_h3">Matching criteria - port group</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_portgroup" value="1" name="criteria_portgroup"> <label for="criteria_portgroup" class="label_for_h3">Matching criteria - port group</label></h3>    
     <div class="container" id="criteria_portgroup_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -382,7 +365,7 @@
 
     </div>    
 
-    <h3><input type="checkbox" id="criteria_sourcemac" value="1" name="criteria_sourcemac"> <label for="criteria_sourcemac" class="label_for_h3">Matching criteria - source mac address</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_sourcemac" value="1" name="criteria_sourcemac"> <label for="criteria_sourcemac" class="label_for_h3">Matching criteria - source mac address</label></h3>    
     <div class="container" id="criteria_sourcemac_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -400,7 +383,7 @@
 
     </div>
 
-    <h3><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
     <div class="container" id="criteria_tcpflags_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -443,7 +426,7 @@
         </div>
     </div>
 
-    <h3><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
     <div class="container" id="criteria_packetstate_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -463,6 +446,11 @@
 
     
 <script>
+
+    function isNumeric(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     $(document).ready(function () {                            
         $(".protocol_criteria").change(function () {
             if ($("#protocol_criteria_other").is(":checked")) {
@@ -480,7 +468,7 @@
                 $("#criteria_port_block_header").hide();
                 $("#criteria_port_block").hide();
             } else {
-                $("#criteria_port_block_header").show();
+                $("#criteria_port_block_header").show("highlight", {color: '#FBE28A'}, 2000);
             }
         });
 
@@ -565,10 +553,6 @@
             }
         });   
 
-        function isNumeric(n) {
-            return !isNaN(parseFloat(n)) && isFinite(n);
-        }
-
         // form basic validations
         $("#form_addrule").submit(function(e){
             rulenumber = $('#rulenumber').val();
@@ -609,8 +593,7 @@
 
             //e.preventDefault();
         });
-
-        
+     
         $("#sourceport_common_add").click(function () {
             port = $("#sourceport_common").children("option:selected").val();
             text = $("#sourceport_common").children("option:selected").text();            
