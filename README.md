@@ -34,6 +34,7 @@ It will work with a single VyoS server or to multiple VyOS servers, so datacente
 * 20.06.15 - layout
 * **20.06.20-LTS** - OSPF features
 * 20.07.01 – FastNetMon one-click integration
+* 20.07.05 – Finish firewall options
 * 20.08.01 - s3 backup scheduler and commit confirm
 * 20.12.10 - ipv6 milestone
 * 20.12.20 - depend on a third party
