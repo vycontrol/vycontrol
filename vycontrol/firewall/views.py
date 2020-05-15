@@ -151,6 +151,8 @@ def addrule(request, firewall_name):
                     cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "disable"],
                     description = "set rule disable",
                 )
+                if v.success:
+                  changed = True 
 
             # if status set, save it
             if request.POST.get('description', None) != None:
@@ -160,7 +162,9 @@ def addrule(request, firewall_name):
                     op =        "set",
                     cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "description", request.POST.get('description')],
                     description = "set rule description",
-                )     
+                )    
+                if v.success:
+                  changed = True  
 
             # if criteria_protocol set, save it
             if request.POST.get('criteria_protocol', None) == "1":
@@ -191,7 +195,9 @@ def addrule(request, firewall_name):
                         op =        "set",
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "protocol", protocol_criteria_txt],
                         description = "set rule protocol",
-                    )                                
+                    ) 
+                    if v.success:
+                        changed = True                                
 
             # if criteria+port set, save it
             if request.POST.get('criteria_port', None) == "1":
@@ -216,6 +222,8 @@ def addrule(request, firewall_name):
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "port", destinationport_text],
                         description = "set destination port",
                     ) 
+                    if v.success:
+                        changed = True 
 
                 if sourceport_json != None:
 
@@ -234,6 +242,8 @@ def addrule(request, firewall_name):
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "port", sourceport_text],
                         description = "set sourceport port",
                     )
+                    if v.success:
+                        changed = True 
 
             # if criteria_address set, save it
             if request.POST.get('criteria_address', None) == "1":
@@ -261,6 +271,8 @@ def addrule(request, firewall_name):
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "address", sdaddress_source_txt],
                         description = "set sdaddress_source",
                     )
+                    if v.success:
+                        changed = True 
 
 
                 if request.POST.get('sdaddress_destination', None) != None:              
@@ -274,6 +286,8 @@ def addrule(request, firewall_name):
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "address", sdaddress_destination_txt],
                         description = "set sdaddress_destination_txt",
                     )
+                    if v.success:
+                        changed = True 
 
             # if criteria_addressgroup set, save it
             if request.POST.get('criteria_addressgroup', None) == "1":
@@ -286,6 +300,8 @@ def addrule(request, firewall_name):
                             cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "address-group", sdaddressgroup_source],
                             description = "set sdaddressgroup_source",
                     )
+                    if v.success:
+                        changed = True 
 
                 if request.POST.get('sdaddressgroup_destination', None) != None:              
                     sdaddressgroup_destination = request.POST.get('sdaddressgroup_destination')                    
@@ -296,7 +312,8 @@ def addrule(request, firewall_name):
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "address-group", sdaddressgroup_destination],
                         description = "set sdaddressgroup_destination",
                     )
-
+                    if v.success:
+                        changed = True 
 
             # if criteria_networkgroup set, save it
             if request.POST.get('criteria_networkgroup', None) == "1":
@@ -309,6 +326,8 @@ def addrule(request, firewall_name):
                             cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "network-group", sdnetworkgroup_source],
                             description = "set sdnetworkgroup_source",
                     )
+                    if v.success:
+                        changed = True 
 
                 if request.POST.get('sdnetworkgroup_destination', None) != None:              
                     sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
@@ -318,35 +337,38 @@ def addrule(request, firewall_name):
                         op =        "set",
                         cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "network-group", sdnetworkgroup_destination],
                         description = "set sdnetworkgroup_destination",
-                    )                    
+                    ) 
+                    if v.success:
+                        changed = True                  
 
-
-    """
-  
-
-
-
-        #""if 'protocol' in request.POST:
-            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "protocol", request.POST['protocol']]}
-            result2 = vyos.set_config(hostname_default, cmd)
-            print(result2)
-            changed = True
-
-        if 'destinationport' in request.POST:
-            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "destination", "port", request.POST['destinationport']]}
-            result3 = vyos.set_config(hostname_default, cmd)
-            print(result3)
-            changed = True
-
-        if 'sourceport' in request.POST:
-            cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", request.POST['rulenumber'], "source", "port", request.POST['sourceport']]}
-            result3 = vyos.set_config(hostname_default, cmd)
-            print(result3)        
-            changed = True""#
-
-        if changed == True:
-            return redirect('firewall:show', firewall_name)"""
+            # if criteria_networkgroup set, save it
+            if request.POST.get('criteria_sourcemac', None) == "1":
+                # negate sdaddress_source
+                if request.POST.get('smac_source_negate', None) == "1":
+                    sourcemac_negate = "!"
+                else:
+                    sourcemac_negate = ""               
     
+                if request.POST.get('smac_source', None) != None:
+                    sourcemac = request.POST.get('smac_source')
+                    sourcemac = sourcemac.replace("-",":")
+                    sourcemac = sourcemac.lower()
+
+                    sourcemac_txt = sourcemac_negate + sourcemac
+
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "mac-address", sourcemac_txt],
+                        description = "set source mac",
+                    )
+                    if v.success:
+                        changed = True 
+
+
+    if changed == True:
+        return redirect('firewall:show', firewall_name)
 
     template = loader.get_template('firewall/addrule.html')
     context = { 
@@ -734,7 +756,6 @@ def firewall_addressgroup_add(request):
         'is_superuser' : is_superuser,
     }   
     return HttpResponse(template.render(context, request))
-
 
 @is_authenticated
 def firewall_addressgroup_del(request, groupname):

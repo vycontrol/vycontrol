@@ -24,7 +24,12 @@
 
 {% if firewall_all %}
     <table border="1" width="100%">
-    <tr><th>name</th><th>description</th><th>default-action</th></th><th>actions</th></tr>
+    <tr>
+        <th>name</th>
+        <th>description</th>
+        <th>default-action</th>
+        <th>actions</th>
+    </tr>
 
     {% for key, value in firewall_all.items %}
         

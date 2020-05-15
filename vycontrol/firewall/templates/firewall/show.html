@@ -44,7 +44,12 @@
 
 {% if firewall.rule %}
     <table border="1" width="100%">
-    <tr><th>rule #</th><th>description</th><th>protocol</th><th>destination port</th><th>source port</th><th>firewall action</th><th>admin action</th></tr>
+    <tr>
+        <th>rule #</th>
+        <th>description</th>
+        <th>firewall action</th>
+        <th>admin action</th>
+    </tr>
 
     {% for key, value in firewall.items %}
         
@@ -52,9 +57,11 @@
             <tr>
             <td><a href="{% url 'firewall:editrule' firewall_name ifkey %}">{{ ifkey }}</a></td>
             <td>{{ ifvalue.description }}</td>
+            {% comment %}
             <td>{{ ifvalue.protocol }}</td>
             <td>{{ ifvalue.destination.port }}</td>
             <td>{{ ifvalue.source.port }}</td>
+            {% endcomment %}
             <td>{{ ifvalue.action }}</td>       
             <td>
                 <a href="{% url 'firewall:editrule' firewall_name ifkey %}">edit</a> | 
