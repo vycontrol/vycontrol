@@ -391,14 +391,65 @@ def addrule(request, firewall_name):
                         )
                         if v.success:
                             changed = True
-                     
-                # if criteria_portgroup set, save it
-                if request.POST.get('criteria_portgroup', None) == "1":
-                    pass
 
-                # if criteria_tcpflags set, save it
-                if request.POST.get('criteria_tcpflags', None) == "1":
-                    pass
+            # if criteria_tcpflags set, save it
+            if request.POST.get('criteria_tcpflags', None) == "1":
+                tcpflags = []
+                
+                if request.POST.get('tcpflags_syn', None) == "1":
+                    tcpflags.append('SYN')
+                if request.POST.get('tcpflags_isyn', None) == "1":
+                    tcpflags.append('!SYN')                        
+                
+                if request.POST.get('tcpflags_ack', None) == "1":
+                    tcpflags.append('ACK')
+                if request.POST.get('tcpflags_iack', None) == "1":
+                    tcpflags.append('!ACK')
+
+                if request.POST.get('tcpflags_fin', None) == "1":
+                    tcpflags.append('FIN')
+                if request.POST.get('tcpflags_ifin', None) == "1":
+                    tcpflags.append('!FIN')                        
+                
+                if request.POST.get('tcpflags_rst', None) == "1":
+                    tcpflags.append('RST')
+                if request.POST.get('tcpflags_irst', None) == "1":
+                    tcpflags.append('!RST')
+
+                if request.POST.get('tcpflags_urg', None) == "1":
+                    tcpflags.append('URG')
+                if request.POST.get('tcpflags_iurg', None) == "1":
+                    tcpflags.append('!URG')                        
+
+                if request.POST.get('tcpflags_psh', None) == "1":
+                    tcpflags.append('PSH')
+                if request.POST.get('tcpflags_ipsh', None) == "1":
+                    tcpflags.append('!PSH')                        
+
+                if request.POST.get('tcpflags_all', None) == "1":
+                    tcpflags.append('ALL')
+                if request.POST.get('tcpflags_iall', None) == "1":
+                    tcpflags.append('!ALL')                                                
+
+                vyos2.log("tcp flags", tcpflags)
+
+                if len(tcpflags) > 0:
+                    tcpflags_txt = ",".join(tcpflags)
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "tcp", "flags", tcpflags_txt],
+                        description = "set criteria_tcpflags",
+                    )
+                    if v.success:
+                        changed = True
+
+                    
+                # if criteria_portgroup set, save it
+                #if request.POST.get('criteria_portgroup', None) == "1":
+                #    pass
+
 
     if changed == True:
         return redirect('firewall:show', firewall_name)

@@ -219,6 +219,49 @@
 
     </div>
 
+    <h3 class="matching_criteria" id="criteria_tcpflags_header" style="display: none"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
+    <div class="container" id="criteria_tcpflags_block" style="display: none">
+        <div class="row">
+            <div class="col">
+                <table width="100%">
+                    <tr>
+                        <th>Allow flag</th>
+                        <th>Negate flag</th>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_syn" id="tcpflags_syn" value="1"> SYN</td>
+                        <td><input type="checkbox" name="tcpflags_isyn" id="tcpflags_isyn" value="1"> !SYN</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_ack" id="tcpflags_ack" value="1"> ACK</td>
+                        <td><input type="checkbox" name="tcpflags_iack" id="tcpflags_iack" value="1"> !ACK</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_fin" id="tcpflags_fin" value="1"> FIN</td>
+                        <td><input type="checkbox" name="tcpflags_ifin" id="tcpflags_ifin" value="1"> !FIN</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_rst" id="tcpflags_rst" value="1"> RST</td>
+                        <td><input type="checkbox" name="tcpflags_irst" id="tcpflags_irst" value="1"> !RST</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_urg" id="tcpflags_urg" value="1"> URG</td>
+                        <td><input type="checkbox" name="tcpflags_iurg" id="tcpflags_iurg" value="1"> !URG</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_psh" id="tcpflags_psh" value="1"> PSH</td>
+                        <td><input type="checkbox" name="tcpflags_ipsh" id="tcpflags_ipsh" value="1"> !PSH</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="tcpflags_all" id="tcpflags_all" value="1"> ALL</td>
+                        <td><input type="checkbox" name="tcpflags_iall" id="tcpflags_iall" value="1"> !ALL</td>
+                    </tr>                        
+                </table>
+            </div>
+
+        </div>
+    </div>
+
     <h3 class="matching_criteria"><input type="checkbox" id="criteria_address" value="1" name="criteria_address"> <label for="criteria_address" class="label_for_h3">Matching criteria - address</label></h3>
     <div class="container" id="criteria_address_block" style="display: none">
 
@@ -379,48 +422,6 @@
 
     </div>
 
-    <h3 class="matching_criteria"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
-    <div class="container" id="criteria_tcpflags_block" style="display: none">
-        <div class="row">
-            <div class="col">
-                <table width="100%">
-                    <tr>
-                        <th>Allow flag</th>
-                        <th>Negate flag</th>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="SYN"> SYN</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!SYN"> !SYN</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="ACK"> ACK</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!ACK"> !ACK</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="FIN"> FIN</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!FIN"> !FIN</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="RST"> RST</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!RST"> !RST</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="URG"> URG</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!URG"> !URG</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="PSH"> PSH</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!PSH"> !PSH</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="ALL"> ALL</td>
-                        <td><input type="checkbox" name="tcpflags" id="tcpflags" value="!ALL"> !ALL</td>
-                    </tr>                        
-                </table>
-            </div>
-
-        </div>
-    </div>
 
     <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
     <div class="container" id="criteria_packetstate_block" style="display: none">
@@ -466,6 +467,16 @@
             } else {
                 $("#criteria_port_block_header").show("highlight", {color: '#FBE28A'}, 2000);
             }
+
+            if (['tcp', 'tcp_udp'].includes(protocol_criteria) == false) {
+                $("#criteria_tcpflags_header").hide();
+                $("#criteria_tcpflags_block").hide();
+            } else {
+                $("#criteria_tcpflags_header").show("highlight", {color: '#FBE28A'}, 2000);
+            }
+            
+
+
         });
 
         $("#criteria_protocol").change(function () {
