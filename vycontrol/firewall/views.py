@@ -4,6 +4,8 @@ from django.template import loader
 from django.shortcuts import redirect
 from django.conf import settings
 from django.urls import reverse
+from django.http import QueryDict
+
 
 import vyos, vyos2
 from performance import timer
@@ -98,7 +100,7 @@ def create(request):
 
 @is_authenticated
 def addrule(request, firewall_name):
-        
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -341,7 +343,7 @@ def addrule(request, firewall_name):
                     if v.success:
                         changed = True                  
 
-            # if criteria_networkgroup set, save it
+            # if criteria_sourcemac set, save it
             if request.POST.get('criteria_sourcemac', None) == "1":
                 # negate sdaddress_source
                 if request.POST.get('smac_source_negate', None) == "1":
@@ -366,6 +368,37 @@ def addrule(request, firewall_name):
                     if v.success:
                         changed = True 
 
+            # if criteria_packetstate set, save it
+            if request.POST.get('criteria_packetstate', None) == "1":
+                packetstates = []
+                if request.POST.get('packetstate_established', None) == "1":
+                    packetstates.append('established')
+                if request.POST.get('packetstate_invalid', None) == "1":
+                    packetstates.append('invalid')
+                if request.POST.get('packetstate_new', None) == "1":
+                    packetstates.append('new')
+                if request.POST.get('packetstate_related', None) == "1":
+                    packetstates.append('related')
+
+                if len(packetstates) > 0:
+                    for packetstate in packetstates:
+                        v = vyos2.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "state", packetstate, "enable"],
+                            description = "set criteria_packetstate",
+                        )
+                        if v.success:
+                            changed = True
+                     
+                # if criteria_portgroup set, save it
+                if request.POST.get('criteria_portgroup', None) == "1":
+                    pass
+
+                # if criteria_tcpflags set, save it
+                if request.POST.get('criteria_tcpflags', None) == "1":
+                    pass
 
     if changed == True:
         return redirect('firewall:show', firewall_name)
@@ -857,7 +890,6 @@ def firewall_addressgroup_desc(request, groupname):
         return HttpResponse(template.render(context, request))
     else:
         return redirect('firewall:firewall-addressgroup-list')    
-
 
 @is_authenticated
 def firewall_networkgroup_desc(request, groupname):
