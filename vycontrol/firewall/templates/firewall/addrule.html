@@ -378,8 +378,8 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdportgroup_source">source port group</label><br>
-                    <select name="sdportgroup_source" size="10" style="width: 200px;">
+                    <label for="sdportgroup_source">source port group (single choice)</label><br>
+                    <select name="sdportgroup_source" id="sdportgroup_source" size="10" style="width: 200px;">
                         {% for f in portgroups_groups %}
                         <option>{{ f }}</option>
                         {% endfor %}
@@ -390,8 +390,8 @@
 
             <div class="col">
                 <p>
-                    <label for="sdportgroup_destination">destination port group</label><br>
-                    <select name="sdportgroup_destination" size="10" style="width: 200px;">
+                    <label for="sdportgroup_destination">destination port group (single choice)</label><br>
+                    <select name="sdportgroup_destination" id="sdportgroup_destination" size="10" style="width: 200px;">
                         {% for f in portgroups_groups %}
                         <option>{{ f }}</option>
                         {% endfor %}

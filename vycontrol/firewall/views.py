@@ -445,10 +445,30 @@ def addrule(request, firewall_name):
                     if v.success:
                         changed = True
 
-                    
-                # if criteria_portgroup set, save it
-                #if request.POST.get('criteria_portgroup', None) == "1":
-                #    pass
+            # if criteria_portgroup set, save it
+            if request.POST.get('criteria_portgroup', None) == "1":
+                if request.POST.get('sdportgroup_source', None) != None:
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "port-group", request.POST.get('sdportgroup_source')],
+                        description = "set sdportgroup_source",
+                    )
+                    if v.success:
+                        changed = True
+
+                if request.POST.get('sdportgroup_destination', None) != None:
+                    v = vyos2.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
+                        description = "set sdportgroup_destination",
+                    )
+                    if v.success:
+                        changed = True                        
+
 
 
     if changed == True:
