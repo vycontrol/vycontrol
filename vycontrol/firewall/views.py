@@ -119,27 +119,39 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
+
+    # get all selected firewall data  
     firewall = vyos.get_firewall(hostname_default, firewall_name)
 
-    firewall_networkgroup_raw = vycommon.get_firewall_networkgroup(hostname_default)
-    if firewall_networkgroup_raw.success:
-        firewall_networkgroup = firewall_networkgroup_raw.data
-    else:
-        firewall_networkgroup = {}
-        firewall_networkgroup['network-group'] = {}
+    # get all firewall groups
+    firewall_group = {}
+    firewall_group['network-group'] = {}
+    firewall_group['address-group'] = {}
+    firewall_group['port-group'] = {}
+    firewall_group_raw = vycommon.get_firewall_group(hostname_default)
+    if firewall_group_raw.success:
+        if 'network-group' in firewall_group_raw.data:
+            for g in firewall_group_raw.data['network-group']:
+                firewall_group['network-group'][g] = firewall_group_raw.data['network-group'][g]
+
+        if 'address-group' in firewall_group_raw.data:
+            for g in firewall_group_raw.data['address-group']:
+                firewall_group['address-group'][g] = firewall_group_raw.data['address-group'][g]
+
+        if 'port-group' in firewall_group_raw.data:
+            for g in firewall_group_raw.data['port-group']:
+                firewall_group['port-group'][g] = firewall_group_raw.data['port-group'][g]
+    firewall_networkgroup_js = json.dumps(firewall_group['network-group'])
+    firewall_addressgroup_js = json.dumps(firewall_group['address-group'])
 
 
-    firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
-    firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
-    firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
     netservices = network.get_services()
     netservices_js = json.dumps(netservices)
     portgroups = vyos.get_firewall_portgroup(hostname_default)
     ruledata = vycommon.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
     ruledata_json = json.dumps(ruledata.data)
-  
-    vyos2.log("json", ruledata_json)
 
+    vyos2.log("json", ruledata_json)
 
     if portgroups != False:
         portgroups_groups = portgroups['port-group']
@@ -152,6 +164,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     if (    mode == "editrule" 
         and rulenumber == None):
         return redirect('firewall:show', firewall_name)
+
 
     # mode add rule
     if mode == "addrule":
@@ -198,6 +211,16 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 )
                 if v.success:
                   changed = True 
+            elif request.POST.get('status') == "enabled" and mode == "editrule":
+                v = vyos2.api (
+                    hostname=   hostname_default,
+                    api =       "post",
+                    op =        "delete",
+                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
+                    description = "delete rule disable",
+                )
+                if v.success:
+                  changed = True  
 
             # if status set, save it
             if request.POST.get('description', None) != None:
@@ -339,12 +362,14 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 if request.POST.get('sdaddressgroup_source', None) != None:              
                     sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
                     v = vyos2.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
-                            description = "set sdaddressgroup_source",
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "set",
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
+                        description = "set sdaddressgroup_source",
                     )
+                    vyos2.log("set sdaddressgroup_source", v.data)
+
                     if v.success:
                         changed = True 
 
@@ -357,6 +382,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", sdaddressgroup_destination],
                         description = "set sdaddressgroup_destination",
                     )
+                    vyos2.log("set sdaddressgroup_destination", v.data)
+
                     if v.success:
                         changed = True 
 
@@ -373,6 +400,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     )
                     if v.success:
                         changed = True 
+                    else:
+                        vyos2.log("sdnetworkgroup_source", v.error)
 
                 if request.POST.get('sdnetworkgroup_destination', None) != None:              
                     sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
@@ -385,6 +414,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     ) 
                     if v.success:
                         changed = True                  
+                    else:
+                        vyos2.log("sdnetworkgroup_source", v.error)                        
 
             # if criteria_sourcemac set, save it
             if request.POST.get('criteria_sourcemac', None) == "1":
@@ -528,8 +559,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'is_superuser' :                    is_superuser,
         'services' :                        netservices['services'],
         'services_common' :                 netservices['common'],
-        'firewall_networkgroup':            firewall_networkgroup['network-group'],
-        'firewall_addressgroup':            firewall_addressgroup['address-group'],
+        'firewall_networkgroup':            firewall_group['network-group'],
+        'firewall_addressgroup':            firewall_group['address-group'],
         'firewall_networkgroup_js':         firewall_networkgroup_js,
         'firewall_addressgroup_js':         firewall_addressgroup_js,
         'netservices_js' :                  netservices_js,

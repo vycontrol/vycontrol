@@ -20,13 +20,12 @@ def get_firewall_rulenumber(hostname, firewall, rulenumber):
     return v
 
 
-def get_firewall_networkgroup(hostname):
+def get_firewall_group(hostname):
     v = vyos2.api (
         hostname=   hostname,
         api =       "get",
         op =        "showConfig",
-        cmd =       ["firewall", "group", "network"],
-        description = "get_firewall_networkgroup",
+        cmd =       ["firewall", "group"],
+        description = "get_firewall_group",
     )
     return v
-
