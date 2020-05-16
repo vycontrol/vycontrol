@@ -5,7 +5,8 @@
 </p>
 
 
-VyControl is a single frontend interface to manage a single or multiple VyoS servers.
+VyControl is a single frontend interface to manage a single or multiple VyoS servers. Only download [VyOS](https://www.vyos.io/) Rolling Release, since VyControl needs latest VyOS API.
+
 
 Still in 2020, the most important functionalities that until then were only possible through CLI (command line interface), will be possible through a friendly and web interface developed in Django / Python.
 
