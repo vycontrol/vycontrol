@@ -32,11 +32,12 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 # roadmap 
 
 ## current version
+* 20.05.02.1000 - working firewall without zones 
+
+## changelog
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-
-* 20.05.02.1000 - working firewall without zones 
 * 20.05.04.1000 - improve error returns to end users
 * 20.05.07.1000 - vlans / interfaces deep configuration
 * 20.05.10.1000 - working firewall with zones 
