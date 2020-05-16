@@ -1,21 +1,24 @@
 # VyControl
+
+It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
+
 * [VyOS](https://www.vyos.io/) frontend made in Python / Django using VyOS new 1.3 API server
 * Check out website at https://www.vycontrol.com/
-
 
 <p align="center">
 <img align="center" width="150" height="150" src="https://storage.googleapis.com/vycontrol/logos/logo_transparent.png">
 </p>
 
 
+# plan to use VyControl?
+- [ ] **Subscribe to our announce list** at https://vycontrol.com/
+- [ ] Join Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
+- [ ] Add new enhancement requests at https://github.com/vycontrol/vycontrol/issues
 
-It will work with a single VyoS server or to multiple VyOS servers, so datacenters which do not want share same firewall to different customers will not need to install several VyControl to each customer. That's why the name VyControl.
-
-# community, help and development 
-* Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
-* VyControl discussion at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
-* Feature requests, bugs please add at https://github.com/vycontrol/vycontrol/issues
-* Forks and pull requests are welcome!
+# plan to develop VyControl?
+- [ ] Solve Issues at https://github.com/vycontrol/vycontrol/issues
+- [ ] Forks and pull requests are welcome!
+- [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 # roadmap 
 
