@@ -8,6 +8,8 @@ from django.http import QueryDict
 
 
 import vyos, vyos2
+import vyos_common as vycommon
+
 from performance import timer
 from perms import is_authenticated
 import perms
@@ -99,20 +101,45 @@ def create(request):
     return HttpResponse(template.render(context, request))
 
 @is_authenticated
-def addrule(request, firewall_name):
+def firewall_removerule(request, firewall_name, firewall_rulenumber):
+    all_instances = vyos.instance_getall()
+    hostname_default = vyos.get_hostname_prefered(request)
 
+    firewall = vyos.get_firewall(hostname_default, firewall_name)
+    firewall_rule = vyos.get_firewall_rule(hostname_default, firewall_name, firewall_rulenumber)
+
+    if firewall_rule and firewall:
+        vyos.delete_route_rule(hostname_default, firewall_name, firewall_rulenumber)
+
+    return redirect('firewall:show', firewall_name)
+
+
+def changerule(request, firewall_name, mode, template_name="firewall/addrule.html", rulenumber = None):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
     firewall = vyos.get_firewall(hostname_default, firewall_name)
-    firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
+
+    firewall_networkgroup_raw = vycommon.get_firewall_networkgroup(hostname_default)
+    if firewall_networkgroup_raw.success:
+        firewall_networkgroup = firewall_networkgroup_raw.data
+    else:
+        firewall_networkgroup = {}
+        firewall_networkgroup['network-group'] = {}
+
+
     firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
     firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
     firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
     netservices = network.get_services()
     netservices_js = json.dumps(netservices)
     portgroups = vyos.get_firewall_portgroup(hostname_default)
+    ruledata = vycommon.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
+    ruledata_json = json.dumps(ruledata.data)
+  
+    vyos2.log("json", ruledata_json)
+
 
     if portgroups != False:
         portgroups_groups = portgroups['port-group']
@@ -121,23 +148,39 @@ def addrule(request, firewall_name):
 
     changed = False
 
+    # edit rule without valid rulenumber
+    if (    mode == "editrule" 
+        and rulenumber == None):
+        return redirect('firewall:show', firewall_name)
+
+    # mode add rule
+    if mode == "addrule":
+        rulenumber = request.POST.get('rulenumber')
+        vyos2.log("mode addrule", rulenumber)
+
+        # mode add rule without valid rulenumber
+        if (    request.POST.get('rulenumber', None) == None 
+            or  int(request.POST.get('rulenumber')) <= 0):
+            return redirect('firewall:show', firewall_name)
+        else:
+            rulenumber = request.POST.get('rulenumber')
+            vyos2.log("mode editrule", rulenumber)
+
 
     # verifing basic informations, should have rulenumber, status and ruleaction
-    if (    request.POST.get('rulenumber', None) != None 
-        and int(request.POST.get('rulenumber')) > 0
-        and request.POST.get('status', None) != None
+    if (    request.POST.get('status', None) != None
         and request.POST.get('status') in ["enabled", "disabled"]
         and request.POST.get('ruleaction', None) != None
         and request.POST.get('ruleaction') in ["accept", "drop", "reject"]
     ):
-        vyos2.log("basic pass x")
+        vyos2.log("pass basic validations")
 
 
         v = vyos2.api (
             hostname=   hostname_default,
             api =       "post",
             op =        "set",
-            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "action", request.POST.get('ruleaction')],
+            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "action", request.POST.get('ruleaction')],
             description = "set rule action",
         )
         # rule created, continue to configure firewall rule according his criterias
@@ -150,7 +193,7 @@ def addrule(request, firewall_name):
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
-                    cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "disable"],
+                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
                     description = "set rule disable",
                 )
                 if v.success:
@@ -162,7 +205,7 @@ def addrule(request, firewall_name):
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
-                    cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "description", request.POST.get('description')],
+                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "description", request.POST.get('description')],
                     description = "set rule description",
                 )    
                 if v.success:
@@ -195,7 +238,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "protocol", protocol_criteria_txt],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol", protocol_criteria_txt],
                         description = "set rule protocol",
                     ) 
                     if v.success:
@@ -221,7 +264,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "port", destinationport_text],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port", destinationport_text],
                         description = "set destination port",
                     ) 
                     if v.success:
@@ -241,7 +284,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "port", sourceport_text],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port", sourceport_text],
                         description = "set sourceport port",
                     )
                     if v.success:
@@ -270,7 +313,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "address", sdaddress_source_txt],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address", sdaddress_source_txt],
                         description = "set sdaddress_source",
                     )
                     if v.success:
@@ -285,7 +328,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "address", sdaddress_destination_txt],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address", sdaddress_destination_txt],
                         description = "set sdaddress_destination_txt",
                     )
                     if v.success:
@@ -299,7 +342,7 @@ def addrule(request, firewall_name):
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "address-group", sdaddressgroup_source],
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
                             description = "set sdaddressgroup_source",
                     )
                     if v.success:
@@ -311,7 +354,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "address-group", sdaddressgroup_destination],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", sdaddressgroup_destination],
                         description = "set sdaddressgroup_destination",
                     )
                     if v.success:
@@ -325,7 +368,7 @@ def addrule(request, firewall_name):
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "network-group", sdnetworkgroup_source],
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group", sdnetworkgroup_source],
                             description = "set sdnetworkgroup_source",
                     )
                     if v.success:
@@ -337,7 +380,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "network-group", sdnetworkgroup_destination],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group", sdnetworkgroup_destination],
                         description = "set sdnetworkgroup_destination",
                     ) 
                     if v.success:
@@ -362,7 +405,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "mac-address", sourcemac_txt],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address", sourcemac_txt],
                         description = "set source mac",
                     )
                     if v.success:
@@ -386,7 +429,7 @@ def addrule(request, firewall_name):
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "state", packetstate, "enable"],
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate, "enable"],
                             description = "set criteria_packetstate",
                         )
                         if v.success:
@@ -439,7 +482,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "tcp", "flags", tcpflags_txt],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags", tcpflags_txt],
                         description = "set criteria_tcpflags",
                     )
                     if v.success:
@@ -452,7 +495,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "source", "group", "port-group", request.POST.get('sdportgroup_source')],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group", request.POST.get('sdportgroup_source')],
                         description = "set sdportgroup_source",
                     )
                     if v.success:
@@ -463,7 +506,7 @@ def addrule(request, firewall_name):
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", request.POST.get('rulenumber'), "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
                         description = "set sdportgroup_destination",
                     )
                     if v.success:
@@ -474,92 +517,76 @@ def addrule(request, firewall_name):
     if changed == True:
         return redirect('firewall:show', firewall_name)
 
-    template = loader.get_template('firewall/addrule.html')
+    template = loader.get_template(template_name)
     context = { 
         #'interfaces': interfaces,
-        'instances': all_instances,
-        'hostname_default': hostname_default,
-        'firewall':  firewall,
-        'firewall_name': firewall_name,
-        'username': request.user,
-        'is_superuser' : is_superuser,
-        'services' : netservices['services'],
-        'services_common' : netservices['common'],
-        'firewall_networkgroup': firewall_networkgroup['network-group'],
-        'firewall_addressgroup': firewall_addressgroup['address-group'],
-        'firewall_networkgroup_js': firewall_networkgroup_js,
-        'firewall_addressgroup_js': firewall_addressgroup_js,
-        'netservices_js' : netservices_js,
-        'portgroups_groups': portgroups_groups,
-    }  
+        'instances':                        all_instances,
+        'hostname_default':                 hostname_default,
+        'firewall':                         firewall,
+        'firewall_name':                    firewall_name,
+        'username':                         request.user,
+        'is_superuser' :                    is_superuser,
+        'services' :                        netservices['services'],
+        'services_common' :                 netservices['common'],
+        'firewall_networkgroup':            firewall_networkgroup['network-group'],
+        'firewall_addressgroup':            firewall_addressgroup['address-group'],
+        'firewall_networkgroup_js':         firewall_networkgroup_js,
+        'firewall_addressgroup_js':         firewall_addressgroup_js,
+        'netservices_js' :                  netservices_js,
+        'portgroups_groups':                portgroups_groups,
+        'mode' :                            mode
+    }
+
+    if mode == "editrule":
+        context['ruledata'] =               ruledata.data
+        context['ruledata_json'] =          ruledata_json
+        context['rulenumber'] =             rulenumber
+
     return HttpResponse(template.render(context, request))
+    
 
 @is_authenticated
-def firewall_removerule(request, firewall_name, firewall_rulenumber):
-    all_instances = vyos.instance_getall()
-    hostname_default = vyos.get_hostname_prefered(request)
-
-    firewall = vyos.get_firewall(hostname_default, firewall_name)
-    firewall_rule = vyos.get_firewall_rule(hostname_default, firewall_name, firewall_rulenumber)
-
-    if firewall_rule and firewall:
-        vyos.delete_route_rule(hostname_default, firewall_name, firewall_rulenumber)
-
-    return redirect('firewall:show', firewall_name)
-
-@is_authenticated
-def editrule(request, firewall_name, firewall_rulenumber):
-    #interfaces = vyos.get_interfaces()
+def xeditrule(request, firewall_name, rulenumber):
+     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
-
-    firewall = vyos.get_firewall(hostname_default, firewall_name)
-    firewall_rule = vyos.get_firewall_rule(hostname_default, firewall_name, firewall_rulenumber)
-
-    changed = False
-
-    if 'action' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", firewall_rulenumber, "action", request.POST['action']]}
-        result1 = vyos.set_config(hostname_default, cmd)
-        print(result1)
-        changed = True
-
-    if 'protocol' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", firewall_rulenumber, "protocol", request.POST['protocol']]}
-        result2 = vyos.set_config(hostname_default, cmd)
-        print(result2)
-        changed = True
-
-    if 'destinationport' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", firewall_rulenumber, "destination", "port", request.POST['destinationport']]}
-        result3 = vyos.set_config(hostname_default, cmd)
-        print(result3)
-        changed = True
-
-    if 'sourceport' in request.POST:
-        cmd = {"op": "set", "path": ["firewall", "name", firewall_name, "rule", firewall_rulenumber, "source", "port", request.POST['sourceport']]}
-        result3 = vyos.set_config(hostname_default, cmd)
-        print(result3)
-        changed = True        
-
-    if changed == True:
-        return redirect('firewall:firewall-list')
-
-
+    firewall = vyos.get_firewall(hostname_default, firewall_name)  # remove
+    firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
+    firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
+    firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
+    firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
+    netservices = network.get_services()
+    netservices_js = json.dumps(netservices)
+    portgroups = vyos.get_firewall_portgroup(hostname_default)
+    
     template = loader.get_template('firewall/editrule.html')
     context = { 
         #'interfaces': interfaces,
-        'instances': all_instances,
-        'hostname_default': hostname_default,
-        'firewall':  firewall,
-        'firewall_name': firewall_name,
-        'firewall_rule': firewall_rule,
-        'firewall_rulenumber' : firewall_rulenumber,
-        'username': request.user,
-        'is_superuser' : is_superuser,
-    }  
-    return HttpResponse(template.render(context, request))
+        'instances':                        all_instances,
+        'hostname_default':                 hostname_default,
+        'firewall_name':                    firewall_name,
+        'firewall_name':                    firewall_name,
+        'username':                         request.user,
+        'is_superuser' :                    is_superuser,
+        'services' :                        netservices['services'],
+        'services_common' :                 netservices['common'],
+        'firewall_networkgroup':            firewall_networkgroup['network-group'],
+        'firewall_addressgroup':            firewall_addressgroup['address-group'],
+        'firewall_networkgroup_js':         firewall_networkgroup_js,
+        'firewall_addressgroup_js':         firewall_addressgroup_js,
+        'netservices_js' :                  netservices_js,
+    }
+      
+
+
+@is_authenticated
+def addrule(request, firewall_name):
+    return changerule(request, firewall_name, mode="addrule", template_name="firewall/addrule.html", rulenumber = None)
+
+@is_authenticated
+def editrule(request, firewall_name, rulenumber):
+    return changerule(request, firewall_name, mode="editrule", template_name="firewall/editrule.html", rulenumber=rulenumber)
 
 @is_authenticated
 def show(request, firewall_name):

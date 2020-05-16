@@ -33,7 +33,7 @@ urlpatterns = [
 
 
     path('addrule/<str:firewall_name>', views.addrule, name='addrule'),
-    path('editrule/<str:firewall_name>/<str:firewall_rulenumber>', views.editrule, name='editrule'),
+    path('editrule/<str:firewall_name>/<str:rulenumber>', views.editrule, name='editrule'),
     path('firewall-removerule/<str:firewall_name>/<str:firewall_rulenumber>', views.firewall_removerule, name='firewall-removerule'),    
 
 ]
