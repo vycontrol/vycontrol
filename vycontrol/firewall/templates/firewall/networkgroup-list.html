@@ -13,7 +13,8 @@
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a>   
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2">
     <a href="{% url 'firewall:firewall-networkgroup-add' %}">Add network Group</a>
@@ -22,14 +23,22 @@
 
 {% if firewall_networkgroup %}
     <table border="1" width="100%">
-        <tr><th width="25%">name</th><th width="25%">network</th><th width="50%">description</th></tr>
+        <tr>
+            <th width="25%">name</th>
+            <th width="30%">description</th>
+            <th width="25%">actions</th>
+        </tr>
 
     {% for key, value in firewall_networkgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
-                <td>{{ ifkey }}</a></td>
-                <td>{{ ifvalue.network }}</td>
+                <td><a href="{% url 'firewall:firewall-networkgroup-desc' ifkey %}">{{ ifkey }}</a></td>
+                {% comment %}<td>{{ ifvalue.network }}</td>{% endcomment %}
                 <td>{{ ifvalue.description }}</td>
+                <td>
+                    <a href="{% url 'firewall:firewall-networkgroup-desc' ifkey %}">Edit</a> | 
+                    <a href="{% url 'firewall:firewall-networkgroup-del' ifkey %}">Remove</a>
+                </td>                
             </tr>
         {% endfor %}
         

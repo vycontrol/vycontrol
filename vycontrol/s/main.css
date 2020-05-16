@@ -89,6 +89,13 @@ form.instancedefault {
   font-size: 14px;
 }
 
+#central h4 {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
 #central {
   font-size: 12px;
 }
@@ -104,6 +111,8 @@ form.instancedefault {
 input[type=submit] {
   background-color: #EACD65;
   border: 0;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .separe-form {
@@ -144,4 +153,12 @@ input[type=submit] {
 #menu-username {
   margin-right: 10px;
   color:#af1d1d ;
+}
+
+.label_for_h3 {
+  margin-bottom: 0;
+}
+
+.matching_criteria { 
+  padding: 3px;
 }

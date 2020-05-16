@@ -15,7 +15,8 @@
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2"></p>
 
@@ -23,7 +24,12 @@
 
 {% if firewall_all %}
     <table border="1" width="100%">
-    <tr><th>name</th><th>description</th><th>default-action</th></th><th>actions</th></tr>
+    <tr>
+        <th>name</th>
+        <th>description</th>
+        <th>default-acton</th>
+        <th>actions</th>
+    </tr>
 
     {% for key, value in firewall_all.items %}
         

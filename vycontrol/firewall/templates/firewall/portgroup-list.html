@@ -5,7 +5,7 @@
 {% block username %}{{ username }}{% endblock %}
 
 {% block debug %}
-{{ firewall_addressgroup }}
+{{ firewall_portgroup }}
 {% endblock %}
 
 {% block content %}
@@ -13,15 +13,15 @@
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
-    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> 
 </p>
 <p class="submenu2">
-    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Add Address Group</a>
+    <a href="{% url 'firewall:firewall-portgroup-add' %}">Add port group</a>
 </p>
 
 
-{% if firewall_addressgroup %}
+{% if firewall_portgroup %}
     <table border="1" width="100%">
         <tr>
             <th width="25%">name</th>
@@ -29,16 +29,15 @@
             <th width="25%">actions</th>
         </tr>
 
-    {% for key, value in firewall_addressgroup.items %}       
+    {% for key, value in firewall_portgroup.items %}       
         {% for ifkey, ifvalue in value.items %}
             <tr>
-                <td><a href="{% url 'firewall:firewall-addressgroup-desc' ifkey %}">{{ ifkey }}</a></td>
-                {% comment %}<td>{{ ifvalue.address }}</td>{% endcomment %}
+                <td><a href="{% url 'firewall:firewall-portgroup-edit' ifkey %}">{{ ifkey }}</a></td>
                 <td>{{ ifvalue.description }}</td>
                 <td>
-                    <a href="{% url 'firewall:firewall-addressgroup-desc' ifkey %}">Edit</a> | 
-                    <a href="{% url 'firewall:firewall-addressgroup-del' ifkey %}">Remove</a>
-                </td>
+                    <a href="{% url 'firewall:firewall-portgroup-edit' ifkey %}">Edit</a> | 
+                    <a href="{% url 'firewall:firewall-portgroup-del' ifkey %}">Remove</a>
+                </td>                
             </tr>
         {% endfor %}
         
@@ -46,7 +45,7 @@
 
     </table>
 {% else %}
-    <p>No firewalls.</p>
+    <p>No port groups.</p>
 {% endif %}
 
 

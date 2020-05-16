@@ -10,3 +10,22 @@ def routepack(value):
 def routeunpack(value): 
     """UnpPack a route into a string"""
     return str(value).replace("!","/")
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+@register.filter
+def get_item_port(dictionary, key):
+    d = dictionary.get(key)    
+    # n = port
+    # p = protocol
+    # d = description
+    return d['n']
+
+
+@register.filter
+def get_item_network(dictionary, key):
+    d = dictionary.get(key)    
+    return d['network']
+

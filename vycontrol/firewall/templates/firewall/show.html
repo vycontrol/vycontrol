@@ -12,9 +12,11 @@
 {% block content %}
 
 <p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2">
     <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
@@ -42,18 +44,29 @@
 
 {% if firewall.rule %}
     <table border="1" width="100%">
-    <tr><th>rule #</th><th>description</th><th>protocol</th><th>destination port</th><th>source port</th><th>firewall action</th></tr>
+    <tr>
+        <th>rule #</th>
+        <th>description</th>
+        <th>default action</th>
+        <th>admin action</th>
+    </tr>
 
     {% for key, value in firewall.items %}
         
         {% for ifkey, ifvalue in value.items %}
             <tr>
-            <td><a href="{% url 'firewall:editrule' firewall_name ifkey %}">{{ ifkey }}</a> <a href="{% url 'firewall:firewall-removerule' firewall_name ifkey %}">remove rule</a></td>
+            <td><a href="{% url 'firewall:editrule' firewall_name ifkey %}">{{ ifkey }}</a></td>
             <td>{{ ifvalue.description }}</td>
+            {% comment %}
             <td>{{ ifvalue.protocol }}</td>
             <td>{{ ifvalue.destination.port }}</td>
             <td>{{ ifvalue.source.port }}</td>
-            <td>{{ ifvalue.action }}</td>                        
+            {% endcomment %}
+            <td>{{ ifvalue.action }}</td>       
+            <td>
+                <a href="{% url 'firewall:editrule' firewall_name ifkey %}">edit</a> | 
+                <a href="{% url 'firewall:firewall-removerule' firewall_name ifkey %}">remove</a>
+            </td>
             </tr>
         {% endfor %}
         

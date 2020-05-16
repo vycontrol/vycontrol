@@ -1,37 +1,44 @@
 {% extends "base.html" %}
 
-{% block header_title %}Firewall Add New Address Group{% endblock %}
-{% block section_title %}Firewall Add New Address Group{% endblock %}
+{% block header_title %}Edit Addressgroup{% endblock %}
+{% block section_title %}Edit Addressgroup{% endblock %}
 {% block username %}{{ username }}{% endblock %}
 
 {% block debug %}
+{{ firewall_all }}
+{{ firewall_networkgroup }}
 {% endblock %}
+
 
 {% block content %}
 
 
+<script type="text/javascript">
+    var networkgroup_data = JSON.parse('{{networks_json|safe}}');
+    console.log(networkgroup_data);
+</script>
+
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> |
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a>     | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a>  | 
     <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
-<p class="submenu2"></p>
+<p class="submenu2">
+    <a href="{% url 'firewall:firewall-addressgroup-add' %}">Add network Group</a>
+</p>
 
 
-<form action="{% url 'firewall:firewall-networkgroup-add' %}" method="post" id="formng">
+
+
+
+<form action="{% url 'firewall:firewall-addressgroup-desc' groupname %}" method="post" id="formng">
     {% csrf_token %}
-
-
-    <p>
-    <label for="name">group name:</label><br>
-    <input type="input" name="name" id="name" value="" size="30" />
-    </p>
 
     <p>
         <label for="name">description:</label><br>
-        <input type="input" name="description" id="description" value="" size="100" />
+        <input type="input" name="description" id="description" value="{{ groupinfo.description }}" size="100" />
     </p>
     
     <p>
@@ -50,12 +57,20 @@
     </p>
 
 
-    <input type="submit" value="Add Group">
+    <input type="submit" value="Edit Group">
 </form>
 
 
 <script>
 $(document).ready(function () {
+
+    for (network in networkgroup_data) {
+        $('#networkgroup').append($('<option>', {
+            value: networkgroup_data[network],
+            text: networkgroup_data[network]
+        }));
+    }
+
     $("#networkgroup_add").click(function () {
         network = $("#network").val();
 
@@ -83,15 +98,6 @@ $(document).ready(function () {
             return false;
         }
         
-        groupname = $("#name").val()
-        if (groupname.length > 31) {
-            alert('Maximum group name 31 characters or less');
-            e.preventDefault();
-            return false;
-        }
-
-
-
         var groupa = []
         $("#networkgroup option").each(function() {
             groupa.push($(this).val());
@@ -101,6 +107,9 @@ $(document).ready(function () {
         $("#networkgroup_json").val(groupa_json);
 
         console.log(groupa_json)
+        //e.preventDefault();
+        //return false;
+
     });
 
 })
@@ -109,6 +118,8 @@ $(document).ready(function () {
 
 
 </script>
+
+    
 
 
 {% endblock %}

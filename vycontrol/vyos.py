@@ -19,8 +19,6 @@ def get_hostname_prefered(*args, **kwargs):
 def instance_getall_by_group(*args, **kwargs):
     return perms.instance_getall_by_group(*args, **kwargs)
 
-
-
 def repvar(s):
     return s.replace("-", "_")
 
@@ -78,7 +76,7 @@ def api(type, hostname, cmd):
     print(post)   
 
     try:
-        resp = requests.post(url, verify=False, data=post, timeout=5)
+        resp = requests.post(url, verify=False, data=post, timeout=10)
     except requests.exceptions.ConnectionError:
         return False
 
@@ -134,10 +132,6 @@ def conntry(hostname):
     pprint.pprint(resp.json())
 
     return False
-
-
-
-
 
 
 def get_firewall_all(hostname):
@@ -239,17 +233,64 @@ def set_firewall_allping_disable(hostname):
     result1 = api_set(hostname, cmd)
     return result1  
 
-def get_firewall_addressgroup(hostname):
-    cmd = {"op": "showConfig", "path": ["firewall","group","address-group"]}
-
+def get_firewall_portgroup(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall","group","port-group"]}
     result1 = api_get(hostname, cmd)
     return result1
+
+def set_firewall_portgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'port-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_portgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'port-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_portgroup_add(hostname, group_name, port):
+    cmd = {"op": "set", "path": ["firewall","group",'port-group', group_name, "port", port]}
+
+    result1 = api_set(hostname, cmd)
+    return result1    
+
+def set_firewall_portgroup_delete_port(hostname, group_name, port):
+    cmd = {"op": "delete", "path": ["firewall","group",'port-group', group_name, "port", port]}
+
+    result1 = api_set(hostname, cmd)
+    return result1         
+
+def get_firewall_addressgroup(hostname):
+    cmd = {"op": "showConfig", "path": ["firewall","group","address-group"]}
+    result1 = api_get(hostname, cmd)
+    return result1    
 
 def get_firewall_networkgroup(hostname):
     cmd = {"op": "showConfig", "path": ["firewall","group","network-group"]}
-
     result1 = api_get(hostname, cmd)
     return result1
+
+def get_firewall_addressgroup_one(hostname, group_name):
+    cmd = {"op": "showConfig", "path": ["firewall","group","address-group", group_name]}
+    result1 = api_get(hostname, cmd)
+    return result1
+
+def get_firewall_networkgroup_one(hostname, group_name):
+    cmd = {"op": "showConfig", "path": ["firewall","group","network-group", group_name]}
+    result1 = api_get(hostname, cmd)
+    return result1
+
+
+def set_firewall_networkgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'network-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_addressgroup_description(hostname, group_name, description):
+    cmd = {"op": "set", "path": ["firewall","group",'address-group', group_name, "description", description]}
+    result1 = api_set(hostname, cmd)
+    return result1     
+
 
 
 def set_firewall_addressgroup_add(hostname, group_name, address):
@@ -257,6 +298,19 @@ def set_firewall_addressgroup_add(hostname, group_name, address):
 
     result1 = api_set(hostname, cmd)
     return result1 
+
+def set_firewall_addressgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'address-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+def set_firewall_networkgroup_del(hostname, group_name):
+    cmd = {"op": "delete", "path": ["firewall","group",'network-group', group_name]}
+    result1 = api_set(hostname, cmd)
+    return result1 
+
+
+
 
 def set_firewall_addressgroup_rangeadd(hostname, group_name, address_start, address_end):
     address = str(address_start) + "-" + str(address_end)
