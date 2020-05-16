@@ -35,13 +35,13 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-Note that versions numbers are not related to dates.
 
 * 20.05.02.1000 - working firewall without zones 
 * 20.05.07.1000 - vlans / interfaces deep configuration
 * 20.05.10.1000 - working firewall with zones 
 * 20.06.01.1000 - commit, save, load and system login
 * 20.06.03.1000 - granular permissions and improvements
+* 20.06.06.1000 - improve error returns to end users
 * 20.06.09.1000 - save/commit/load features and ssh / logins
 * 20.06.10.1000 - lost password
 * 20.06.13.1000 - ipsec features
@@ -54,6 +54,15 @@ Note that versions numbers are not related to dates.
 * 25.12.10.1000 - ipv6 milestone
 * 25.12.20.1000 - depend on a third party
 
+### versions convention
+
+Note that versions numbers are not related to dates.
+* major eg 20
+  * minor eg 05
+    * feature eg 05
+       * build eg 1010
+
+Will give 20.05.05.1010
 
 ## lifecycle
 * initially LTS (Long Term Support) versions will be supported by 6 months just to bugfixes
