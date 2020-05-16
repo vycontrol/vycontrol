@@ -35,6 +35,8 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
+Note that versions numbers are not related to dates.
+
 * 20.05.02 - working firewall without zones 
 * 20.05.07 - vlans / interfaces deep configuration
 * 20.05.10 - working firewall with zones 
@@ -44,13 +46,13 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 * 20.06.10 - lost password
 * 20.06.13 - ipsec features
 * 20.06.15 - layout
-* **20.06.20-LTS** - OSPF features
-* 20.07.01 – FastNetMon one-click integration
-* 20.07.05 – Finish firewall options
-* 20.08.01 - s3 backup scheduler and commit confirm
-* 20.08.05 - improve permissions cleanups
-* 20.12.10 - ipv6 milestone
-* 20.12.20 - depend on a third party
+* **25.06.20-LTS** - OSPF features
+* 25.07.01 – FastNetMon one-click integration
+* 25.07.05 – Finish firewall options
+* 25.08.01 - s3 backup scheduler and commit confirm
+* 25.08.05 - improve permissions cleanups
+* 25.12.10 - ipv6 milestone
+* 25.12.20 - depend on a third party
 
 
 ## lifecycle
