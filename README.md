@@ -37,11 +37,11 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 ## future versions
 
 * 20.05.02.1000 - working firewall without zones 
+* 20.05.04.1000 - improve error returns to end users
 * 20.05.07.1000 - vlans / interfaces deep configuration
 * 20.05.10.1000 - working firewall with zones 
 * 20.06.01.1000 - commit, save, load and system login
 * 20.06.03.1000 - granular permissions and improvements
-* 20.06.06.1000 - improve error returns to end users
 * 20.06.09.1000 - save/commit/load features and ssh / logins
 * 20.06.10.1000 - lost password
 * 20.06.13.1000 - ipsec features
