@@ -9,6 +9,7 @@ from django.http import QueryDict
 
 import vyos, vyos2
 import vyos_common as vycommon
+import vymsg
 
 from performance import timer
 from perms import is_authenticated
@@ -19,10 +20,13 @@ import pprint
 import types
 
 
-
 from filters.vycontrol_filters import get_item
 from filters.vycontrol_filters import get_item_port
 from filters.vycontrol_filters import get_item_network
+
+
+msg = vymsg.msg()
+
 
 @is_authenticated
 def index(request):
@@ -115,6 +119,8 @@ def firewall_removerule(request, firewall_name, firewall_rulenumber):
 
 
 def changerule(request, firewall_name, mode, template_name="firewall/addrule.html", rulenumber = None):
+    #msg = vymsg.xmsg()
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
@@ -122,6 +128,9 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
     # get all selected firewall data  
     firewall = vyos.get_firewall(hostname_default, firewall_name)
+
+
+
 
     # get all firewall groups
     firewall_group = {}
@@ -151,7 +160,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     ruledata = vycommon.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
     ruledata_json = json.dumps(ruledata.data)
 
-    vyos2.log("json", ruledata_json)
+    vymsg.log("json", ruledata_json)
 
     if portgroups != False:
         portgroups_groups = portgroups['port-group']
@@ -169,7 +178,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     # mode add rule
     if mode == "addrule":
         rulenumber = request.POST.get('rulenumber')
-        vyos2.log("mode addrule", rulenumber)
+        vymsg.log("mode addrule", rulenumber)
 
         # mode add rule without valid rulenumber
         if (    request.POST.get('rulenumber', None) == None 
@@ -177,7 +186,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             return redirect('firewall:show', firewall_name)
         else:
             rulenumber = request.POST.get('rulenumber')
-            vyos2.log("mode editrule", rulenumber)
+            vymsg.log("mode editrule", rulenumber)
 
 
     # verifing basic informations, should have rulenumber, status and ruleaction
@@ -186,8 +195,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         and request.POST.get('ruleaction', None) != None
         and request.POST.get('ruleaction') in ["accept", "drop", "reject"]
     ):
-        vyos2.log("pass basic validations")
-
+        vymsg.log("pass basic validations")
 
         v = vyos2.api (
             hostname=   hostname_default,
@@ -279,7 +287,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     except ValueError:
                         destinationport = {}
 
-                    vyos2.log("destinationport_json", destinationport)
+                    vymsg.log("destinationport_json", destinationport)
                     destinationport_text = ','.join(destinationport)
 
                     
@@ -300,7 +308,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     except ValueError:
                         sourceport = {}          
 
-                    vyos2.log("sourceport_json", sourceport)
+                    vymsg.log("sourceport_json", sourceport)
                     sourceport_text = ','.join(sourceport)
 
                     v = vyos2.api (
@@ -368,7 +376,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
                         description = "set sdaddressgroup_source",
                     )
-                    vyos2.log("set sdaddressgroup_source", v.data)
+                    vymsg.log("set sdaddressgroup_source", v.data)
 
                     if v.success:
                         changed = True 
@@ -382,7 +390,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", sdaddressgroup_destination],
                         description = "set sdaddressgroup_destination",
                     )
-                    vyos2.log("set sdaddressgroup_destination", v.data)
+                    vymsg.log("set sdaddressgroup_destination", v.data)
 
                     if v.success:
                         changed = True 
@@ -401,7 +409,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     if v.success:
                         changed = True 
                     else:
-                        vyos2.log("sdnetworkgroup_source", v.error)
+                        vymsg.log("sdnetworkgroup_source", v.error)
 
                 if request.POST.get('sdnetworkgroup_destination', None) != None:              
                     sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
@@ -415,7 +423,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     if v.success:
                         changed = True                  
                     else:
-                        vyos2.log("sdnetworkgroup_source", v.error)                        
+                        vymsg.log("sdnetworkgroup_source", v.error)                        
 
             # if criteria_sourcemac set, save it
             if request.POST.get('criteria_sourcemac', None) == "1":
@@ -505,7 +513,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 if request.POST.get('tcpflags_iall', None) == "1":
                     tcpflags.append('!ALL')                                                
 
-                vyos2.log("tcp flags", tcpflags)
+                vymsg.log("tcp flags", tcpflags)
 
                 if len(tcpflags) > 0:
                     tcpflags_txt = ",".join(tcpflags)
@@ -543,10 +551,10 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     if v.success:
                         changed = True                        
 
-
-
     if changed == True:
-        return redirect('firewall:show', firewall_name)
+        #return redirect('firewall:show', firewall_name)
+        msg.add_success("Firewall rule saved.")
+        
 
     template = loader.get_template(template_name)
     context = { 
@@ -565,7 +573,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'firewall_addressgroup_js':         firewall_addressgroup_js,
         'netservices_js' :                  netservices_js,
         'portgroups_groups':                portgroups_groups,
-        'mode' :                            mode
+        'mode' :                            mode,
+        'msg' :                             msg.get_all(),
     }
 
     if mode == "editrule":
@@ -804,7 +813,7 @@ def firewall_networkgroup_add(request):
 
         changed = False
 
-        vyos2.log('networks', networks)
+        vymsg.log('networks', networks)
 
         for network in networks:
             v = vyos2.api (
@@ -883,7 +892,7 @@ def firewall_addressgroup_add(request):
 
         changed = False
 
-        vyos2.log('networks', networks)
+        vymsg.log('networks', networks)
 
         for network in networks:
             v = vyos2.api (
@@ -945,12 +954,12 @@ def firewall_addressgroup_desc(request, groupname):
         networks_original = groupinfo['address']
 
         if type(networks_original) is str:
-            vyos2.log("tipo", type(networks_original))
+            vymsg.log("tipo", type(networks_original))
             networks_original = [groupinfo['address']]
         else:
             networks_original = groupinfo['address']
 
-    vyos2.log("networks_original", networks_original)
+    vymsg.log("networks_original", networks_original)
 
     networks_json = json.dumps(networks_original)
 
@@ -975,7 +984,7 @@ def firewall_addressgroup_desc(request, groupname):
             except ValueError:
                 networks_new = {}
 
-            vyos2.log('networks new', networks_new)
+            vymsg.log('networks new', networks_new)
 
             for network in networks_new:
                 v = vyos2.api (
@@ -988,7 +997,7 @@ def firewall_addressgroup_desc(request, groupname):
                 if v.success and changed == False:
                     changed = True
             
-            vyos2.log('networks original', networks_original)
+            vymsg.log('networks original', networks_original)
 
             for network in networks_original:
                 if network not in networks_new:
@@ -1041,12 +1050,12 @@ def firewall_networkgroup_desc(request, groupname):
         networks_original = groupinfo['network']
 
         if type(networks_original) is str:
-            vyos2.log("tipo", type(networks_original))
+            vymsg.log("tipo", type(networks_original))
             networks_original = [groupinfo['network']]
         else:
             networks_original = groupinfo['network']
 
-    vyos2.log("networks_original", networks_original)
+    vymsg.log("networks_original", networks_original)
 
     networks_json = json.dumps(networks_original)
 
@@ -1071,7 +1080,7 @@ def firewall_networkgroup_desc(request, groupname):
             except ValueError:
                 networks_new = {}
 
-            vyos2.log('networks new', networks_new)
+            vymsg.log('networks new', networks_new)
 
             for network in networks_new:
                 v = vyos2.api (
@@ -1084,7 +1093,7 @@ def firewall_networkgroup_desc(request, groupname):
                 if v.success and changed == False:
                     changed = True
             
-            vyos2.log('networks original', networks_original)
+            vymsg.log('networks original', networks_original)
 
             for network in networks_original:
                 if network not in networks_new:

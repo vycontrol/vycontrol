@@ -125,6 +125,12 @@
     </div>
     <div class="col content">
         <h2>{% block section_title %}{% endblock %}</h2>
+
+        {% for m in msg %}
+        <p>{{ m.msg_type }} - {{ m.msg }}</p>
+        {% endfor %}
+
+
         {% block content %}{% endblock %}
     </div>
   </div>
