@@ -45,11 +45,10 @@
 </script>
 {% endcomment %}
 
-{% if mode == "editrule" %}
 <script type="text/javascript">
     var ruledata_js = JSON.parse('{{ruledata_json|safe}}');
 </script>
-{% endif %}
+
 
 
 
@@ -84,7 +83,7 @@
             <div class="col">
                 <p>
                     <label for="alias">rule number</label><br>
-                    <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+                    <input type="text" name="rulenumber" id="rulenumber" value="" size="5">
                 </p>
             </div>
             {% endif %}

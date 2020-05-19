@@ -8,8 +8,8 @@ from django.http import QueryDict
 
 
 import vyos
-import vycontrol_vyosapi as vcapi
-import vycontrol_common as vccom
+import vycontrol_vyos_api_lib as vapilib
+import vycontrol_vyos_api as vapi
 import vycontrol_messages as vcmsg
 
 
@@ -36,7 +36,7 @@ def index(request):
     hostname_default = vyos.get_hostname_prefered(request)
 
 
-    firewall2 = vcapi.api(
+    firewall2 = vapilib.api(
         hostname =      hostname_default,
         api =           'get',
         op =            'showConfig',
@@ -138,7 +138,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     firewall_group['network-group'] = {}
     firewall_group['address-group'] = {}
     firewall_group['port-group'] = {}
-    firewall_group_raw = vccom.get_firewall_group(hostname_default)
+    firewall_group_raw = vapi.get_firewall_group(hostname_default)
     if firewall_group_raw.success:
         if 'network-group' in firewall_group_raw.data:
             for g in firewall_group_raw.data['network-group']:
@@ -168,6 +168,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
     changed = False
     rulenumber_valid = False
+    ruleaction_valid = False
+    ruledata = {}
 
 
     # edit rule without valid rulenumber
@@ -175,35 +177,38 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         if rulenumber == None:
             msg.add_error("Rule number empty")
         else:
-            rulenumber_valid = True
+            rule = vapi.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
+            if rule.success == False:
+                ruledata = rule.data
 
-            rule = vccom.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
-            ruledata = rule.data
+                # if rule exists control variables are true
+                rulenumber_valid = True
+                ruleaction_valid = True
+            else:
+                msg.add_error("There is no rulenumber inside firewall.")
 
     # mode add rule
     elif mode == "addrule":
         if request.POST.get('rulenumber', None) == None:
             msg.add_error("Rule number empty")
         else:
-            rulenumber_valid = True
             rulenumber = request.POST.get('rulenumber')
+            if int(rulenumber) >= 1 and int(rulenumber) <= 9999:
+                rulenumber_valid = True
+                rulenumber = request.POST.get('rulenumber')
+            else:
+                rulenumber_valid = False
+                msg.add_error("Rule number must be between 1 and 9999")
 
-            ruledata = {}
-        
-    if int(rulenumber) >= 1 and int(rulenumber) <= 9999:
-        rulenumber_valid = True
-    else:
-        rulenumber_valid = False
-        msg.add_error("Rule number must be between 1 and 9999")
 
 
     # update/insert rule action
-    if request.POST.get('ruleaction', None) != None:
+    if rulenumber_valid and request.POST.get('ruleaction', None) != None:
         if request.POST.get('ruleaction') in ["accept", "drop", "reject"]:
-            if request.POST.get('ruleaction') == ruledata['action'] and mode == "editrule":
+            if mode == "editrule" and ruledata['action'] and request.POST.get('ruleaction') == ruledata['action']:
                 msg.add_debug("Not need to update rule action")
             else:
-                v = vccom.set_firewall_rule_action(hostname_default, firewall_name, rulenumber, request.POST.get('ruleaction'))
+                v = vapi.set_firewall_rule_action(hostname_default, firewall_name, rulenumber, request.POST.get('ruleaction'))
                 if v.success == False:
                     msg.add_error("Fail to change rule action: " + v.reason)
                 else:
@@ -216,14 +221,14 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
 
     # update/insert rule status
-    if request.POST.get('status', None) != None:
+    if rulenumber_valid and request.POST.get('status', None) != None:
         if mode == "editrule": 
             if request.POST.get('status') == "enable" and "disable" not in ruledata:
                 msg.add_debug("Current status is enabled and equal intended status")
             elif request.POST.get('status') == "disable" and "disable" in ruledata:
                 msg.add_debug("Current status is disable and equal intended status")
             elif request.POST.get('status') == "disable" and "disable" not in ruledata:
-                v = vccom.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
+                v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
                     msg.add_error("Failed to disable status: " + v.reason)
                 else:
@@ -233,7 +238,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     changed = True
                     msg.add_success("Status disabled")
             elif request.POST.get('status') == "enable" and "disable" in ruledata:
-                v = vccom.set_firewall_rule_enabled(hostname_default, firewall_name, rulenumber)
+                v = vapi.set_firewall_rule_enabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
                     msg.add_error("Failed to enable status: " + v.reason)
                 else:
@@ -244,7 +249,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     msg.add_success("Status enabled")                    
         elif mode == "addrule":
             if request.POST.get('status') == "disable":
-                v = vccom.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
+                v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
                     msg.add_error("Failed to disable status: " + v.reason)
                 else:
@@ -252,59 +257,28 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     ruledata['disable'] = {}
                     ruledata['status'] = 'disabled'
                     changed = True
-                    msg.add_success("Status disabled")
+                    msg.add_info("Status disabled")
             else:
                 # nothing to do if status = enable
                 pass
 
+    if rulenumber_valid == True and request.POST.get('description', None) != None:
+        pass
+
 
 
     if rulenumber_valid == True:
-        if True:
+        if False:
             # verifing basic informations, should have rulenumber, status and ruleaction
             msg.add_error("Invalid Status or Action")
-        else:
-            
-            msg.add_info("Action different")
-            msg.add_info(firewall['action'])
-            msg.add_info(request.POST.get('ruleaction', None))
-
-            v = vcapi.api (
-                hostname=   hostname_default,
-                api =       "post",
-                op =        "set",
-                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "action", request.POST.get('ruleaction')],
-                description = "set rule action",
-            )
+        elif False:
             # rule created, continue to configure firewall rule according his criterias
             if v.success:
                 changed = True 
 
-                # if status disabled, save it
-                if request.POST.get('status') == "disabled":
-                    v = vcapi.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
-                        description = "set rule disable",
-                    )
-                    if v.success:
-                        changed = True 
-                elif request.POST.get('status') == "enabled" and mode == "editrule":
-                    v = vcapi.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "delete",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
-                        description = "delete rule disable",
-                    )
-                    if v.success:
-                        changed = True  
-
                 # if status set, save it
                 if request.POST.get('description', None) != None:
-                    v = vcapi.api (
+                    v = vapilib.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
@@ -337,7 +311,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                     if protocol_criteria != None:
                         protocol_criteria_txt = protocol_negate + protocol_criteria
 
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -363,7 +337,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         destinationport_text = ','.join(destinationport)
 
                         
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -383,7 +357,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         vcmsg.log("sourceport_json", sourceport)
                         sourceport_text = ','.join(sourceport)
 
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -412,7 +386,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         sdaddress_source = request.POST.get('sdaddress_source')
                         sdaddress_source_txt = sdaddress_source_negate + sdaddress_source
                         
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -427,7 +401,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                         sdaddress_destination = request.POST.get('sdaddress_destination')                    
                         sdaddress_destination_txt = sdaddress_destination_negate + sdaddress_destination
 
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -441,7 +415,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 if request.POST.get('criteria_addressgroup', None) == "1":
                     if request.POST.get('sdaddressgroup_source', None) != None:              
                         sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -455,7 +429,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
                     if request.POST.get('sdaddressgroup_destination', None) != None:              
                         sdaddressgroup_destination = request.POST.get('sdaddressgroup_destination')                    
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -471,7 +445,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 if request.POST.get('criteria_networkgroup', None) == "1":
                     if request.POST.get('sdnetworkgroup_source', None) != None:              
                         sdnetworkgroup_source = request.POST.get('sdnetworkgroup_source')
-                        v = vcapi.api (
+                        v = vapilib.api (
                                 hostname=   hostname_default,
                                 api =       "post",
                                 op =        "set",
@@ -485,7 +459,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
                     if request.POST.get('sdnetworkgroup_destination', None) != None:              
                         sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -512,7 +486,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
                         sourcemac_txt = sourcemac_negate + sourcemac
 
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -536,7 +510,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
                     if len(packetstates) > 0:
                         for packetstate in packetstates:
-                            v = vcapi.api (
+                            v = vapilib.api (
                                 hostname=   hostname_default,
                                 api =       "post",
                                 op =        "set",
@@ -589,7 +563,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
                     if len(tcpflags) > 0:
                         tcpflags_txt = ",".join(tcpflags)
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -602,7 +576,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 # if criteria_portgroup set, save it
                 if request.POST.get('criteria_portgroup', None) == "1":
                     if request.POST.get('sdportgroup_source', None) != None:
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -613,7 +587,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                             changed = True
 
                     if request.POST.get('sdportgroup_destination', None) != None:
-                        v = vcapi.api (
+                        v = vapilib.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
@@ -627,7 +601,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         msg.add_success("Firewall rule saved.")
         
 
-    ruledata_json = json.dumps(rule.data)
+    ruledata_json = json.dumps(ruledata)
     vcmsg.log("json", ruledata_json)
 
 
@@ -662,7 +636,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     
 @is_authenticated
 def addrule(request, firewall_name):
-    return changerule(request, firewall_name, mode="addrule", template_name="firewall/addrule.html", rulenumber = None)
+    return changerule(request, firewall_name, mode="addrule", template_name="firewall/editrule.html", rulenumber = None)
 
 @is_authenticated
 def editrule(request, firewall_name, rulenumber):
@@ -856,7 +830,7 @@ def firewall_networkgroup_add(request):
         vcmsg.log('networks', networks)
 
         for network in networks:
-            v = vcapi.api (
+            v = vapilib.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -868,7 +842,7 @@ def firewall_networkgroup_add(request):
             
         # set network description if it was created
             if changed == True:
-                v = vcapi.api (
+                v = vapilib.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -935,7 +909,7 @@ def firewall_addressgroup_add(request):
         vcmsg.log('networks', networks)
 
         for network in networks:
-            v = vcapi.api (
+            v = vapilib.api (
                 hostname =  hostname_default,
                 api =       "post",
                 op =        "set",
@@ -948,7 +922,7 @@ def firewall_addressgroup_add(request):
         # set network description if it was created
         if changed == True:
             if description != None:
-                v = vcapi.api (
+                v = vapilib.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -980,7 +954,7 @@ def firewall_addressgroup_desc(request, groupname):
     all_instances = vyos.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    v = vcapi.api (
+    v = vapilib.api (
         hostname=   hostname_default,
         api =       "get",
         op =        "showConfig",
@@ -1008,7 +982,7 @@ def firewall_addressgroup_desc(request, groupname):
 
     if v.success:
         if request.POST.get('description', None) != None:
-            v = vcapi.api (
+            v = vapilib.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -1027,7 +1001,7 @@ def firewall_addressgroup_desc(request, groupname):
             vcmsg.log('networks new', networks_new)
 
             for network in networks_new:
-                v = vcapi.api (
+                v = vapilib.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -1041,7 +1015,7 @@ def firewall_addressgroup_desc(request, groupname):
 
             for network in networks_original:
                 if network not in networks_new:
-                    v = vcapi.api (
+                    v = vapilib.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "delete",
@@ -1076,7 +1050,7 @@ def firewall_networkgroup_desc(request, groupname):
     is_superuser = perms.get_is_superuser(request.user)
 
 
-    v = vcapi.api (
+    v = vapilib.api (
         hostname=   hostname_default,
         api =       "get",
         op =        "showConfig",
@@ -1104,7 +1078,7 @@ def firewall_networkgroup_desc(request, groupname):
 
     if v.success:
         if request.POST.get('description', None) != None:
-            v = vcapi.api (
+            v = vapilib.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -1123,7 +1097,7 @@ def firewall_networkgroup_desc(request, groupname):
             vcmsg.log('networks new', networks_new)
 
             for network in networks_new:
-                v = vcapi.api (
+                v = vapilib.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -1137,7 +1111,7 @@ def firewall_networkgroup_desc(request, groupname):
 
             for network in networks_original:
                 if network not in networks_new:
-                    v = vcapi.api (
+                    v = vapilib.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "delete",
