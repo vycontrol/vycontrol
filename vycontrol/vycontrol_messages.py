@@ -8,13 +8,14 @@ class msg:
         'success',      # its everything fine
         'alert',        # alert, you must pay attention
         'info',         # just information
+        'debug',        # debug information
     )
 
     msgs                = []
 
     def __init__(self):
-        pass
-
+        self.msgs = []
+        
     def add(self, t, m):
         if t in self.TYPES:
             self.msgs.append({
@@ -32,7 +33,10 @@ class msg:
         self.add('alert', m)
     
     def add_info(self, m):
-        self.add('info', m)        
+        self.add('info', m)
+
+    def add_debug(self, m):
+        self.add('debug', m)                
 
     def get_all(self):
         return self.msgs

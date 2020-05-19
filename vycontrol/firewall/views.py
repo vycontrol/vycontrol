@@ -7,9 +7,11 @@ from django.urls import reverse
 from django.http import QueryDict
 
 
-import vyos, vyos2
-import vyos_common as vycommon
-import vymsg
+import vyos
+import vycontrol_vyosapi as vcapi
+import vycontrol_common as vccom
+import vycontrol_messages as vcmsg
+
 
 from performance import timer
 from perms import is_authenticated
@@ -25,7 +27,6 @@ from filters.vycontrol_filters import get_item_port
 from filters.vycontrol_filters import get_item_network
 
 
-msg = vymsg.msg()
 
 
 @is_authenticated
@@ -35,7 +36,7 @@ def index(request):
     hostname_default = vyos.get_hostname_prefered(request)
 
 
-    firewall2 = vyos2.api(
+    firewall2 = vcapi.api(
         hostname =      hostname_default,
         api =           'get',
         op =            'showConfig',
@@ -119,14 +120,14 @@ def firewall_removerule(request, firewall_name, firewall_rulenumber):
 
 
 def changerule(request, firewall_name, mode, template_name="firewall/addrule.html", rulenumber = None):
-    #msg = vymsg.xmsg()
+    msg = vcmsg.msg()
 
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    # get all selected firewall data  
+    # get all selected firewall data  --- WHY NEED ALL FIREWALL???? 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
 
 
@@ -137,7 +138,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     firewall_group['network-group'] = {}
     firewall_group['address-group'] = {}
     firewall_group['port-group'] = {}
-    firewall_group_raw = vycommon.get_firewall_group(hostname_default)
+    firewall_group_raw = vccom.get_firewall_group(hostname_default)
     if firewall_group_raw.success:
         if 'network-group' in firewall_group_raw.data:
             for g in firewall_group_raw.data['network-group']:
@@ -157,10 +158,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     netservices = network.get_services()
     netservices_js = json.dumps(netservices)
     portgroups = vyos.get_firewall_portgroup(hostname_default)
-    ruledata = vycommon.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
-    ruledata_json = json.dumps(ruledata.data)
 
-    vymsg.log("json", ruledata_json)
+    
 
     if portgroups != False:
         portgroups_groups = portgroups['port-group']
@@ -168,393 +167,469 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         portgroups_groups = []
 
     changed = False
+    rulenumber_valid = False
+
 
     # edit rule without valid rulenumber
-    if (    mode == "editrule" 
-        and rulenumber == None):
-        return redirect('firewall:show', firewall_name)
+    if mode == "editrule":
+        if rulenumber == None:
+            msg.add_error("Rule number empty")
+        else:
+            rulenumber_valid = True
 
+            rule = vccom.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
+            ruledata = rule.data
 
     # mode add rule
-    if mode == "addrule":
-        rulenumber = request.POST.get('rulenumber')
-        vymsg.log("mode addrule", rulenumber)
-
-        # mode add rule without valid rulenumber
-        if (    request.POST.get('rulenumber', None) == None 
-            or  int(request.POST.get('rulenumber')) <= 0):
-            return redirect('firewall:show', firewall_name)
+    elif mode == "addrule":
+        if request.POST.get('rulenumber', None) == None:
+            msg.add_error("Rule number empty")
         else:
+            rulenumber_valid = True
             rulenumber = request.POST.get('rulenumber')
-            vymsg.log("mode editrule", rulenumber)
+
+            ruledata = {}
+        
+    if int(rulenumber) >= 1 and int(rulenumber) <= 9999:
+        rulenumber_valid = True
+    else:
+        rulenumber_valid = False
+        msg.add_error("Rule number must be between 1 and 9999")
 
 
-    # verifing basic informations, should have rulenumber, status and ruleaction
-    if (    request.POST.get('status', None) != None
-        and request.POST.get('status') in ["enabled", "disabled"]
-        and request.POST.get('ruleaction', None) != None
-        and request.POST.get('ruleaction') in ["accept", "drop", "reject"]
-    ):
-        vymsg.log("pass basic validations")
-
-        v = vyos2.api (
-            hostname=   hostname_default,
-            api =       "post",
-            op =        "set",
-            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "action", request.POST.get('ruleaction')],
-            description = "set rule action",
-        )
-        # rule created, continue to configure firewall rule according his criterias
-        if v.success:
-            changed = True 
-
-            # if status disabled, save it
-            if request.POST.get('status') == "disabled":
-                v = vyos2.api (
-                    hostname=   hostname_default,
-                    api =       "post",
-                    op =        "set",
-                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
-                    description = "set rule disable",
-                )
-                if v.success:
-                  changed = True 
-            elif request.POST.get('status') == "enabled" and mode == "editrule":
-                v = vyos2.api (
-                    hostname=   hostname_default,
-                    api =       "post",
-                    op =        "delete",
-                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
-                    description = "delete rule disable",
-                )
-                if v.success:
-                  changed = True  
-
-            # if status set, save it
-            if request.POST.get('description', None) != None:
-                v = vyos2.api (
-                    hostname=   hostname_default,
-                    api =       "post",
-                    op =        "set",
-                    cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "description", request.POST.get('description')],
-                    description = "set rule description",
-                )    
-                if v.success:
-                  changed = True  
-
-            # if criteria_protocol set, save it
-            if request.POST.get('criteria_protocol', None) == "1":
-                # other protocol - todo validate data
-                if request.POST.get('protocol_criteria', None) == "other":
-                    if request.POST.get('protocol_custom', None) != None:
-                        protocol_criteria = request.POST.get('protocol_custom')
-                # common protocols
-                elif request.POST.get('protocol_criteria', None) in ['all', 'tcp', 'udp', 'tcp_udp', 'icmp']:
-                    protocol_criteria = request.POST.get('protocol_criteria')
-                # other cases did not checked anything
+    # update/insert rule action
+    if request.POST.get('ruleaction', None) != None:
+        if request.POST.get('ruleaction') in ["accept", "drop", "reject"]:
+            if request.POST.get('ruleaction') == ruledata['action'] and mode == "editrule":
+                msg.add_debug("Not need to update rule action")
+            else:
+                v = vccom.set_firewall_rule_action(hostname_default, firewall_name, rulenumber, request.POST.get('ruleaction'))
+                if v.success == False:
+                    msg.add_error("Fail to change rule action: " + v.reason)
                 else:
-                     protocol_criteria = None   
+                    # updating ruledata
+                    ruledata['action'] = request.POST.get('ruleaction')
+                    changed = True
+                    msg.add_success("Rule action updated")
+        else:
+            msg.add_error("Rule action invalid")
 
-                # negate protocol
-                if request.POST.get('protocol_negate', None) == "1":
-                    protocol_negate = "!"
+
+    # update/insert rule status
+    if request.POST.get('status', None) != None:
+        if mode == "editrule": 
+            if request.POST.get('status') == "enable" and "disable" not in ruledata:
+                msg.add_debug("Current status is enabled and equal intended status")
+            elif request.POST.get('status') == "disable" and "disable" in ruledata:
+                msg.add_debug("Current status is disable and equal intended status")
+            elif request.POST.get('status') == "disable" and "disable" not in ruledata:
+                v = vccom.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
+                if v.success == False:
+                    msg.add_error("Failed to disable status: " + v.reason)
                 else:
-                    protocol_negate = ""
-
-                # run vyos command
-                if protocol_criteria != None:
-                    protocol_criteria_txt = protocol_negate + protocol_criteria
-
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol", protocol_criteria_txt],
-                        description = "set rule protocol",
-                    ) 
-                    if v.success:
-                        changed = True                                
-
-            # if criteria+port set, save it
-            if request.POST.get('criteria_port', None) == "1":
-                destinationport_json =  request.POST.get('destinationport_json', None)
-                sourceport_json =       request.POST.get('sourceport_json', None)
-
-                if destinationport_json != None:
-
-                    try:
-                        destinationport = json.loads(destinationport_json)
-                    except ValueError:
-                        destinationport = {}
-
-                    vymsg.log("destinationport_json", destinationport)
-                    destinationport_text = ','.join(destinationport)
-
-                    
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port", destinationport_text],
-                        description = "set destination port",
-                    ) 
-                    if v.success:
-                        changed = True 
-
-                if sourceport_json != None:
-
-                    try:
-                        sourceport = json.loads(sourceport_json)
-                    except ValueError:
-                        sourceport = {}          
-
-                    vymsg.log("sourceport_json", sourceport)
-                    sourceport_text = ','.join(sourceport)
-
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port", sourceport_text],
-                        description = "set sourceport port",
-                    )
-                    if v.success:
-                        changed = True 
-
-            # if criteria_address set, save it
-            if request.POST.get('criteria_address', None) == "1":
-                # negate sdaddress_source
-                if request.POST.get('sdaddress_source_negate', None) == "1":
-                    sdaddress_source_negate = "!"
+                    # updating ruledata
+                    ruledata['disable'] = {}
+                    ruledata['status'] = 'disabled'
+                    changed = True
+                    msg.add_success("Status disabled")
+            elif request.POST.get('status') == "enable" and "disable" in ruledata:
+                v = vccom.set_firewall_rule_enabled(hostname_default, firewall_name, rulenumber)
+                if v.success == False:
+                    msg.add_error("Failed to enable status: " + v.reason)
                 else:
-                    sdaddress_source_negate = ""
-
-                # negate sdaddress_destination_negate
-                if request.POST.get('sdaddress_destination_negate', None) == "1":
-                    sdaddress_destination_negate = "!"
+                    # updating ruledata
+                    del ruledata['disable']
+                    ruledata['status'] = 'enabled'
+                    changed = True
+                    msg.add_success("Status enabled")                    
+        elif mode == "addrule":
+            if request.POST.get('status') == "disable":
+                v = vccom.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
+                if v.success == False:
+                    msg.add_error("Failed to disable status: " + v.reason)
                 else:
-                    sdaddress_destination_negate = ""                    
+                    # updating ruledata
+                    ruledata['disable'] = {}
+                    ruledata['status'] = 'disabled'
+                    changed = True
+                    msg.add_success("Status disabled")
+            else:
+                # nothing to do if status = enable
+                pass
 
 
-                if request.POST.get('sdaddress_source', None) != None:              
-                    sdaddress_source = request.POST.get('sdaddress_source')
-                    sdaddress_source_txt = sdaddress_source_negate + sdaddress_source
-                    
-                    v = vyos2.api (
+
+    if rulenumber_valid == True:
+        if True:
+            # verifing basic informations, should have rulenumber, status and ruleaction
+            msg.add_error("Invalid Status or Action")
+        else:
+            
+            msg.add_info("Action different")
+            msg.add_info(firewall['action'])
+            msg.add_info(request.POST.get('ruleaction', None))
+
+            v = vcapi.api (
+                hostname=   hostname_default,
+                api =       "post",
+                op =        "set",
+                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "action", request.POST.get('ruleaction')],
+                description = "set rule action",
+            )
+            # rule created, continue to configure firewall rule according his criterias
+            if v.success:
+                changed = True 
+
+                # if status disabled, save it
+                if request.POST.get('status') == "disabled":
+                    v = vcapi.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address", sdaddress_source_txt],
-                        description = "set sdaddress_source",
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
+                        description = "set rule disable",
                     )
                     if v.success:
                         changed = True 
+                elif request.POST.get('status') == "enabled" and mode == "editrule":
+                    v = vcapi.api (
+                        hostname=   hostname_default,
+                        api =       "post",
+                        op =        "delete",
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "disable"],
+                        description = "delete rule disable",
+                    )
+                    if v.success:
+                        changed = True  
 
-
-                if request.POST.get('sdaddress_destination', None) != None:              
-                    sdaddress_destination = request.POST.get('sdaddress_destination')                    
-                    sdaddress_destination_txt = sdaddress_destination_negate + sdaddress_destination
-
-                    v = vyos2.api (
+                # if status set, save it
+                if request.POST.get('description', None) != None:
+                    v = vcapi.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address", sdaddress_destination_txt],
-                        description = "set sdaddress_destination_txt",
-                    )
+                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "description", request.POST.get('description')],
+                        description = "set rule description",
+                    )    
                     if v.success:
-                        changed = True 
+                        changed = True  
 
-            # if criteria_addressgroup set, save it
-            if request.POST.get('criteria_addressgroup', None) == "1":
-                if request.POST.get('sdaddressgroup_source', None) != None:              
-                    sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
-                        description = "set sdaddressgroup_source",
-                    )
-                    vymsg.log("set sdaddressgroup_source", v.data)
+                # if criteria_protocol set, save it
+                if request.POST.get('criteria_protocol', None) == "1":
+                    # other protocol - todo validate data
+                    if request.POST.get('protocol_criteria', None) == "other":
+                        if request.POST.get('protocol_custom', None) != None:
+                            protocol_criteria = request.POST.get('protocol_custom')
+                    # common protocols
+                    elif request.POST.get('protocol_criteria', None) in ['all', 'tcp', 'udp', 'tcp_udp', 'icmp']:
+                        protocol_criteria = request.POST.get('protocol_criteria')
+                    # other cases did not checked anything
+                    else:
+                        protocol_criteria = None   
 
-                    if v.success:
-                        changed = True 
+                    # negate protocol
+                    if request.POST.get('protocol_negate', None) == "1":
+                        protocol_negate = "!"
+                    else:
+                        protocol_negate = ""
 
-                if request.POST.get('sdaddressgroup_destination', None) != None:              
-                    sdaddressgroup_destination = request.POST.get('sdaddressgroup_destination')                    
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", sdaddressgroup_destination],
-                        description = "set sdaddressgroup_destination",
-                    )
-                    vymsg.log("set sdaddressgroup_destination", v.data)
+                    # run vyos command
+                    if protocol_criteria != None:
+                        protocol_criteria_txt = protocol_negate + protocol_criteria
 
-                    if v.success:
-                        changed = True 
-
-            # if criteria_networkgroup set, save it
-            if request.POST.get('criteria_networkgroup', None) == "1":
-                if request.POST.get('sdnetworkgroup_source', None) != None:              
-                    sdnetworkgroup_source = request.POST.get('sdnetworkgroup_source')
-                    v = vyos2.api (
+                        v = vcapi.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group", sdnetworkgroup_source],
-                            description = "set sdnetworkgroup_source",
-                    )
-                    if v.success:
-                        changed = True 
-                    else:
-                        vymsg.log("sdnetworkgroup_source", v.error)
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol", protocol_criteria_txt],
+                            description = "set rule protocol",
+                        ) 
+                        if v.success:
+                            changed = True                                
 
-                if request.POST.get('sdnetworkgroup_destination', None) != None:              
-                    sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group", sdnetworkgroup_destination],
-                        description = "set sdnetworkgroup_destination",
-                    ) 
-                    if v.success:
-                        changed = True                  
-                    else:
-                        vymsg.log("sdnetworkgroup_source", v.error)                        
+                # if criteria+port set, save it
+                if request.POST.get('criteria_port', None) == "1":
+                    destinationport_json =  request.POST.get('destinationport_json', None)
+                    sourceport_json =       request.POST.get('sourceport_json', None)
 
-            # if criteria_sourcemac set, save it
-            if request.POST.get('criteria_sourcemac', None) == "1":
-                # negate sdaddress_source
-                if request.POST.get('smac_source_negate', None) == "1":
-                    sourcemac_negate = "!"
-                else:
-                    sourcemac_negate = ""               
-    
-                if request.POST.get('smac_source', None) != None:
-                    sourcemac = request.POST.get('smac_source')
-                    sourcemac = sourcemac.replace("-",":")
-                    sourcemac = sourcemac.lower()
+                    if destinationport_json != None:
 
-                    sourcemac_txt = sourcemac_negate + sourcemac
+                        try:
+                            destinationport = json.loads(destinationport_json)
+                        except ValueError:
+                            destinationport = {}
 
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address", sourcemac_txt],
-                        description = "set source mac",
-                    )
-                    if v.success:
-                        changed = True 
+                        vcmsg.log("destinationport_json", destinationport)
+                        destinationport_text = ','.join(destinationport)
 
-            # if criteria_packetstate set, save it
-            if request.POST.get('criteria_packetstate', None) == "1":
-                packetstates = []
-                if request.POST.get('packetstate_established', None) == "1":
-                    packetstates.append('established')
-                if request.POST.get('packetstate_invalid', None) == "1":
-                    packetstates.append('invalid')
-                if request.POST.get('packetstate_new', None) == "1":
-                    packetstates.append('new')
-                if request.POST.get('packetstate_related', None) == "1":
-                    packetstates.append('related')
-
-                if len(packetstates) > 0:
-                    for packetstate in packetstates:
-                        v = vyos2.api (
+                        
+                        v = vcapi.api (
                             hostname=   hostname_default,
                             api =       "post",
                             op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate, "enable"],
-                            description = "set criteria_packetstate",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port", destinationport_text],
+                            description = "set destination port",
+                        ) 
+                        if v.success:
+                            changed = True 
+
+                    if sourceport_json != None:
+
+                        try:
+                            sourceport = json.loads(sourceport_json)
+                        except ValueError:
+                            sourceport = {}          
+
+                        vcmsg.log("sourceport_json", sourceport)
+                        sourceport_text = ','.join(sourceport)
+
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port", sourceport_text],
+                            description = "set sourceport port",
+                        )
+                        if v.success:
+                            changed = True 
+
+                # if criteria_address set, save it
+                if request.POST.get('criteria_address', None) == "1":
+                    # negate sdaddress_source
+                    if request.POST.get('sdaddress_source_negate', None) == "1":
+                        sdaddress_source_negate = "!"
+                    else:
+                        sdaddress_source_negate = ""
+
+                    # negate sdaddress_destination_negate
+                    if request.POST.get('sdaddress_destination_negate', None) == "1":
+                        sdaddress_destination_negate = "!"
+                    else:
+                        sdaddress_destination_negate = ""                    
+
+
+                    if request.POST.get('sdaddress_source', None) != None:              
+                        sdaddress_source = request.POST.get('sdaddress_source')
+                        sdaddress_source_txt = sdaddress_source_negate + sdaddress_source
+                        
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address", sdaddress_source_txt],
+                            description = "set sdaddress_source",
+                        )
+                        if v.success:
+                            changed = True 
+
+
+                    if request.POST.get('sdaddress_destination', None) != None:              
+                        sdaddress_destination = request.POST.get('sdaddress_destination')                    
+                        sdaddress_destination_txt = sdaddress_destination_negate + sdaddress_destination
+
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address", sdaddress_destination_txt],
+                            description = "set sdaddress_destination_txt",
+                        )
+                        if v.success:
+                            changed = True 
+
+                # if criteria_addressgroup set, save it
+                if request.POST.get('criteria_addressgroup', None) == "1":
+                    if request.POST.get('sdaddressgroup_source', None) != None:              
+                        sdaddressgroup_source = request.POST.get('sdaddressgroup_source')
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", sdaddressgroup_source],
+                            description = "set sdaddressgroup_source",
+                        )
+                        vcmsg.log("set sdaddressgroup_source", v.data)
+
+                        if v.success:
+                            changed = True 
+
+                    if request.POST.get('sdaddressgroup_destination', None) != None:              
+                        sdaddressgroup_destination = request.POST.get('sdaddressgroup_destination')                    
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", sdaddressgroup_destination],
+                            description = "set sdaddressgroup_destination",
+                        )
+                        vcmsg.log("set sdaddressgroup_destination", v.data)
+
+                        if v.success:
+                            changed = True 
+
+                # if criteria_networkgroup set, save it
+                if request.POST.get('criteria_networkgroup', None) == "1":
+                    if request.POST.get('sdnetworkgroup_source', None) != None:              
+                        sdnetworkgroup_source = request.POST.get('sdnetworkgroup_source')
+                        v = vcapi.api (
+                                hostname=   hostname_default,
+                                api =       "post",
+                                op =        "set",
+                                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group", sdnetworkgroup_source],
+                                description = "set sdnetworkgroup_source",
+                        )
+                        if v.success:
+                            changed = True 
+                        else:
+                            vcmsg.log("sdnetworkgroup_source", v.error)
+
+                    if request.POST.get('sdnetworkgroup_destination', None) != None:              
+                        sdnetworkgroup_destination = request.POST.get('sdnetworkgroup_destination')                    
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group", sdnetworkgroup_destination],
+                            description = "set sdnetworkgroup_destination",
+                        ) 
+                        if v.success:
+                            changed = True                  
+                        else:
+                            vcmsg.log("sdnetworkgroup_source", v.error)                        
+
+                # if criteria_sourcemac set, save it
+                if request.POST.get('criteria_sourcemac', None) == "1":
+                    # negate sdaddress_source
+                    if request.POST.get('smac_source_negate', None) == "1":
+                        sourcemac_negate = "!"
+                    else:
+                        sourcemac_negate = ""               
+        
+                    if request.POST.get('smac_source', None) != None:
+                        sourcemac = request.POST.get('smac_source')
+                        sourcemac = sourcemac.replace("-",":")
+                        sourcemac = sourcemac.lower()
+
+                        sourcemac_txt = sourcemac_negate + sourcemac
+
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address", sourcemac_txt],
+                            description = "set source mac",
+                        )
+                        if v.success:
+                            changed = True 
+
+                # if criteria_packetstate set, save it
+                if request.POST.get('criteria_packetstate', None) == "1":
+                    packetstates = []
+                    if request.POST.get('packetstate_established', None) == "1":
+                        packetstates.append('established')
+                    if request.POST.get('packetstate_invalid', None) == "1":
+                        packetstates.append('invalid')
+                    if request.POST.get('packetstate_new', None) == "1":
+                        packetstates.append('new')
+                    if request.POST.get('packetstate_related', None) == "1":
+                        packetstates.append('related')
+
+                    if len(packetstates) > 0:
+                        for packetstate in packetstates:
+                            v = vcapi.api (
+                                hostname=   hostname_default,
+                                api =       "post",
+                                op =        "set",
+                                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate, "enable"],
+                                description = "set criteria_packetstate",
+                            )
+                            if v.success:
+                                changed = True
+
+                # if criteria_tcpflags set, save it
+                if request.POST.get('criteria_tcpflags', None) == "1":
+                    tcpflags = []
+                    
+                    if request.POST.get('tcpflags_syn', None) == "1":
+                        tcpflags.append('SYN')
+                    if request.POST.get('tcpflags_isyn', None) == "1":
+                        tcpflags.append('!SYN')                        
+                    
+                    if request.POST.get('tcpflags_ack', None) == "1":
+                        tcpflags.append('ACK')
+                    if request.POST.get('tcpflags_iack', None) == "1":
+                        tcpflags.append('!ACK')
+
+                    if request.POST.get('tcpflags_fin', None) == "1":
+                        tcpflags.append('FIN')
+                    if request.POST.get('tcpflags_ifin', None) == "1":
+                        tcpflags.append('!FIN')                        
+                    
+                    if request.POST.get('tcpflags_rst', None) == "1":
+                        tcpflags.append('RST')
+                    if request.POST.get('tcpflags_irst', None) == "1":
+                        tcpflags.append('!RST')
+
+                    if request.POST.get('tcpflags_urg', None) == "1":
+                        tcpflags.append('URG')
+                    if request.POST.get('tcpflags_iurg', None) == "1":
+                        tcpflags.append('!URG')                        
+
+                    if request.POST.get('tcpflags_psh', None) == "1":
+                        tcpflags.append('PSH')
+                    if request.POST.get('tcpflags_ipsh', None) == "1":
+                        tcpflags.append('!PSH')                        
+
+                    if request.POST.get('tcpflags_all', None) == "1":
+                        tcpflags.append('ALL')
+                    if request.POST.get('tcpflags_iall', None) == "1":
+                        tcpflags.append('!ALL')                                                
+
+                    vcmsg.log("tcp flags", tcpflags)
+
+                    if len(tcpflags) > 0:
+                        tcpflags_txt = ",".join(tcpflags)
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags", tcpflags_txt],
+                            description = "set criteria_tcpflags",
                         )
                         if v.success:
                             changed = True
 
-            # if criteria_tcpflags set, save it
-            if request.POST.get('criteria_tcpflags', None) == "1":
-                tcpflags = []
-                
-                if request.POST.get('tcpflags_syn', None) == "1":
-                    tcpflags.append('SYN')
-                if request.POST.get('tcpflags_isyn', None) == "1":
-                    tcpflags.append('!SYN')                        
-                
-                if request.POST.get('tcpflags_ack', None) == "1":
-                    tcpflags.append('ACK')
-                if request.POST.get('tcpflags_iack', None) == "1":
-                    tcpflags.append('!ACK')
+                # if criteria_portgroup set, save it
+                if request.POST.get('criteria_portgroup', None) == "1":
+                    if request.POST.get('sdportgroup_source', None) != None:
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group", request.POST.get('sdportgroup_source')],
+                            description = "set sdportgroup_source",
+                        )
+                        if v.success:
+                            changed = True
 
-                if request.POST.get('tcpflags_fin', None) == "1":
-                    tcpflags.append('FIN')
-                if request.POST.get('tcpflags_ifin', None) == "1":
-                    tcpflags.append('!FIN')                        
-                
-                if request.POST.get('tcpflags_rst', None) == "1":
-                    tcpflags.append('RST')
-                if request.POST.get('tcpflags_irst', None) == "1":
-                    tcpflags.append('!RST')
-
-                if request.POST.get('tcpflags_urg', None) == "1":
-                    tcpflags.append('URG')
-                if request.POST.get('tcpflags_iurg', None) == "1":
-                    tcpflags.append('!URG')                        
-
-                if request.POST.get('tcpflags_psh', None) == "1":
-                    tcpflags.append('PSH')
-                if request.POST.get('tcpflags_ipsh', None) == "1":
-                    tcpflags.append('!PSH')                        
-
-                if request.POST.get('tcpflags_all', None) == "1":
-                    tcpflags.append('ALL')
-                if request.POST.get('tcpflags_iall', None) == "1":
-                    tcpflags.append('!ALL')                                                
-
-                vymsg.log("tcp flags", tcpflags)
-
-                if len(tcpflags) > 0:
-                    tcpflags_txt = ",".join(tcpflags)
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags", tcpflags_txt],
-                        description = "set criteria_tcpflags",
-                    )
-                    if v.success:
-                        changed = True
-
-            # if criteria_portgroup set, save it
-            if request.POST.get('criteria_portgroup', None) == "1":
-                if request.POST.get('sdportgroup_source', None) != None:
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group", request.POST.get('sdportgroup_source')],
-                        description = "set sdportgroup_source",
-                    )
-                    if v.success:
-                        changed = True
-
-                if request.POST.get('sdportgroup_destination', None) != None:
-                    v = vyos2.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
-                        description = "set sdportgroup_destination",
-                    )
-                    if v.success:
-                        changed = True                        
+                    if request.POST.get('sdportgroup_destination', None) != None:
+                        v = vcapi.api (
+                            hostname=   hostname_default,
+                            api =       "post",
+                            op =        "set",
+                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
+                            description = "set sdportgroup_destination",
+                        )
+                        if v.success:
+                            changed = True                        
 
     if changed == True:
-        #return redirect('firewall:show', firewall_name)
         msg.add_success("Firewall rule saved.")
         
+
+    ruledata_json = json.dumps(rule.data)
+    vcmsg.log("json", ruledata_json)
+
 
     template = loader.get_template(template_name)
     context = { 
@@ -575,51 +650,16 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'portgroups_groups':                portgroups_groups,
         'mode' :                            mode,
         'msg' :                             msg.get_all(),
+        'ruledata' :                        ruledata,
+        'ruledata_json' :                   ruledata_json,
+        'rulenumber' :                      rulenumber,
     }
 
     if mode == "editrule":
-        context['ruledata'] =               ruledata.data
-        context['ruledata_json'] =          ruledata_json
-        context['rulenumber'] =             rulenumber
+        pass
 
     return HttpResponse(template.render(context, request))
     
-
-@is_authenticated
-def xeditrule(request, firewall_name, rulenumber):
-     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
-    hostname_default = vyos.get_hostname_prefered(request)
-    is_superuser = perms.get_is_superuser(request.user)
-    firewall = vyos.get_firewall(hostname_default, firewall_name)  # remove
-    firewall_networkgroup = vyos.get_firewall_networkgroup(hostname_default)
-    firewall_addressgroup = vyos.get_firewall_addressgroup(hostname_default)
-    firewall_networkgroup_js = json.dumps(firewall_networkgroup['network-group'])
-    firewall_addressgroup_js = json.dumps(firewall_addressgroup['address-group'])
-    netservices = network.get_services()
-    netservices_js = json.dumps(netservices)
-    portgroups = vyos.get_firewall_portgroup(hostname_default)
-    
-    template = loader.get_template('firewall/editrule.html')
-    context = { 
-        #'interfaces': interfaces,
-        'instances':                        all_instances,
-        'hostname_default':                 hostname_default,
-        'firewall_name':                    firewall_name,
-        'firewall_name':                    firewall_name,
-        'username':                         request.user,
-        'is_superuser' :                    is_superuser,
-        'services' :                        netservices['services'],
-        'services_common' :                 netservices['common'],
-        'firewall_networkgroup':            firewall_networkgroup['network-group'],
-        'firewall_addressgroup':            firewall_addressgroup['address-group'],
-        'firewall_networkgroup_js':         firewall_networkgroup_js,
-        'firewall_addressgroup_js':         firewall_addressgroup_js,
-        'netservices_js' :                  netservices_js,
-    }
-      
-
-
 @is_authenticated
 def addrule(request, firewall_name):
     return changerule(request, firewall_name, mode="addrule", template_name="firewall/addrule.html", rulenumber = None)
@@ -813,10 +853,10 @@ def firewall_networkgroup_add(request):
 
         changed = False
 
-        vymsg.log('networks', networks)
+        vcmsg.log('networks', networks)
 
         for network in networks:
-            v = vyos2.api (
+            v = vcapi.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -828,7 +868,7 @@ def firewall_networkgroup_add(request):
             
         # set network description if it was created
             if changed == True:
-                v = vyos2.api (
+                v = vcapi.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -892,10 +932,10 @@ def firewall_addressgroup_add(request):
 
         changed = False
 
-        vymsg.log('networks', networks)
+        vcmsg.log('networks', networks)
 
         for network in networks:
-            v = vyos2.api (
+            v = vcapi.api (
                 hostname =  hostname_default,
                 api =       "post",
                 op =        "set",
@@ -908,7 +948,7 @@ def firewall_addressgroup_add(request):
         # set network description if it was created
         if changed == True:
             if description != None:
-                v = vyos2.api (
+                v = vcapi.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -940,7 +980,7 @@ def firewall_addressgroup_desc(request, groupname):
     all_instances = vyos.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    v = vyos2.api (
+    v = vcapi.api (
         hostname=   hostname_default,
         api =       "get",
         op =        "showConfig",
@@ -954,12 +994,12 @@ def firewall_addressgroup_desc(request, groupname):
         networks_original = groupinfo['address']
 
         if type(networks_original) is str:
-            vymsg.log("tipo", type(networks_original))
+            vcmsg.log("tipo", type(networks_original))
             networks_original = [groupinfo['address']]
         else:
             networks_original = groupinfo['address']
 
-    vymsg.log("networks_original", networks_original)
+    vcmsg.log("networks_original", networks_original)
 
     networks_json = json.dumps(networks_original)
 
@@ -968,7 +1008,7 @@ def firewall_addressgroup_desc(request, groupname):
 
     if v.success:
         if request.POST.get('description', None) != None:
-            v = vyos2.api (
+            v = vcapi.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -984,10 +1024,10 @@ def firewall_addressgroup_desc(request, groupname):
             except ValueError:
                 networks_new = {}
 
-            vymsg.log('networks new', networks_new)
+            vcmsg.log('networks new', networks_new)
 
             for network in networks_new:
-                v = vyos2.api (
+                v = vcapi.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -997,11 +1037,11 @@ def firewall_addressgroup_desc(request, groupname):
                 if v.success and changed == False:
                     changed = True
             
-            vymsg.log('networks original', networks_original)
+            vcmsg.log('networks original', networks_original)
 
             for network in networks_original:
                 if network not in networks_new:
-                    v = vyos2.api (
+                    v = vcapi.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "delete",
@@ -1036,7 +1076,7 @@ def firewall_networkgroup_desc(request, groupname):
     is_superuser = perms.get_is_superuser(request.user)
 
 
-    v = vyos2.api (
+    v = vcapi.api (
         hostname=   hostname_default,
         api =       "get",
         op =        "showConfig",
@@ -1050,12 +1090,12 @@ def firewall_networkgroup_desc(request, groupname):
         networks_original = groupinfo['network']
 
         if type(networks_original) is str:
-            vymsg.log("tipo", type(networks_original))
+            vcmsg.log("tipo", type(networks_original))
             networks_original = [groupinfo['network']]
         else:
             networks_original = groupinfo['network']
 
-    vymsg.log("networks_original", networks_original)
+    vcmsg.log("networks_original", networks_original)
 
     networks_json = json.dumps(networks_original)
 
@@ -1064,7 +1104,7 @@ def firewall_networkgroup_desc(request, groupname):
 
     if v.success:
         if request.POST.get('description', None) != None:
-            v = vyos2.api (
+            v = vcapi.api (
                 hostname=   hostname_default,
                 api =       "post",
                 op =        "set",
@@ -1080,10 +1120,10 @@ def firewall_networkgroup_desc(request, groupname):
             except ValueError:
                 networks_new = {}
 
-            vymsg.log('networks new', networks_new)
+            vcmsg.log('networks new', networks_new)
 
             for network in networks_new:
-                v = vyos2.api (
+                v = vcapi.api (
                     hostname=   hostname_default,
                     api =       "post",
                     op =        "set",
@@ -1093,11 +1133,11 @@ def firewall_networkgroup_desc(request, groupname):
                 if v.success and changed == False:
                     changed = True
             
-            vymsg.log('networks original', networks_original)
+            vcmsg.log('networks original', networks_original)
 
             for network in networks_original:
                 if network not in networks_new:
-                    v = vyos2.api (
+                    v = vcapi.api (
                         hostname=   hostname_default,
                         api =       "post",
                         op =        "delete",
