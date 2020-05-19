@@ -1,9 +1,12 @@
 body {
     background-color: #333;
     color: white;
-    
-    
+    font-size: 12px;    
+
 }
+
+
+
 
 .container {
     color: black;
@@ -75,30 +78,27 @@ form.instancedefault {
   margin: 0;  
 }
 
-#central h1 {
+h1 {
   font-size: 18px;
 }
 
-#central h2 {
+h2 {
   margin-top: 20px;
   font-size: 16px;
 }
 
-#central h3 {
+h3 {
   margin-top: 20px;
   font-size: 14px;
 }
 
-#central h4 {
+h4 {
   margin-top: 10px;
   font-size: 13px;
   font-weight: bold;
 }
 
 
-#central {
-  font-size: 12px;
-}
 
 #rulenumber:disabled {
     background-color: #ddd;
@@ -162,3 +162,46 @@ input[type=submit] {
 .matching_criteria { 
   padding: 3px;
 }
+
+
+#msgs {
+  background-color: rgb(228, 218, 181);  
+  padding: 10px 10px 10px 10px;
+  list-style-type: none;
+}
+#msgs li:last-child {
+  margin-bottom: 0;
+}
+
+#msgs li {
+  margin-bottom: 10px;
+  padding: 4px 6px;
+}
+
+#msgs-header {
+  font-size: 14px;
+  padding: 0;
+  margin: 0 0 10px 0;
+  margin-top: 0;
+  
+}
+
+.msgs_success {
+  background-color: rgb(73, 73, 160);
+}
+.msgs_info {
+  background-color: rgb(132, 73, 160);
+}
+.msgs_debug {
+  background-color: rgb(160, 73, 113);
+}
+.msgs_alert {
+  background-color: rgb(160, 147, 73);
+}
+.msgs_error {
+  background-color: rgb(160, 73, 73);
+}
+
+
+
+

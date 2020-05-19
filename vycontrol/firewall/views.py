@@ -177,15 +177,15 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         if rulenumber == None:
             msg.add_error("Rule number empty")
         else:
-            rule = vapi.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
-            if rule.success == False:
-                ruledata = rule.data
+            v = vapi.get_firewall_rulenumber(hostname_default, firewall_name, rulenumber)
+            if v.success:
+                ruledata = v.data
 
                 # if rule exists control variables are true
                 rulenumber_valid = True
                 ruleaction_valid = True
             else:
-                msg.add_error("There is no rulenumber inside firewall.")
+                msg.add_error("There is no rule number inside firewall.")
 
     # mode add rule
     elif mode == "addrule":
@@ -206,18 +206,18 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     if rulenumber_valid and request.POST.get('ruleaction', None) != None:
         if request.POST.get('ruleaction') in ["accept", "drop", "reject"]:
             if mode == "editrule" and ruledata['action'] and request.POST.get('ruleaction') == ruledata['action']:
-                msg.add_debug("Not need to update rule action")
+                msg.add_debug("Action - no need to update")
             else:
                 v = vapi.set_firewall_rule_action(hostname_default, firewall_name, rulenumber, request.POST.get('ruleaction'))
                 if v.success == False:
-                    msg.add_error("Fail to change rule action: " + v.reason)
+                    msg.add_error("Action fail to change: " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['action'] = request.POST.get('ruleaction')
                     changed = True
-                    msg.add_success("Rule action updated")
+                    msg.add_success("Action updated")
         else:
-            msg.add_error("Rule action invalid")
+            msg.add_error("Action invalid")
 
 
     # update/insert rule status
@@ -230,7 +230,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             elif request.POST.get('status') == "disable" and "disable" not in ruledata:
                 v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Failed to disable status: " + v.reason)
+                    msg.add_error("Status - failed to disable: " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['disable'] = {}
@@ -240,7 +240,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             elif request.POST.get('status') == "enable" and "disable" in ruledata:
                 v = vapi.set_firewall_rule_enabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Failed to enable status: " + v.reason)
+                    msg.add_error("Status - failed to enable: " + v.reason)
                 else:
                     # updating ruledata
                     del ruledata['disable']
@@ -251,7 +251,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             if request.POST.get('status') == "disable":
                 v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Failed to disable status: " + v.reason)
+                    msg.add_error("Status - failed to disable: " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['disable'] = {}
@@ -263,8 +263,14 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 pass
 
     if rulenumber_valid == True and request.POST.get('description', None) != None:
-        pass
-
+        v = vapi.set_firewall_rule_description(hostname_default, firewall_name, rulenumber, request.POST.get('description'))
+        if v.success == False:
+            msg.add_error("Description - failed to update")
+        else:
+            # updating ruledata
+            ruledata['description'] = request.POST.get('description')
+            changed = True
+            msg.add_success("Description updated")
 
 
     if rulenumber_valid == True:

@@ -150,6 +150,9 @@ def api(hostname, api, op, cmd, description = ""):
     except json.JSONDecodeError:
         respjson = {'success': False, 'error': None, 'data': None}
 
+    #log("api raw", respjson)
+
+
     v = vyapi(
         result =    respjson['success'],
         reason =    respjson['error'],

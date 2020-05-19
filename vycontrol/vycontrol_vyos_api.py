@@ -60,3 +60,13 @@ def set_firewall_rule_enabled(hostname, firewall_name, rulenumber):
         description = "enable rule",
     )
     return v    
+
+def set_firewall_rule_description(hostname, firewall_name, rulenumber, description):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "description", description],
+        description = "set rule description",
+    )
+    return v

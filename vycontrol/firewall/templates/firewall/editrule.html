@@ -4,6 +4,22 @@
 {% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a> - edit rule {{ firewall_rulenumber }}{% endblock %}
 {% block username %}{{ username }}{% endblock %}
 
+
+{% block submenu %}
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+</p>
+<p class="submenu2">
+    <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
+</p>
+{% endblock submenu %}
+
+
 {% block debug %}
 {{ msg }}
 
@@ -32,6 +48,9 @@
 
 {% block content %}
 
+
+
+
 {% comment %}
 <script type="text/javascript">
     var firewall_networkgroup_data = '{{firewall_networkgroup_js|safe}}';
@@ -53,17 +72,6 @@
 
 
 
-<p class="submenu1">
-    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
-
-    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
-    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
-    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
-    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
-</p>
-<p class="submenu2">
-    <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
-</p>
 
 
 {% if mode == "editrule" %}
