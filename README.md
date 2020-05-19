@@ -40,22 +40,23 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 * 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-* 20.05.04.1000 - improve error returns to end users
-* 20.05.07.1000 - vlans / interfaces deep configuration
-* 20.05.10.1000 - working firewall with zones 
-* 20.06.01.1000 - commit, save, load and system login
-* 20.06.03.1000 - granular permissions and improvements
-* 20.06.09.1000 - save/commit/load features and ssh / logins
-* 20.06.10.1000 - lost password
-* 20.06.13.1000 - ipsec features
-* 20.06.15.1000 - layout
-* **25.06.20-LTS** - OSPF features
-* 25.07.01.1000 – FastNetMon one-click integration
-* 25.07.05.1000 – Finish firewall options
-* 25.08.01.1000 - s3 backup scheduler and commit confirm
-* 25.08.05.1000 - improve permissions cleanups
-* 25.12.10.1000 - ipv6 milestone
-* 25.12.20.1000 - depend on a third party
+* [20.05.04.1000 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+* [20.05.07.1000 - vlans / interfaces deep configuration](https://github.com/vycontrol/vycontrol/milestone/10)
+* [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
+* [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
+* [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones)
+* [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
+* [20.06.13.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
+* [20.06.15.1000 - layout improvements](https://github.com/vycontrol/vycontrol/milestone/5)
+* [**25.06.20-LTS** - OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
+* [25.07.01.1000 – FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
+* [25.07.05.1000 – Finish firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
+* [25.08.01.1000 - save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
+* [25.08.04.1000 - s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
+* [30.06.03.1000 - granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
+* [30.06.01.1000 - commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
+* [35.12.10.1000 - ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
+* [35.12.20.1000 - other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
 
 ### versions convention
 
