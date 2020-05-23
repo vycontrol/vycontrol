@@ -44,7 +44,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 * [20.05.07.1000 - vlans / interfaces deep configuration](https://github.com/vycontrol/vycontrol/milestone/10)
 * [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
 * [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
-* [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones)
+* [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
 * [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
 * [20.06.13.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
 * [20.06.15.1000 - layout improvements](https://github.com/vycontrol/vycontrol/milestone/5)
