@@ -185,12 +185,14 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 rulenumber_valid = True
                 ruleaction_valid = True
             else:
-                msg.add_error("There is no rule number inside firewall.")
+                msg.add_error("There is no rule number inside firewall")
 
     # mode add rule
     elif mode == "addrule":
         if request.POST.get('rulenumber', None) == None:
-            msg.add_error("Rule number empty")
+            #msg.add_error("Rule number empty")
+            # before fill form rule number is empty
+            pass
         else:
             rulenumber = request.POST.get('rulenumber')
             if int(rulenumber) >= 1 and int(rulenumber) <= 9999:
@@ -201,36 +203,36 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 msg.add_error("Rule number must be between 1 and 9999")
 
 
-
-    # update/insert rule action
+    ###############################################################################################################################################################
+    # update rule action
     if rulenumber_valid and request.POST.get('ruleaction', None) != None:
         if request.POST.get('ruleaction') in ["accept", "drop", "reject"]:
             if mode == "editrule" and ruledata['action'] and request.POST.get('ruleaction') == ruledata['action']:
-                msg.add_debug("Action - no need to update")
+                msg.add_debug("Action: not changed")
             else:
                 v = vapi.set_firewall_rule_action(hostname_default, firewall_name, rulenumber, request.POST.get('ruleaction'))
                 if v.success == False:
-                    msg.add_error("Action fail to change: " + v.reason)
+                    msg.add_error("Action: fail to change - " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['action'] = request.POST.get('ruleaction')
                     changed = True
-                    msg.add_success("Action updated")
+                    msg.add_success("Action: updated")
         else:
             msg.add_error("Action invalid")
 
-
-    # update/insert rule status
+    ###############################################################################################################################################################
+    # update rule status
     if rulenumber_valid and request.POST.get('status', None) != None:
         if mode == "editrule": 
             if request.POST.get('status') == "enable" and "disable" not in ruledata:
-                msg.add_debug("Current status is enabled and equal intended status")
+                msg.add_debug("Status: not changed")
             elif request.POST.get('status') == "disable" and "disable" in ruledata:
-                msg.add_debug("Current status is disable and equal intended status")
+                msg.add_debug("Status: not changed")
             elif request.POST.get('status') == "disable" and "disable" not in ruledata:
                 v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Status - failed to disable: " + v.reason)
+                    msg.add_error("Status: failed to disable - " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['disable'] = {}
@@ -240,37 +242,309 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             elif request.POST.get('status') == "enable" and "disable" in ruledata:
                 v = vapi.set_firewall_rule_enabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Status - failed to enable: " + v.reason)
+                    msg.add_error("Status: failed to enable - " + v.reason)
                 else:
                     # updating ruledata
                     del ruledata['disable']
                     ruledata['status'] = 'enabled'
                     changed = True
-                    msg.add_success("Status enabled")                    
+                    msg.add_success("Status: enabled")                    
         elif mode == "addrule":
             if request.POST.get('status') == "disable":
                 v = vapi.set_firewall_rule_disabled(hostname_default, firewall_name, rulenumber)
                 if v.success == False:
-                    msg.add_error("Status - failed to disable: " + v.reason)
+                    msg.add_error("Status: failed to disable - " + v.reason)
                 else:
                     # updating ruledata
                     ruledata['disable'] = {}
                     ruledata['status'] = 'disabled'
                     changed = True
-                    msg.add_info("Status disabled")
+                    msg.add_info("Status: disabled")
             else:
                 # nothing to do if status = enable
                 pass
 
+    ###############################################################################################################################################################
+    # update description
     if rulenumber_valid == True and request.POST.get('description', None) != None:
-        v = vapi.set_firewall_rule_description(hostname_default, firewall_name, rulenumber, request.POST.get('description'))
-        if v.success == False:
-            msg.add_error("Description - failed to update")
+        if 'description' in ruledata and request.POST.get('description') == ruledata['description']:
+            msg.add_debug("Description: not changed")
         else:
-            # updating ruledata
-            ruledata['description'] = request.POST.get('description')
-            changed = True
-            msg.add_success("Description updated")
+            v = vapi.set_firewall_rule_description(hostname_default, firewall_name, rulenumber, request.POST.get('description'))
+            if v.success == False:
+                msg.add_error("Description: failed to update")
+            else:
+                # updating ruledata
+                ruledata['description'] = request.POST.get('description')
+                changed = True
+                msg.add_success("Description: updated")
+
+    ###############################################################################################################################################################
+    # update criteria_protocol
+    if rulenumber_valid == True and request.POST.get('criteria_protocol', None) == "1":
+        protocol_criteria = None
+        protocol_criteria_delete = False
+
+        # other protocol - todo validate data
+        if request.POST.get('protocol_criteria', None) == "other":
+            if request.POST.get('protocol_custom', None) != None:
+                protocol_criteria = request.POST.get('protocol_custom')
+        # delete protocol
+        elif request.POST.get('protocol_criteria', None) == "none":
+            protocol_criteria_delete = True
+
+            if 'protocol' in ruledata:
+                v = vapi.set_firewall_rule_protocol_delete(hostname_default, firewall_name, rulenumber)
+                if v.success == False:
+                    msg.add_error("Criteria Protocol: failed to unset - " + v.reason)
+                else:
+                    del ruledata['protocol']                   
+                    changed = True
+                    msg.add_success("Criteria Protocol: unset")
+            else:
+                msg.add_debug("Criteria Protocol:  not changed unset not needed")
+        # common protocols
+        elif request.POST.get('protocol_criteria', None) in ['all', 'tcp', 'udp', 'tcp_udp', 'icmp']:
+            protocol_criteria = request.POST.get('protocol_criteria')
+        # other cases did not checked anything
+
+
+        if protocol_criteria != None:
+            # negate protocol
+            if request.POST.get('protocol_negate', None) == "1":
+                protocol_negate = "!"
+            else:
+                protocol_negate = ""
+            protocol_criteria_txt = protocol_negate + protocol_criteria
+
+            if 'protocol' in ruledata and protocol_criteria_txt == ruledata['protocol']:
+                msg.add_debug("Criteria Protocol:  not changed")
+            else:
+                v = vapi.set_firewall_rule_protocol(hostname_default, firewall_name, rulenumber, protocol_criteria_txt)
+                if v.success == False:
+                    msg.add_error("Criteria Protocol: failed to update - " + v.reason)
+                else:
+                    # updating ruledata
+                    ruledata['protocol'] = protocol_criteria_txt
+                    changed = True
+                    msg.add_success("Criteria Protocol: updated")
+        else:
+            if protocol_criteria_delete != True:
+                msg.add_error("Criteria Protocol: invalid protocol")
+    
+
+    ###############################################################################################################################################################
+    # update criteria_protocol
+    destinationport_json =  request.POST.get('destinationport_json', None)
+    sourceport_json =       request.POST.get('sourceport_json', None)
+    dport_form = []
+    sport_form = []
+
+    if destinationport_json != None:
+        try:
+            dport_form = json.loads(destinationport_json)
+        except ValueError:
+            pass
+    if sourceport_json != None:
+        try:
+            sport_form = json.loads(sourceport_json)
+        except ValueError:
+            pass
+    
+
+
+    # remove ports unset
+    dport_delete = []
+    sport_delete = []
+
+    if 'destination' in ruledata and 'port' in ruledata['destination']:
+        dport_ruledata = ruledata['destination']['port'].split(",")
+    else:
+        dport_ruledata = []
+
+    if 'source' in ruledata and 'port' in ruledata['source']:
+        sport_ruledata = ruledata['source']['port'].split(",")
+    else:
+        sport_ruledata = []
+
+    dport_changes = 0
+    sport_changes = 0
+
+    dport_delete_all = False
+    sport_delete_all = False
+
+    #msg.add_debug("Criteria Ports Destination: ports - " + pprint.pformat(dport_ruledata))
+    #msg.add_debug("Criteria Ports Source: ports - " + pprint.pformat(sport_ruledata))
+
+    # find ports to mark as removed
+    if rulenumber_valid == True and request.POST.get('criteria_port', None) == "1":
+        if len(sport_form) == 0:
+            msg.add_debug("Criteria Ports Source: remove all ports")
+            sport_ruledata = []
+            sport_changes = sport_changes + 1
+            sport_delete_all = True
+        else:
+            for port in sport_ruledata:
+                if port not in sport_form:
+                    sport_ruledata.remove(port)   
+                    sport_delete.append(port)   
+                    sport_changes = sport_changes + 1
+            for port in sport_form:
+                if port not in sport_ruledata:
+                    sport_ruledata.append(port)   
+                    sport_changes = sport_changes + 1
+
+    if rulenumber_valid == True and request.POST.get('criteria_port', None) == "1":
+        if len(dport_form) <= 0:
+            msg.add_debug("Criteria Ports Destination: remove all ports")
+            dport_ruledata = []
+            dport_changes = dport_changes + 1 
+            dport_delete_all = True
+        else:
+            for port in dport_ruledata:
+                if port not in dport_form:
+                    dport_ruledata.remove(port)
+                    dport_delete.append(port)   
+                    dport_changes = dport_changes + 1 
+            for port in dport_form:
+                if port not in dport_ruledata:
+                    dport_ruledata.append(port)     
+                    dport_changes = dport_changes + 1                     
+
+    if len(dport_delete) > 0:
+        msg.add_debug("Criteria Ports Destination: remove ports - " + ",".join(dport_delete))
+    if len(sport_delete) > 0:
+        msg.add_debug("Criteria Ports Source: remove ports - " + ",".join(sport_delete))        
+
+
+
+    if rulenumber_valid == True and dport_changes > 0:
+        if dport_delete_all == True:
+            v = vapi.set_firewall_rule_destination_ports_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:
+                changed = True
+                msg.add_success("Criteria Ports Destination: updated delete all destination success")
+                if 'destination' in ruledata and 'port' in ruledata['destination']:
+                    del ruledata['destination']['port']
+            else:
+                msg.add_error("Criteria Ports Destination: delete all failed - " + v.reason)
+
+        else:
+            msg.add_debug("Criteria Ports Destination: ports - " + ",".join(dport_ruledata))
+            v = vapi.set_firewall_rule_destination_ports(hostname_default, firewall_name, rulenumber, dport_ruledata)
+            if v.success:
+                changed = True
+                msg.add_success("Criteria Ports Destination: updated")
+                ruledata['destination']['port'] = ','.join(dport_ruledata)
+            else:
+                msg.add_error("Criteria Ports Destination: failed - " + v.reason)
+    else:
+        msg.add_info("Criteria Ports Destination: no changes")
+
+    if rulenumber_valid == True and sport_changes > 0:
+        if sport_delete_all == True:
+            v = vapi.set_firewall_rule_source_ports_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:
+                changed = True
+                msg.add_success("Criteria Ports Destination: updated delete all source success")
+                if 'source' in ruledata and 'port' in ruledata['source']:
+                    del ruledata['source']['port']
+            else:
+                msg.add_error("Criteria Ports Destination: delete all failed - " + v.reason)
+
+        else:
+            msg.add_debug("Criteria Ports Source: ports - " + ",".join(sport_ruledata))    
+            v = vapi.set_firewall_rule_source_ports(hostname_default, firewall_name, rulenumber, sport_ruledata)
+            if v.success:
+                changed = True 
+                msg.add_success("Criteria Ports Source: updated")
+                ruledata['source']['port'] = ','.join(sport_ruledata)
+            else:
+                msg.add_error("Criteria Ports Source: failed - " + v.reason)
+    else:
+        msg.add_info("Criteria Ports Source: no changes")
+    
+
+    # if criteria_tcpflags set, save it
+    if request.POST.get('criteria_tcpflags', None) == "1":
+        tcpflags_form = []
+        
+        if request.POST.get('tcpflags_syn', None) == "1":
+            tcpflags_form.append('SYN')
+        if request.POST.get('tcpflags_isyn', None) == "1":
+            tcpflags_form.append('!SYN')                        
+        
+        if request.POST.get('tcpflags_ack', None) == "1":
+            tcpflags_form.append('ACK')
+        if request.POST.get('tcpflags_iack', None) == "1":
+            tcpflags_form.append('!ACK')
+
+        if request.POST.get('tcpflags_fin', None) == "1":
+            tcpflags_form.append('FIN')
+        if request.POST.get('tcpflags_ifin', None) == "1":
+            tcpflags_form.append('!FIN')                        
+        
+        if request.POST.get('tcpflags_rst', None) == "1":
+            tcpflags_form.append('RST')
+        if request.POST.get('tcpflags_irst', None) == "1":
+            tcpflags_form.append('!RST')
+
+        if request.POST.get('tcpflags_urg', None) == "1":
+            tcpflags_form.append('URG')
+        if request.POST.get('tcpflags_iurg', None) == "1":
+            tcpflags_form.append('!URG')                        
+
+        if request.POST.get('tcpflags_psh', None) == "1":
+            tcpflags_form.append('PSH')
+        if request.POST.get('tcpflags_ipsh', None) == "1":
+            tcpflags_form.append('!PSH')                        
+
+        if request.POST.get('tcpflags_all', None) == "1":
+            tcpflags_form.append('ALL')
+        if request.POST.get('tcpflags_iall', None) == "1":
+            tcpflags_form.append('!ALL')                                                
+        
+
+        # will need to empty tcpflags
+
+
+        if 'tcp' in ruledata and 'flags' in ruledata['tcp']: 
+            tcpflags_rule = ruledata['tcp']['flags'].split(',')
+        else:
+            tcpflags_rule = []
+
+        if len(tcpflags_form) == 0 and len(tcpflags_rule) > 0:
+            v = vapi.set_firewall_rule_tcpflags_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:
+                changed = True
+                msg.add_success("Criteria TCP Ports: empty tcp flags success")
+                changed = True 
+
+                if 'tcp' in ruledata:
+                    if 'flags' in ruledata['tcp']:
+                        del ruledata['tcp']['flags']
+            else:
+                msg.add_error("Criteria TCP Ports: empty tcp failed - " + v.reason)
+        elif len(tcpflags_form) > 0:
+            v = vapi.set_firewall_rule_tcpflags(hostname_default, firewall_name, rulenumber, tcpflags_form)
+
+            if v.success:
+                changed = True
+                msg.add_success("Criteria TCP Ports: updated success")
+                changed = True 
+
+                #if 'source' in ruledata and 'port' in ruledata['source']:
+                #    del ruledata['source']['port']
+                if 'tcp' not in ruledata:
+                    ruledata['tcp'] = {}
+                ruledata['tcp']['flags'] = ",".join(tcpflags_form)
+            else:
+                msg.add_error("Criteria TCP Ports: updated failed - " + v.reason)
+
+
+
+
+
 
 
     if rulenumber_valid == True:
@@ -280,98 +554,10 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         elif False:
             # rule created, continue to configure firewall rule according his criterias
             if v.success:
-                changed = True 
+                
 
-                # if status set, save it
-                if request.POST.get('description', None) != None:
-                    v = vapilib.api (
-                        hostname=   hostname_default,
-                        api =       "post",
-                        op =        "set",
-                        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "description", request.POST.get('description')],
-                        description = "set rule description",
-                    )    
-                    if v.success:
-                        changed = True  
-
-                # if criteria_protocol set, save it
-                if request.POST.get('criteria_protocol', None) == "1":
-                    # other protocol - todo validate data
-                    if request.POST.get('protocol_criteria', None) == "other":
-                        if request.POST.get('protocol_custom', None) != None:
-                            protocol_criteria = request.POST.get('protocol_custom')
-                    # common protocols
-                    elif request.POST.get('protocol_criteria', None) in ['all', 'tcp', 'udp', 'tcp_udp', 'icmp']:
-                        protocol_criteria = request.POST.get('protocol_criteria')
-                    # other cases did not checked anything
-                    else:
-                        protocol_criteria = None   
-
-                    # negate protocol
-                    if request.POST.get('protocol_negate', None) == "1":
-                        protocol_negate = "!"
-                    else:
-                        protocol_negate = ""
-
-                    # run vyos command
-                    if protocol_criteria != None:
-                        protocol_criteria_txt = protocol_negate + protocol_criteria
-
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol", protocol_criteria_txt],
-                            description = "set rule protocol",
-                        ) 
-                        if v.success:
-                            changed = True                                
-
-                # if criteria+port set, save it
-                if request.POST.get('criteria_port', None) == "1":
-                    destinationport_json =  request.POST.get('destinationport_json', None)
-                    sourceport_json =       request.POST.get('sourceport_json', None)
-
-                    if destinationport_json != None:
-
-                        try:
-                            destinationport = json.loads(destinationport_json)
-                        except ValueError:
-                            destinationport = {}
-
-                        vcmsg.log("destinationport_json", destinationport)
-                        destinationport_text = ','.join(destinationport)
-
-                        
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port", destinationport_text],
-                            description = "set destination port",
-                        ) 
-                        if v.success:
-                            changed = True 
-
-                    if sourceport_json != None:
-
-                        try:
-                            sourceport = json.loads(sourceport_json)
-                        except ValueError:
-                            sourceport = {}          
-
-                        vcmsg.log("sourceport_json", sourceport)
-                        sourceport_text = ','.join(sourceport)
-
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port", sourceport_text],
-                            description = "set sourceport port",
-                        )
-                        if v.success:
-                            changed = True 
+                
+                    
 
                 # if criteria_address set, save it
                 if request.POST.get('criteria_address', None) == "1":
@@ -526,58 +712,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                             if v.success:
                                 changed = True
 
-                # if criteria_tcpflags set, save it
-                if request.POST.get('criteria_tcpflags', None) == "1":
-                    tcpflags = []
-                    
-                    if request.POST.get('tcpflags_syn', None) == "1":
-                        tcpflags.append('SYN')
-                    if request.POST.get('tcpflags_isyn', None) == "1":
-                        tcpflags.append('!SYN')                        
-                    
-                    if request.POST.get('tcpflags_ack', None) == "1":
-                        tcpflags.append('ACK')
-                    if request.POST.get('tcpflags_iack', None) == "1":
-                        tcpflags.append('!ACK')
-
-                    if request.POST.get('tcpflags_fin', None) == "1":
-                        tcpflags.append('FIN')
-                    if request.POST.get('tcpflags_ifin', None) == "1":
-                        tcpflags.append('!FIN')                        
-                    
-                    if request.POST.get('tcpflags_rst', None) == "1":
-                        tcpflags.append('RST')
-                    if request.POST.get('tcpflags_irst', None) == "1":
-                        tcpflags.append('!RST')
-
-                    if request.POST.get('tcpflags_urg', None) == "1":
-                        tcpflags.append('URG')
-                    if request.POST.get('tcpflags_iurg', None) == "1":
-                        tcpflags.append('!URG')                        
-
-                    if request.POST.get('tcpflags_psh', None) == "1":
-                        tcpflags.append('PSH')
-                    if request.POST.get('tcpflags_ipsh', None) == "1":
-                        tcpflags.append('!PSH')                        
-
-                    if request.POST.get('tcpflags_all', None) == "1":
-                        tcpflags.append('ALL')
-                    if request.POST.get('tcpflags_iall', None) == "1":
-                        tcpflags.append('!ALL')                                                
-
-                    vcmsg.log("tcp flags", tcpflags)
-
-                    if len(tcpflags) > 0:
-                        tcpflags_txt = ",".join(tcpflags)
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags", tcpflags_txt],
-                            description = "set criteria_tcpflags",
-                        )
-                        if v.success:
-                            changed = True
+                
 
                 # if criteria_portgroup set, save it
                 if request.POST.get('criteria_portgroup', None) == "1":
@@ -604,7 +739,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                             changed = True                        
 
     if changed == True:
-        msg.add_success("Firewall rule saved.")
+        msg.add_success("Firewall rule saved")
         
 
     ruledata_json = json.dumps(ruledata)
@@ -631,6 +766,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'mode' :                            mode,
         'msg' :                             msg.get_all(),
         'ruledata' :                        ruledata,
+        'ruledata_pretty' :                 pprint.pformat(ruledata, indent=4, width=120),
         'ruledata_json' :                   ruledata_json,
         'rulenumber' :                      rulenumber,
     }

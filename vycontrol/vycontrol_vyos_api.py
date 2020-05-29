@@ -70,3 +70,92 @@ def set_firewall_rule_description(hostname, firewall_name, rulenumber, descripti
         description = "set rule description",
     )
     return v
+
+def set_firewall_rule_protocol(hostname, firewall_name, rulenumber, protocol_criteria_txt):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol", protocol_criteria_txt],
+        description = "set rule protocol",
+    ) 
+    return v
+
+def set_firewall_rule_protocol_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "protocol"],
+        description = "delete rule protocol",
+    ) 
+    return v
+
+def set_firewall_rule_destination_ports(hostname, firewall_name, rulenumber, ports):
+    ports_text = ','.join(ports)
+
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port", ports_text],
+        description = "set destination ports",
+    ) 
+    return v
+
+def set_firewall_rule_source_ports(hostname, firewall_name, rulenumber, ports):
+    ports_text = ','.join(ports)
+
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port", ports_text],
+        description = "set source ports",
+    ) 
+    return v
+
+
+def set_firewall_rule_destination_ports_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "port"],
+        description = "delete destination port",
+    ) 
+    return v
+
+
+def set_firewall_rule_source_ports_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "port"],
+        description = "delete source port",
+    ) 
+    return v    
+
+
+def set_firewall_rule_tcpflags(hostname, firewall_name, rulenumber, tcpflags):
+    if len(tcpflags) > 0:
+        tcpflags_txt = ",".join(tcpflags)
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags", tcpflags_txt],
+            description = "set tcpflags",
+        )
+    return v
+
+def set_firewall_rule_tcpflags_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "tcp", "flags"],
+        description = "delete tcpflags",
+    )
+    return v    

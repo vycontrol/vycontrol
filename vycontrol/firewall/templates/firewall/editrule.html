@@ -21,28 +21,8 @@
 
 
 {% block debug %}
-{{ msg }}
 
-
-{{ firewall }}
-
-{{ mode }}
-
-{{ firewall_name }}
-
-{{ services }}
-
-{{ services_common }}
-
-{{ firewall_networkgroup }}
-
-{{ firewall_addressgroup }}
-
-{{ rulenumber }}
-
-{{ firewall_name }}
-
-{{ ruledata }}
+{{ ruledata_pretty }}
 
 {% endblock %}
 
@@ -87,7 +67,7 @@
     <div class="container">
         <div class="row">
 
-            {% if mode == "addrule" %}
+            {% if mode != "editrule" and rulenumber == None %}
             <div class="col">
                 <p>
                     <label for="alias">rule number</label><br>
@@ -139,7 +119,8 @@
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_udp" value="udp"> udp<br>
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp_udp" value="tcp_udp"> tcp and udp<br>
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_icmp" value="icmp"> icmp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="other"> other  
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="other"> other<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_none" value="none"> none  
                 </p>
 
 
@@ -251,7 +232,7 @@
 
     </div>
 
-    <h3 class="matching_criteria" id="criteria_tcpflags_header" style="display: none"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
+    <h3 class="matching_criteria" id="criteria_tcpflags_header" style="display: none"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP flags</label></h3>    
     <div class="container" id="criteria_tcpflags_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -455,7 +436,7 @@
     </div>
 
 
-    <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - packet state</label></h3>    
     <div class="container" id="criteria_packetstate_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -768,6 +749,8 @@
         if (protocol && protocol.length > 0) {
                 $('#criteria_protocol_block').show();
                 $("#criteria_protocol").prop("checked", true);
+                $("#criteria_protocol").hide();
+                
 
                 if (protocol == "all") { $("#protocol_criteria_all").prop("checked", true); }
                 if (protocol == "tcp") { 
@@ -828,6 +811,7 @@
             // $("#criteria_protocol_header").show("highlight", {color: '#FBE28A'}, 2000);
             $("#criteria_port").prop("checked", true);
             $("#criteria_port_block").show();
+            $("#criteria_port").hide();            
         }
 
         // json gives criteria_tcpflags
@@ -850,6 +834,8 @@
             // $("#criteria_protocol_header").show("highlight", {color: '#FBE28A'}, 2000);
             $("#criteria_tcpflags").prop("checked", true);
             $("#criteria_tcpflags_block").show();
+            $("#criteria_tcpflags").hide();        
+
         }
 
         // json gives criteria_address

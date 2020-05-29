@@ -187,16 +187,16 @@ input[type=submit] {
 }
 
 .msgs_success {
-  background-color: rgb(73, 73, 160);
+  background-color: rgb(108, 108, 163);
 }
 .msgs_info {
-  background-color: rgb(132, 73, 160);
+  background-color: rgb(146, 106, 165);
 }
 .msgs_debug {
-  background-color: rgb(160, 73, 113);
+  background-color: rgb(158, 109, 132);
 }
 .msgs_alert {
-  background-color: rgb(160, 147, 73);
+  background-color: rgb(161, 153, 103);
 }
 .msgs_error {
   background-color: rgb(160, 73, 73);
