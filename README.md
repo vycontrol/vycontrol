@@ -48,7 +48,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 - [ ] [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
 - [ ] [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
 - [ ] [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
-- [ ] [**20.06.15.LTS** - layout improvements](https://github.com/vycontrol/vycontrol/milestone/5)
+- [ ] [**20.06.15.LTS** - layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
 
 ### IPSEC / OpenVPN focus 
 - [ ] [25.07.05.1000 – Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
