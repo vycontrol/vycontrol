@@ -34,29 +34,45 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 # roadmap 
 
 ## current version
-* 20.05.02.1000 - working firewall without zones 
+- [x] 20.05.02.1000 - working firewall without zones 
 
 ## changelog
-* 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
+- [ ] 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
-* [20.05.04.1000 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
-* [20.05.07.1000 - vlans / interfaces deep configuration](https://github.com/vycontrol/vycontrol/milestone/10)
-* [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
-* [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
-* [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
-* [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
-* [20.06.13.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
-* [20.06.15.1000 - layout improvements](https://github.com/vycontrol/vycontrol/milestone/5)
-* [**25.06.20-LTS** - OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
-* [25.07.01.1000 – FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
-* [25.07.05.1000 – Finish firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
-* [25.08.01.1000 - save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
-* [25.08.04.1000 - s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
-* [30.06.03.1000 - granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
-* [30.06.01.1000 - commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
-* [35.12.10.1000 - ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
-* [35.12.20.1000 - other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
+
+### firewall and vycontrol-base arch focus  
+- [ ] [20.05.04.1000 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [ ] [20.05.07.1000 - vlans / interfaces deep configuration](https://github.com/vycontrol/vycontrol/milestone/10)
+- [ ] [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
+- [ ] [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
+- [ ] [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
+- [ ] [**20.06.15.LTS** - layout improvements](https://github.com/vycontrol/vycontrol/milestone/5)
+
+### IPSEC / OpenVPN focus 
+- [ ] [25.07.05.1000 – Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
+- [ ] [25.09.05.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [25.11.05.1000 - openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
+
+### basic dynamic routing features
+- [ ] [30.02.20.1000 - OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
+
+### addons features 
+- [ ] [35.02.01.1000 – FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
+- [ ] [35.04.01.1000 - save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
+- [ ] [35.06.04.1000 - s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
+- [ ] [35.08.03.1000 - granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
+- [ ] [35.10.01.1000 - commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
+
+### advanced dynamic routing features
+- [ ] [40.02.20.1000 - BGP features](https://github.com/vycontrol/vycontrol/milestone/14)
+
+### IPV6 features
+- [ ] [45.12.10.1000 - ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
+
+### other features
+- [ ] [50.12.20.1000 - other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
 
 ### versions convention
 
