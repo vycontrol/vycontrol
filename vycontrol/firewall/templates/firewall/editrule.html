@@ -281,23 +281,23 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdaddress_source">source address</label><br>
-                    <input type="text" name="sdaddress_source" id="sdaddress_source" value="" size="30">
+                    <label for="saddress">source address</label><br>
+                    <input type="text" name="saddress" id="saddress" value="{{ ruledata.source.address|default:"" }}" size="30">
                 </p>
 
                 <p>
-                    <input type="checkbox" name="sdaddress_source_negate" id="sdaddress_source_negate" value="1"> <label for="sdaddress_source_negate">negate source address</label>
+                    <input type="checkbox" name="saddress_negate" id="saddress_negate" value="1"> <label for="saddress_negate">negate source address</label>
                 </p>         
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdaddress_destination">destination address</label><br>
-                    <input type="text" name="sdaddress_destination" id="sdaddress_destination" value="" size="30">
+                    <label for="daddress">destination address</label><br>
+                    <input type="text" name="daddress" id="daddress" value="{{ ruledata.destination.address|default:"" }}" size="30">
                 </p>
 
                 <p>
-                    <input type="checkbox" name="sdaddress_destination_negate" id="sdaddress_destination_negate" value="1"> <label for="sdaddress_destination_negate">negate destination address</label>
+                    <input type="checkbox" name="daddress_negate" id="daddress_negate" value="1"> <label for="daddress_negate">negate destination address</label>
                 </p>         
              </div>
         </div>
@@ -845,31 +845,33 @@
             ) {
             $("#criteria_address").prop("checked", true);
             $("#criteria_address_block").show(); 
+            $("#criteria_address").hide();        
 
 
-            var sdaddress_source = ruledata_js['source']['address'];
-            if (sdaddress_source.startsWith("!")) {
-                var sdaddress_source_inverse = 1;
-                sdaddress_source = sdaddress_source.replace("!", "");
+
+            var saddress = ruledata_js['source']['address'];
+            if (saddress.startsWith("!")) {
+                var saddress_inverse = 1;
+                saddress = saddress.replace("!", "");
             }
 
-            var sdaddress_destination = ruledata_js['destination']['address'];
-            if (sdaddress_destination.startsWith("!")) {
-                var sdaddress_destination_inverse = 1;
-                sdaddress_destination = sdaddress_destination.replace("!", "");
+            var daddress = ruledata_js['destination']['address'];
+            if (daddress.startsWith("!")) {
+                var daddress_inverse = 1;
+                daddress = daddress.replace("!", "");
             }            
 
-            if (sdaddress_source) {
-                $("#sdaddress_source").val(sdaddress_source)
+            if (saddress) {
+                $("#saddress").val(saddress)
             }
-            if (sdaddress_destination) {
-                $("#sdaddress_destination").val(sdaddress_destination)
+            if (daddress) {
+                $("#daddress").val(daddress)
             }            
-            if (sdaddress_source_inverse ==1 ) {
-                $("#sdaddress_source_negate").prop("checked", true);
+            if (saddress_inverse ==1 ) {
+                $("#saddress_negate").prop("checked", true);
             }
-            if (sdaddress_destination_inverse ==1 ) {
-                $("#sdaddress_destination_negate").prop("checked", true);
+            if (daddress_inverse ==1 ) {
+                $("#daddress_negate").prop("checked", true);
             }            
         }
 

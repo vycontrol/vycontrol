@@ -464,8 +464,8 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
     else:
         msg.add_info("Criteria Ports Source: no changes")
     
-
-    # if criteria_tcpflags set, save it
+    ###############################################################################################################################################################
+    # update criteria_tcpflags
     if request.POST.get('criteria_tcpflags', None) == "1":
         tcpflags_form = []
         
@@ -506,8 +506,6 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         
 
         # will need to empty tcpflags
-
-
         if 'tcp' in ruledata and 'flags' in ruledata['tcp']: 
             tcpflags_rule = ruledata['tcp']['flags'].split(',')
         else:
@@ -518,7 +516,6 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             if v.success:
                 changed = True
                 msg.add_success("Criteria TCP Ports: empty tcp flags success")
-                changed = True 
 
                 if 'tcp' in ruledata:
                     if 'flags' in ruledata['tcp']:
@@ -531,10 +528,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             if v.success:
                 changed = True
                 msg.add_success("Criteria TCP Ports: updated success")
-                changed = True 
 
-                #if 'source' in ruledata and 'port' in ruledata['source']:
-                #    del ruledata['source']['port']
                 if 'tcp' not in ruledata:
                     ruledata['tcp'] = {}
                 ruledata['tcp']['flags'] = ",".join(tcpflags_form)
@@ -543,6 +537,73 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
 
 
+    ###############################################################################################################################################################
+    # update criteria_address
+    if request.POST.get('criteria_address', None) == "1":
+        if request.POST.get('saddress', None) != None:              
+            saddress = request.POST.get('saddress')
+            if len(saddress.strip()) == 0:             
+                v = vapi.set_firewall_rule_source_address_delete(hostname_default, firewall_name, rulenumber)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Source Address: clean success") 
+                    if 'source' in ruledata:
+                        if 'address' in ruledata['source']:
+                            del ruledata['source']['address']
+                else:
+                    msg.add_error("Criteria Source Address: clean failed - " + v.reason)   
+            else:    
+                # negate saddress
+                if request.POST.get('saddress_negate', None) == "1":
+                    saddress_negate = "!"
+                else:
+                    saddress_negate = ""
+                                            
+                saddress_txt = saddress_negate + saddress
+                
+                v = vapi.set_firewall_rule_source_address(hostname_default, firewall_name, rulenumber, saddress_txt)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Source Address: updated success") 
+
+                    if 'source' not in ruledata:
+                        ruledata['source'] = {}
+                    ruledata['source']['address'] = saddress_txt
+                else:
+                    msg.add_error("Criteria Source Address: updated failed - " + v.reason)
+
+
+        if request.POST.get('daddress', None) != None:              
+            daddress = request.POST.get('daddress')       
+            if len(daddress.strip()) == 0:             
+                v = vapi.set_firewall_rule_destination_address_delete(hostname_default, firewall_name, rulenumber)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Destination Address: clean success") 
+                    if 'destination' in ruledata:
+                        if 'address' in ruledata['destination']:
+                            del ruledata['destination']['address']
+                else:
+                    msg.add_error("Criteria Destination Address: clean failed - " + v.reason)    
+            else:
+                # negate daddress_negate
+                if request.POST.get('daddress_negate', None) == "1":
+                    daddress_negate = "!"
+                else:
+                    daddress_negate = ""                    
+
+                daddress_txt = daddress_negate + daddress
+
+                v = vapi.set_firewall_rule_destination_address(hostname_default, firewall_name, rulenumber, daddress_txt)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Destination Address: updated success") 
+
+                    if 'destination' not in ruledata:
+                        ruledata['destination'] = {}
+                    ruledata['destination']['address'] = daddress         
+                else:
+                    msg.add_error("Criteria Destination Address: updated failed - " + v.reason)                           
 
 
 
@@ -559,50 +620,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
                 
                     
 
-                # if criteria_address set, save it
-                if request.POST.get('criteria_address', None) == "1":
-                    # negate sdaddress_source
-                    if request.POST.get('sdaddress_source_negate', None) == "1":
-                        sdaddress_source_negate = "!"
-                    else:
-                        sdaddress_source_negate = ""
-
-                    # negate sdaddress_destination_negate
-                    if request.POST.get('sdaddress_destination_negate', None) == "1":
-                        sdaddress_destination_negate = "!"
-                    else:
-                        sdaddress_destination_negate = ""                    
-
-
-                    if request.POST.get('sdaddress_source', None) != None:              
-                        sdaddress_source = request.POST.get('sdaddress_source')
-                        sdaddress_source_txt = sdaddress_source_negate + sdaddress_source
-                        
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address", sdaddress_source_txt],
-                            description = "set sdaddress_source",
-                        )
-                        if v.success:
-                            changed = True 
-
-
-                    if request.POST.get('sdaddress_destination', None) != None:              
-                        sdaddress_destination = request.POST.get('sdaddress_destination')                    
-                        sdaddress_destination_txt = sdaddress_destination_negate + sdaddress_destination
-
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address", sdaddress_destination_txt],
-                            description = "set sdaddress_destination_txt",
-                        )
-                        if v.success:
-                            changed = True 
-
+               
                 # if criteria_addressgroup set, save it
                 if request.POST.get('criteria_addressgroup', None) == "1":
                     if request.POST.get('sdaddressgroup_source', None) != None:              

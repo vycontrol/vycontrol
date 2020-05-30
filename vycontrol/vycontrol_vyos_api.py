@@ -159,3 +159,45 @@ def set_firewall_rule_tcpflags_delete(hostname, firewall_name, rulenumber):
         description = "delete tcpflags",
     )
     return v    
+
+
+def set_firewall_rule_source_address(hostname, firewall_name, rulenumber, address):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address", address],
+        description = "set saddress",
+    )
+    return v
+
+def set_firewall_rule_destination_address(hostname, firewall_name, rulenumber, address):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address", address],
+        description = "set daddress",
+    )
+    return v
+
+def set_firewall_rule_source_address_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "address"],
+        description = "set saddress",
+    )
+    return v
+
+def set_firewall_rule_destination_address_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "address"],
+        description = "set daddress",
+    )
+    return v    
+
