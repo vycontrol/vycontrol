@@ -201,3 +201,42 @@ def set_firewall_rule_destination_address_delete(hostname, firewall_name, rulenu
     )
     return v    
 
+def set_firewall_rule_source_addressgroup(hostname, firewall_name, rulenumber, saddressgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group", saddressgroup],
+        description = "set saddressgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_addressgroup(hostname, firewall_name, rulenumber, daddressgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group", daddressgroup],
+        description = "set daddressgroup",
+    )
+    return v 
+
+def set_firewall_rule_source_addressgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "address-group"],
+        description = "delete saddressgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_addressgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "address-group"],
+        description = "delete daddressgroup",
+    )
+    return v     

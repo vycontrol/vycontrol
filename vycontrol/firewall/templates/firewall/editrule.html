@@ -24,6 +24,7 @@
 
 {{ ruledata_pretty }}
 
+
 {% endblock %}
 
 {% block content %}
@@ -329,24 +330,31 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_source">single choice - you cannot set a group and an adresss together</label><br>
-                    <select name="sdaddressgroup_source" id="sdaddressgroup_source" size="10"  style="width: 200px;">
+                    <label for="saddressgroup">single choice - you cannot set a group and an adresss together</label><br>
+                    <select name="saddressgroup" id="saddressgroup" size="10"  style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}      
                     </select>
+
+                    <br>
+                    <input type="button" id="saddressgroup_clear" value="limpar">
                 </p>
 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_destination">single choice - you cannot set a group and an adresss together</label><br>
-                    <select name="sdaddressgroup_destination" id="sdaddressgroup_destination" size="10" style="width: 200px;">
+                    <label for="daddressgroup">single choice - you cannot set a group and an adresss together</label><br>
+                    <select name="daddressgroup" id="daddressgroup" size="10" style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}        
                     </select>
+
+                    <br>
+                    <input type="button" id="daddressgroup_clear" value="limpar">
+
                 </p>
 
 
@@ -360,8 +368,8 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_source">select at most one source network-group (can't mix destination address group and address)</label><br>
-                    <select name="sdnetworkgroup_source" id="sdnetworkgroup_source" size="10" style="width: 200px;">
+                    <label for="snetworkgroup">select at most one source network-group (can't mix destination address group and address)</label><br>
+                    <select name="snetworkgroup" id="snetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}
@@ -372,8 +380,8 @@
 
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_destination">select at most one destination network-group (can't mix destination address group and address)</label><br>
-                    <select name="sdnetworkgroup_destination" id="sdnetworkgroup_destination" size="10" style="width: 200px;">
+                    <label for="dnetworkgroup">select at most one destination network-group (can't mix destination address group and address)</label><br>
+                    <select name="dnetworkgroup" id="dnetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
                         <option>{{ f }}</option>
                         {% endfor %}
@@ -728,6 +736,18 @@
             $(this).find('option:selected').remove();
         });             
 
+        $('#daddressgroup_clear').click(function() {
+            $('#daddressgroup').val([]);
+        });     
+
+        $('#saddressgroup_clear').click(function() {
+            $('#saddressgroup').val([]);
+        });                     
+
+        
+
+
+
         // json gives criteria_packetstate
         criteria_packetstate_lenght = 0
         for (state in ruledata_js['state']) {
@@ -892,10 +912,10 @@
 
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
-                                $("#sdaddressgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#daddressgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "network-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdaddressgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#dnetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_portgroup_count++;
                                 $("#sdportgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
@@ -914,10 +934,10 @@
 
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
-                                $("#sdnetworkgroup_source option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#saddressgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "network-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdnetworkgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#snetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_networkgroup_count++;
                                 $("#sdportgroup_source option[value='" + group_text + "']").prop("selected", 'selected');
@@ -929,11 +949,19 @@
             if (criteria_addressgroup_count > 0) {
                 $("#criteria_addressgroup").prop("checked", true);
                 $("#criteria_addressgroup_block").show(); 
+                $("#criteria_addressgroup").hide();
             }
+
+            if (criteria_networkgroup_count > 0) {
+                $("#criteria_networkroup").prop("checked", true);
+                $("#criteria_networkroup_block").show(); 
+                $("#criteria_networkroup").hide();
+            }            
 
             if (criteria_portgroup_count > 0) {
                 $("#criteria_portgroup").prop("checked", true);
                 $("#criteria_portgroup_block").show(); 
+                $("#criteria_portgroup").hide();
             }            
 
             
