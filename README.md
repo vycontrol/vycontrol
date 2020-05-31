@@ -34,7 +34,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 # roadmap 
 
 ## current version 
-- [x] [20.05.04 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [x] [20.05.04 - improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
 
 ## changelog
 - [x] 20.05.02 - working firewall without zones 
