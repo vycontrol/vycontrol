@@ -34,10 +34,10 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 # roadmap 
 
 ## current version 
-- [x] [20.05.04.1000 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [x] [20.05.04 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
 
 ## changelog
-- [x] 20.05.02.1000 - working firewall without zones 
+- [x] 20.05.02 - working firewall without zones 
 - [x] 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
