@@ -33,7 +33,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 
 # roadmap 
 
-## current version
+## current version 
 - [x] 20.05.02.1000 - working firewall without zones 
 
 ## changelog
@@ -41,22 +41,26 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 
 ## future versions
 
-### firewall and vycontrol-base arch focus  
+### firewall and vycontrol base   
 - [ ] [20.05.04.1000 - improve error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
-- [ ] [20.05.07.1000 - vlans / interfaces deep configuration](https://github.com/vycontrol/vycontrol/milestone/10)
 - [ ] [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
-- [ ] [20.06.09.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
 - [ ] [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
 - [ ] [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
 - [ ] [**20.06.15.LTS** - layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
 
 ### IPSEC / OpenVPN focus 
-- [ ] [25.07.05.1000 – Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
-- [ ] [25.09.05.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
-- [ ] [25.11.05.1000 - openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [22.07.05.1000 - openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [22.08.05.1000 - ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [**22.08.05.LTS** – Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
+
+## vlans, interfaces and system users
+- [ ] [25.09.01.1000 - system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] [25.09.03.1000 - basic interfaces configuration and vlans](https://github.com/vycontrol/vycontrol/milestone/10)
+- [ ] [25.09.01.1000 - host information and default gateway](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] [**25.09.03.LTS** - timezone / ntp](https://github.com/vycontrol/vycontrol/milestone/12)
 
 ### basic dynamic routing features
-- [ ] [30.02.20.1000 - OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
+- [ ] [30.10.20.1000 - OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
 
 ### addons features 
 - [ ] [35.02.01.1000 – FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
