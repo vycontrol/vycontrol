@@ -105,6 +105,8 @@ openssl rand -hex 32
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 ```
 docker pull robertoberto/vycontrol
+docker run -p 8000:8000 -t robertoberto/vycontrol
+access http://127.0.0.1:8000
 ```
 
 ## by docker composer
