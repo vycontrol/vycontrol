@@ -201,12 +201,6 @@ def get_route_static(hostname):
     result1 = api_get(hostname, cmd)
     return result1
 
-def set_route_static(hostname, subnet, nexthop):
-    cmd = {"op": "set", "path": ["protocols","static","route", subnet, "next-hop", nexthop]}
-
-    result1 = api_set(hostname, cmd)
-    return result1  
-
 
 def set_firewall_syncookies_enable(hostname):
     cmd = {"op": "set", "path": ["firewall","syn-cookies",'enable']}

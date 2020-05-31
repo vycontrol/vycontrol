@@ -6,6 +6,10 @@ from django.conf import settings
 from django.urls import reverse
 
 import vyos
+import vycontrol_messages as vmsg
+import vycontrol_vyos_api_lib as vapilib
+import vycontrol_vyos_api as vapi
+
 from perms import is_authenticated
 from filters.vycontrol_filters import routeunpack
 import perms
@@ -38,32 +42,30 @@ def static_list(request):
 
 @is_authenticated    
 def static_add(request):
-        
+    msg = vmsg.msg()
+
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
     static_list = vyos.get_route_static(hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
 
-
-    error_message = None
     if 'subnet' in request.POST and 'nexthop' in request.POST:
-        return1 = vyos.set_route_static(hostname_default, request.POST['subnet'], request.POST['nexthop'])
-        if return1 == False: 
-            error_message = 'Cannot add static route.'
+        v = vapi.set_route_static(hostname_default, request.POST['subnet'], request.POST['nexthop'])
+        if v.success == False: 
+            msg.add_error("Static route add fail - " + v.reason)
         else:
-           return redirect('static:static-list')
-
+            msg.add_success("Static route added")
 
     ippath = vyos.ip_route(hostname_default)
 
     template = loader.get_template('static/add.html')
     context = { 
-        'instances': all_instances,
-        'hostname_default': hostname_default,
-        'static_list' : static_list,
-        'error_message' : error_message,
-        'username': request.user,
-        'is_superuser' : is_superuser,     
+        'instances':                        all_instances,
+        'hostname_default':                 hostname_default,
+        'static_list' :                     static_list,
+        'username':                         request.user,
+        'is_superuser' :                    is_superuser,     
+        'msg' :                             msg.get_all(),
     }   
     return HttpResponse(template.render(context, request))
 

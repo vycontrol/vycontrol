@@ -9,10 +9,12 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "main.css" %}?20">
+    <link rel="stylesheet" href="{% static "main.css" %}?{% random_int 100000 500000 %} ">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{% static "vycontrol.js" %}?{% random_int 100000 500000 %} "></script>
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 
 
@@ -44,7 +46,7 @@
               </select>
             
 
-              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycenter-config-menu"> <a href="{% url 'registration-logout' %}">Logout</a></span>
+              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycontrol-config-menu"> <a href="{% url 'registration-logout' %}">Logout</a></span>
 
 
           </p>
@@ -125,6 +127,22 @@
     </div>
     <div class="col content">
         <h2>{% block section_title %}{% endblock %}</h2>
+
+        {% block submenu %}{% endblock %}
+
+        {% for m in msg %}
+          {% if forloop.first %}  
+          <h2 id="msgs-header">Save result</h2>
+          <ul id="msgs">
+          {% endif %}
+            <li class="msgs_{{ m.msg_type }}">{{ m.msg_type }} - {{ m.msg }}</li>
+          {% if forloop.last %}  
+          </ul>
+          {% endif %}        
+        {% endfor %}
+
+
+
         {% block content %}{% endblock %}
     </div>
   </div>

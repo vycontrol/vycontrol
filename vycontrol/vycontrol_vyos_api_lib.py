@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 
 import perms
+from vycontrol_messages import log
 
 class vyapi:
     error =     None
@@ -27,17 +28,6 @@ class vyapi:
         self.result = result
         self.data = data
         self.reason = reason
-
-
-def log(area, value = [], end = True):
-    print("\n\n")
-    print("######################## START LOG " + area.upper())
-    pprint.pprint(value, indent=4, width=160) 
-
-    if end == True:
-        print("######################## END LOG " + area.upper())
-    print("\n\n")
-
 
 log("api " + " !!!!!!!!!!!!!! START NEW WEB PROCESS", end=False)
 
@@ -159,6 +149,9 @@ def api(hostname, api, op, cmd, description = ""):
         respjson = resp.json()
     except json.JSONDecodeError:
         respjson = {'success': False, 'error': None, 'data': None}
+
+    #log("api raw", respjson)
+
 
     v = vyapi(
         result =    respjson['success'],

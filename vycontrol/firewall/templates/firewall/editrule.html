@@ -4,54 +4,8 @@
 {% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a> - edit rule {{ firewall_rulenumber }}{% endblock %}
 {% block username %}{{ username }}{% endblock %}
 
-{% block debug %}
 
-{{ firewall }}
-
-{{ mode }}
-
-{{ firewall_name }}
-
-{{ services }}
-
-{{ services_common }}
-
-{{ firewall_networkgroup }}
-
-{{ firewall_addressgroup }}
-
-{{ rulenumber }}
-
-{{ firewall_name }}
-
-{{ ruledata }}
-
-{% endblock %}
-
-{% block content %}
-
-{% comment %}
-<script type="text/javascript">
-    var firewall_networkgroup_data = '{{firewall_networkgroup_js|safe}}';
-    console.log(firewall_networkgroup_data);
-
-    var firewall_addressgroup_data = '{{firewall_addressgroup_js|safe}}';
-    console.log(firewall_addressgroup_data);    
-
-    var netservices_js = '{{netservices_js|safe}}';
-    console.log(netservices_js);   
-</script>
-{% endcomment %}
-
-{% if mode == "editrule" %}
-<script type="text/javascript">
-    var ruledata_js = JSON.parse('{{ruledata_json|safe}}');
-</script>
-{% endif %}
-
-
-
-
+{% block submenu %}
 <p class="submenu1">
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
 
@@ -63,6 +17,21 @@
 <p class="submenu2">
     <a href="{% url 'firewall:addrule' firewall_name %}">Add new rule</a>
 </p>
+{% endblock submenu %}
+
+
+{% block debug %}
+{{ ruledata_pretty }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<script type="text/javascript">
+    var ruledata_js = JSON.parse('{{ruledata_json|safe}}');
+</script>
+
 
 
 {% if mode == "editrule" %}
@@ -78,11 +47,11 @@
     <div class="container">
         <div class="row">
 
-            {% if mode == "addrule" %}
+            {% if mode != "editrule" and rulenumber == None %}
             <div class="col">
                 <p>
                     <label for="alias">rule number</label><br>
-                    <input type="text" name="rulenumber" id="rulenumber" value="{{ rulenumber }}" size="5">
+                    <input type="text" name="rulenumber" id="rulenumber" value="" size="5">
                 </p>
             </div>
             {% endif %}
@@ -90,8 +59,8 @@
             <div class="col">
                 <p>
                     <label for="status">status</label><br>
-                    <input type="radio" name="status" id="status_enabled" value="enabled" checked="checked"> enabled
-                    <input type="radio" name="status" id="status_disabled" value="disabled"> disabled
+                    <input type="radio" name="status" id="status_enabled" value="enable" checked="checked"> enabled
+                    <input type="radio" name="status" id="status_disabled" value="disable"> disabled
                 </p>
             </div>         
 
@@ -130,7 +99,8 @@
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_udp" value="udp"> udp<br>
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_tcp_udp" value="tcp_udp"> tcp and udp<br>
                     <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_icmp" value="icmp"> icmp<br>
-                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="other"> other  
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_other" value="other"> other<br>
+                    <input type="radio" class="protocol_criteria" name="protocol_criteria" id="protocol_criteria_none" value="none"> none  
                 </p>
 
 
@@ -242,7 +212,7 @@
 
     </div>
 
-    <h3 class="matching_criteria" id="criteria_tcpflags_header" style="display: none"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP Flags</label></h3>    
+    <h3 class="matching_criteria" id="criteria_tcpflags_header" style="display: none"><input type="checkbox" id="criteria_tcpflags" value="1" name="criteria_tcpflags"> <label for="criteria_tcpflags" class="label_for_h3">Matching criteria - TCP flags</label></h3>    
     <div class="container" id="criteria_tcpflags_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -291,23 +261,23 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdaddress_source">source address</label><br>
-                    <input type="text" name="sdaddress_source" id="sdaddress_source" value="" size="30">
+                    <label for="saddress">source address</label><br>
+                    <input type="text" name="saddress" id="saddress" value="{{ ruledata.source.address|default:"" }}" size="30">
                 </p>
 
                 <p>
-                    <input type="checkbox" name="sdaddress_source_negate" id="sdaddress_source_negate" value="1"> <label for="sdaddress_source_negate">negate source address</label>
+                    <input type="checkbox" name="saddress_negate" id="saddress_negate" value="1"> <label for="saddress_negate">negate source address</label>
                 </p>         
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdaddress_destination">destination address</label><br>
-                    <input type="text" name="sdaddress_destination" id="sdaddress_destination" value="" size="30">
+                    <label for="daddress">destination address</label><br>
+                    <input type="text" name="daddress" id="daddress" value="{{ ruledata.destination.address|default:"" }}" size="30">
                 </p>
 
                 <p>
-                    <input type="checkbox" name="sdaddress_destination_negate" id="sdaddress_destination_negate" value="1"> <label for="sdaddress_destination_negate">negate destination address</label>
+                    <input type="checkbox" name="daddress_negate" id="daddress_negate" value="1"> <label for="daddress_negate">negate destination address</label>
                 </p>         
              </div>
         </div>
@@ -339,24 +309,30 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_source">single choice - you cannot set a group and an adresss together</label><br>
-                    <select name="sdaddressgroup_source" id="sdaddressgroup_source" size="10"  style="width: 200px;">
+                    <label for="saddressgroup"><b>source address group</b><br>single choice<br>can't mix group and an adresss together</label><br>
+                    <select name="saddressgroup" id="saddressgroup" size="10"  style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}      
                     </select>
+
+                    <br>
+                    <input type="button" id="saddressgroup_clear" value="clear">
                 </p>
 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdaddressgroup_destination">single choice - you cannot set a group and an adresss together</label><br>
-                    <select name="sdaddressgroup_destination" id="sdaddressgroup_destination" size="10" style="width: 200px;">
+                    <label for="daddressgroup"><b>destination address group</b><br>single choice<br>can't mix group and an adresss together</label><br>
+                    <select name="daddressgroup" id="daddressgroup" size="10" style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}        
                     </select>
+
+                    <br>
+                    <input type="button" id="daddressgroup_clear" value="clear">
                 </p>
 
 
@@ -370,26 +346,31 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_source">select at most one source network-group (can't mix destination address group and address)</label><br>
-                    <select name="sdnetworkgroup_source" id="sdnetworkgroup_source" size="10" style="width: 200px;">
+                    <label for="snetworkgroup"><b>source network group</b><br>single choice<br>can't mix destination address group and address</label><br>
+                    <select name="snetworkgroup" id="snetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
-                        <option>{{ f }}</option>
+                        <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="snetworkgroup_clear" value="clear">
                 </p>         
                 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdnetworkgroup_destination">select at most one destination network-group (can't mix destination address group and address)</label><br>
-                    <select name="sdnetworkgroup_destination" id="sdnetworkgroup_destination" size="10" style="width: 200px;">
+                    <label for="dnetworkgroup"><b>destination network group</b><br>single choice<br>can't mix destination address group and address</label><br>
+                    <select name="dnetworkgroup" id="dnetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
-                        <option>{{ f }}</option>
+                        <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+              
+                    <br>
+                    <input type="button" id="dnetworkgroup_clear" value="clear">
                 </p>
-
 
           </div>
         </div>
@@ -401,24 +382,30 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdportgroup_source">source port group (single choice and can't mix source port group and port)</label><br>
-                    <select name="sdportgroup_source" id="sdportgroup_source" size="10" style="width: 200px;">
-                        {% for f in portgroups_groups %}
+                    <label for="sportgroup"><b>source port group</b><br>single choice<br>can't mix source port group and port</label><br>
+                    <select name="sportgroup" id="sportgroup" size="10" style="width: 200px;">
+                        {% for f in firewall_portgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="sportgroup_clear" value="clear">
                 </p>
 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdportgroup_destination">destination port group (single choice and can't mix destination port group and port)</label><br>
-                    <select name="sdportgroup_destination" id="sdportgroup_destination" size="10" style="width: 200px;">
-                        {% for f in portgroups_groups %}
+                    <label for="dportgroup"><b>destination port group</b><br>single choice<br>can't mix destination port group and port</label><br>
+                    <select name="dportgroup" id="dportgroup" size="10" style="width: 200px;">
+                        {% for f in firewall_portgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="dportgroup_clear" value="clear">
                 </p>
 
 
@@ -446,7 +433,7 @@
     </div>
 
 
-    <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - Packet State</label></h3>    
+    <h3 class="matching_criteria"><input type="checkbox" id="criteria_packetstate" value="1" name="criteria_packetstate"> <label for="criteria_packetstate" class="label_for_h3">Matching criteria - packet state</label></h3>    
     <div class="container" id="criteria_packetstate_block" style="display: none">
         <div class="row">
             <div class="col">
@@ -738,6 +725,34 @@
             $(this).find('option:selected').remove();
         });             
 
+        $('#daddressgroup_clear').click(function() {
+            $('#daddressgroup').val([]);
+        });     
+
+        $('#saddressgroup_clear').click(function() {
+            $('#saddressgroup').val([]);
+        });          
+
+        $('#dnetworkgroup_clear').click(function() {
+            $('#dnetworkgroup').val([]);
+        });     
+
+        $('#snetworkgroup_clear').click(function() {
+            $('#snetworkgroup').val([]);
+        });                             
+
+        $('#dportgroup_clear').click(function() {
+            $('#dportgroup').val([]);
+        });     
+
+        $('#sportgroup_clear').click(function() {
+            $('#sportgroup').val([]);
+        });                             
+
+        
+
+
+
         // json gives criteria_packetstate
         criteria_packetstate_lenght = 0
         for (state in ruledata_js['state']) {
@@ -759,6 +774,8 @@
         if (protocol && protocol.length > 0) {
                 $('#criteria_protocol_block').show();
                 $("#criteria_protocol").prop("checked", true);
+                $("#criteria_protocol").hide();
+                
 
                 if (protocol == "all") { $("#protocol_criteria_all").prop("checked", true); }
                 if (protocol == "tcp") { 
@@ -819,6 +836,7 @@
             // $("#criteria_protocol_header").show("highlight", {color: '#FBE28A'}, 2000);
             $("#criteria_port").prop("checked", true);
             $("#criteria_port_block").show();
+            $("#criteria_port").hide();            
         }
 
         // json gives criteria_tcpflags
@@ -841,6 +859,8 @@
             // $("#criteria_protocol_header").show("highlight", {color: '#FBE28A'}, 2000);
             $("#criteria_tcpflags").prop("checked", true);
             $("#criteria_tcpflags_block").show();
+            $("#criteria_tcpflags").hide();        
+
         }
 
         // json gives criteria_address
@@ -850,31 +870,33 @@
             ) {
             $("#criteria_address").prop("checked", true);
             $("#criteria_address_block").show(); 
+            $("#criteria_address").hide();        
 
 
-            var sdaddress_source = ruledata_js['source']['address'];
-            if (sdaddress_source.startsWith("!")) {
-                var sdaddress_source_inverse = 1;
-                sdaddress_source = sdaddress_source.replace("!", "");
+
+            var saddress = ruledata_js['source']['address'];
+            if (saddress.startsWith("!")) {
+                var saddress_inverse = 1;
+                saddress = saddress.replace("!", "");
             }
 
-            var sdaddress_destination = ruledata_js['destination']['address'];
-            if (sdaddress_destination.startsWith("!")) {
-                var sdaddress_destination_inverse = 1;
-                sdaddress_destination = sdaddress_destination.replace("!", "");
+            var daddress = ruledata_js['destination']['address'];
+            if (daddress.startsWith("!")) {
+                var daddress_inverse = 1;
+                daddress = daddress.replace("!", "");
             }            
 
-            if (sdaddress_source) {
-                $("#sdaddress_source").val(sdaddress_source)
+            if (saddress) {
+                $("#saddress").val(saddress)
             }
-            if (sdaddress_destination) {
-                $("#sdaddress_destination").val(sdaddress_destination)
+            if (daddress) {
+                $("#daddress").val(daddress)
             }            
-            if (sdaddress_source_inverse ==1 ) {
-                $("#sdaddress_source_negate").prop("checked", true);
+            if (saddress_inverse ==1 ) {
+                $("#saddress_negate").prop("checked", true);
             }
-            if (sdaddress_destination_inverse ==1 ) {
-                $("#sdaddress_destination_negate").prop("checked", true);
+            if (daddress_inverse ==1 ) {
+                $("#daddress_negate").prop("checked", true);
             }            
         }
 
@@ -887,21 +909,21 @@
             if ($.inArray("destination", ruledata_js)) {
     
                 if ($.inArray("group", ruledata_js["destination"])) {
-                    console.log("destination group");
+                    /* console.log("destination group"); */
                     if (ruledata_js["destination"] && ruledata_js["destination"]['group']) {
                         for (g in ruledata_js["destination"]["group"]) {
                             group_text = ruledata_js["destination"]["group"][g];
-                            // console.log(g + " = ", group_text)
+                            /* console.log(g + " = ", group_text) */
 
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
-                                $("#sdaddressgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#daddressgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "network-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdaddressgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#dnetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_portgroup_count++;
-                                $("#sdportgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#dportgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             }                                                
                         }
                     }                
@@ -909,21 +931,20 @@
             }
             if ($.inArray("source", ruledata_js)) {          
                 if ($.inArray("group", ruledata_js["source"])) {
-                    console.log("source group");
+                    /* console.log("source group"); */
                     if (ruledata_js["source"] && ruledata_js["source"]['group']) {
                         for (g in ruledata_js["source"]["group"]) {
                             group_text = ruledata_js["source"]["group"][g];
-                            console.log(g + " = ", group_text)
-
+                            /* console.log(g + " = ", group_text) */
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
-                                $("#sdnetworkgroup_source option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#saddressgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "network-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdnetworkgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#snetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdportgroup_source option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#sportgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             }   
                         }
                     }
@@ -932,11 +953,19 @@
             if (criteria_addressgroup_count > 0) {
                 $("#criteria_addressgroup").prop("checked", true);
                 $("#criteria_addressgroup_block").show(); 
+                $("#criteria_addressgroup").hide();
             }
+
+            if (criteria_networkgroup_count > 0) {
+                $("#criteria_networkgroup").prop("checked", true);
+                $("#criteria_networkgroup_block").show(); 
+                $("#criteria_networkgroup").hide();
+            }            
 
             if (criteria_portgroup_count > 0) {
                 $("#criteria_portgroup").prop("checked", true);
                 $("#criteria_portgroup_block").show(); 
+                $("#criteria_portgroup").hide();
             }            
 
             
@@ -956,6 +985,8 @@
                     $('#smac_source').val(macaddr);
                     $("#criteria_sourcemac").prop("checked", true);
                     $("#criteria_sourcemac_block").show(); 
+                    $("#criteria_sourcemac").hide(); 
+
                     console.log(macaddr);
                 }
             }
@@ -963,9 +994,12 @@
 
 
         // check status disable
-        if ($.inArray("disable", ruledata_js)) {
+        if (ruledata_js['status'] == "disabled") {
             $('#status_disabled').prop("checked", true);
-            $('#status_enabled').prop("checked", false);
+        } else if (ruledata_js['status'] == "enabled") {
+            $('#status_enabled').prop("checked", true);
+        } else if ('disable' in ruledata_js) {
+            $('#status_disabled').prop("checked", true);
         }
 
  });

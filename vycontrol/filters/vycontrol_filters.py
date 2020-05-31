@@ -1,4 +1,5 @@
 from django.template.defaultfilters import register
+import random
 
 
 @register.filter
@@ -29,3 +30,8 @@ def get_item_network(dictionary, key):
     d = dictionary.get(key)    
     return d['network']
 
+@register.simple_tag
+def random_int(a, b=None):
+    if b is None:
+        a, b = 0, a
+    return random.randint(a, b)

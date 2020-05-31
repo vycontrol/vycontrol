@@ -1,4 +1,4 @@
-"""vycenter URL Configuration
+"""vycontrol URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -29,13 +29,13 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 
-app_name = 'vycenter'
+app_name = 'vycontrol'
 
 urlpatterns = [
     path('', include('accounts.urls'), name="main-page"),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
-    #path('', views.vycenter_login, name='vycenter-login'),
+    #path('', views.vycontrol_login, name='vycontrol-login'),
     path('admin/', admin.site.urls, name="django-admin"),
     #path('change-password/', auth_views.PasswordChangeView.as_view()),
     path('login/', auth_views.LoginView.as_view(), name="registration-login"),
