@@ -135,9 +135,14 @@ def api(hostname, api, op, cmd, description = ""):
     try:
         resp = requests.post(api_data['api_url'], verify=False, data=post, timeout=10)
     except requests.exceptions.ConnectionError:
+        try:
+            status_code = resp.status_code
+        except UnboundLocalError:
+            status_code = 0
+        
         v = vyapi(result = False, reason= {
             'exception'     : 'requests.exceptions.ConnectionError',
-            'respcode'      : resp.status_code
+            'respcode'      : status_code
         })
         log("failed to post url", api_data['api_url'])
 

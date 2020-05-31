@@ -372,3 +372,56 @@ def set_route_static(hostname, subnet, nexthop):
         description = "set_route_static",
     )
     return v
+
+
+def set_firewall_zone_localzone(hostname, zonename):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["zone-policy", "zone", zonename, "local-zone"],
+        description = "set_firewall_zone_localzone",
+    )
+    return v    
+
+
+def set_firewall_zone_description(hostname, zonename, description):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["zone-policy", "zone", zonename, "description", description],
+        description = "set_firewall_zone_description",
+    )
+    return v    
+
+def set_firewall_zone_defaultaction(hostname, zonename, defaultaction):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["zone-policy", "zone", zonename, "default-action", defaultaction],
+        description = "set_firewall_zone_defaultaction",
+    )
+    return v  
+
+def set_firewall_zone_interface(hostname, zonename, interface):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["zone-policy", "zone", zonename, "interface", interface],
+        description = "set_firewall_zone_interface",
+    )
+    return v    
+
+def get_firewall_zones(hostname):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "get",
+        op =        "showConfig",
+        cmd =       ["zone-policy"],
+        description = "get_firewall_zones",
+    )
+    return v
+

@@ -13,6 +13,7 @@ import perms
 def instance_getall(*args, **kwargs):
     return perms.instance_getall(*args, **kwargs)
 
+
 def get_hostname_prefered(*args, **kwargs):
     return perms.get_hostname_prefered(*args, **kwargs)
 
@@ -166,6 +167,29 @@ def get_interfaces(hostname):
 
     result1 = api_get(hostname, cmd)
     return result1
+
+def get_interfaces_all_names(hostname):
+    interfaces = get_interfaces(hostname)
+
+    all_names = []
+
+    for itype in interfaces:
+        for iname in interfaces[itype]:
+            all_names.append({
+                'interface_name':           iname,
+                'type':                     itype              
+            })
+            if 'vif' in interfaces[itype][iname]:
+                for vif in interfaces[itype][iname]['vif']:
+
+                    all_names.append({
+                        'interface_name':   iname,
+                        'type':             itype,
+                        'vif':              vif
+                    })                    
+    
+    return all_names
+
 
 def get_interface(interface_type, interface_name, hostname):
     cmd = {"op": "showConfig", "path": ["interfaces", interface_type, interface_name]}

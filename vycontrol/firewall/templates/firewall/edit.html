@@ -15,7 +15,8 @@
     <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-add' %}">Address Group</a> | 
     <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
-    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a> |
+    <a href="{% url 'firewall:firewall-zones' %}">Zones</a>
 </p>
 <p class="submenu2"></p>
 
@@ -32,14 +33,14 @@
     <p>
         <label for="hostname">default action</label><br>
         <input type="radio" name="action" id="action" value="accept" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> accept
-        <input type="radio" name="action" id="action" value="drop" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> drop
-        <input type="radio" name="action" id="action" value="reject" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> reject        
+        <input type="radio" name="action" id="action" value="drop" {% if firewall.defaultaction == "drop" %}checked="checked"{% endif %}> drop
+        <input type="radio" name="action" id="action" value="reject" {% if firewall.defaultaction == "reject" %}checked="checked"{% endif %}> reject        
     </p>
 
     
     
     <input type="submit" value="Edit Firewall">
-    </form>
+</form>
 
     
 
