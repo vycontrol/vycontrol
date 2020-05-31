@@ -21,23 +21,16 @@
 
 
 {% block debug %}
-
 {{ ruledata_pretty }}
-
-
 {% endblock %}
 
-{% block content %}
 
+{% block content %}
 
 
 <script type="text/javascript">
     var ruledata_js = JSON.parse('{{ruledata_json|safe}}');
 </script>
-
-
-
-
 
 
 

@@ -361,3 +361,14 @@ def set_firewall_rule_packetstate_delete(hostname, firewall_name, rulenumber, pa
         description = "delete packetstate",
     )
     return v
+
+
+def set_route_static(hostname, subnet, nexthop):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["protocols", "static", "route", subnet, "next-hop", nexthop],
+        description = "set_route_static",
+    )
+    return v
