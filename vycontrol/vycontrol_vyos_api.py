@@ -240,3 +240,124 @@ def set_firewall_rule_destination_addressgroup_delete(hostname, firewall_name, r
         description = "delete daddressgroup",
     )
     return v     
+
+
+def set_firewall_rule_source_networkgroup(hostname, firewall_name, rulenumber, snetworkgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group", snetworkgroup],
+        description = "set snetworkgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_networkgroup(hostname, firewall_name, rulenumber, dnetworkgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group", dnetworkgroup],
+        description = "set dnetworkgroup",
+    )
+    return v 
+
+def set_firewall_rule_source_networkgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group"],
+        description = "delete snetworkgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_networkgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group"],
+        description = "delete dnetworkgroup",
+    )
+    return v         
+
+def set_firewall_rule_source_portgroup(hostname, firewall_name, rulenumber, sportgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group", sportgroup],
+        description = "set sportgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_portgroup(hostname, firewall_name, rulenumber, dportgroup):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group", dportgroup],
+        description = "set dportgroup",
+    )
+    return v 
+
+def set_firewall_rule_source_portgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group"],
+        description = "delete sportgroup",
+    )
+    return v  
+
+def set_firewall_rule_destination_portgroup_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group"],
+        description = "delete dportgroup",
+    )
+    return v             
+
+def set_firewall_rule_source_mac(hostname, firewall_name, rulenumber, smac_txt):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address", smac_txt],
+        description = "set source mac",
+    )
+    return v
+
+def set_firewall_rule_source_mac_delete(hostname, firewall_name, rulenumber):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address"],
+        description = "delete dportgroup",
+    )
+    return v
+
+def set_firewall_rule_packetstate(hostname, firewall_name, rulenumber, packetstate):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate, "enable"],
+        description = "set packetstate",
+    )
+    return v
+
+def set_firewall_rule_packetstate_delete(hostname, firewall_name, rulenumber, packetstate):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate],
+        description = "delete packetstate",
+    )
+    return v

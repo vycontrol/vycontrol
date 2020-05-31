@@ -129,35 +129,26 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
 
     # get all firewall groups
     firewall_group = {}
-    firewall_group['network-group'] = {}
-    firewall_group['address-group'] = {}
-    firewall_group['port-group'] = {}
-    firewall_group_raw = vapi.get_firewall_group(hostname_default)
-    if firewall_group_raw.success:
-        if 'network-group' in firewall_group_raw.data:
-            for g in firewall_group_raw.data['network-group']:
-                firewall_group['network-group'][g] = firewall_group_raw.data['network-group'][g]
-
-        if 'address-group' in firewall_group_raw.data:
-            for g in firewall_group_raw.data['address-group']:
-                firewall_group['address-group'][g] = firewall_group_raw.data['address-group'][g]
-
-        if 'port-group' in firewall_group_raw.data:
-            for g in firewall_group_raw.data['port-group']:
-                firewall_group['port-group'][g] = firewall_group_raw.data['port-group'][g]
-
-
-
-    netservices = network.get_services()
-    netservices_js = json.dumps(netservices)
-
-    portgroups_groups = []
-    if 'port-group' in firewall_group_raw.data:
-        portgroups_groups = firewall_group_raw.data['port-group']
-
     changed = False
     rulenumber_valid = False
     ruledata = {}
+            
+    firewall_group['network-group'] = {}
+    firewall_group['address-group'] = {}
+    firewall_group['port-group'] = {}
+
+    firewall_group_raw = vapi.get_firewall_group(hostname_default)
+    if firewall_group_raw.success:
+        if 'network-group' in firewall_group_raw.data:
+            firewall_group['network-group'] = firewall_group_raw.data['network-group']
+
+        if 'address-group' in firewall_group_raw.data:
+            firewall_group['address-group'] = firewall_group_raw.data['address-group']
+
+        if 'port-group' in firewall_group_raw.data:
+            firewall_group['port-group'] = firewall_group_raw.data['port-group']
+    
+    netservices = network.get_services()
 
     # edit rule without valid rulenumber
     if mode == "editrule":
@@ -669,130 +660,286 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
             else:
                 msg.add_error("Criteria Destination Address Group: updated failed - " + v.reason)         
 
+    ###############################################################################################################################################################
+    # update criteria_networkgroup
+    if request.POST.get('criteria_networkgroup', None) == "1":
+    
+        # source group
+        if request.POST.get('snetworkgroup', None) != None:              
+            snetworkgroup = request.POST.get('snetworkgroup').strip()
+        else:
+            snetworkgroup = ''
+
+        snetworkgroup_ruledata = ''
+        if 'source' in ruledata:
+            if 'group' in ruledata['source']:
+                if 'network-group' in ruledata['source']['group']:
+                    snetworkgroup_ruledata = ruledata['source']['group']['network-group']
+
+        if len(snetworkgroup) == 0: 
+            v = vapi.set_firewall_rule_source_networkgroup_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Source Network Group: delete success") 
+
+                if 'source' in ruledata:
+                    if 'group' in ruledata['source']:
+                        if 'network-group' in ruledata['source']['group']:
+                            del ruledata['source']['group']['network-group']
+            else:
+                msg.add_error("Criteria Source Network Group: delete failed - " + v.reason)         
+
+        elif snetworkgroup != snetworkgroup_ruledata:
+            v = vapi.set_firewall_rule_source_networkgroup(hostname_default, firewall_name, rulenumber, snetworkgroup)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Source Network Group: updated success") 
+
+                if 'source' not in ruledata:
+                    ruledata['source'] = {}
+                if 'group' not in ruledata['source']:
+                    ruledata['source']['group'] = {}
+                ruledata['source']['group']['network-group'] = snetworkgroup         
+            else:
+                msg.add_error("Criteria Source Network Group: updated failed - " + v.reason) 
 
 
-    if rulenumber_valid == True:
-        if False:
-            # verifing basic informations, should have rulenumber, status and ruleaction
-            msg.add_error("Invalid Status or Action")
-        elif False:
-            # rule created, continue to configure firewall rule according his criterias
-            if v.success:
-                
-                # if criteria_networkgroup set, save it
-                if request.POST.get('criteria_networkgroup', None) == "1":
-                    if request.POST.get('sdnetworkgroup_source', None) != None:              
-                        sdnetworkgroup_source = request.POST.get('sdnetworkgroup_source')
-                        v = vapilib.api (
-                                hostname=   hostname_default,
-                                api =       "post",
-                                op =        "set",
-                                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "network-group", sdnetworkgroup_source],
-                                description = "set sdnetworkgroup_source",
-                        )
-                        if v.success:
-                            changed = True 
-                        else:
-                            vmsg.log("sdnetworkgroup_source", v.error)
+        # destination group
+        if request.POST.get('dnetworkgroup', None) != None:              
+            dnetworkgroup = request.POST.get('dnetworkgroup').strip()
+        else:
+            dnetworkgroup = ''
 
-                    if request.POST.get('dnetworkgroup', None) != None:              
-                        dnetworkgroup = request.POST.get('dnetworkgroup')                    
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "network-group", dnetworkgroup],
-                            description = "set dnetworkgroup",
-                        ) 
-                        if v.success:
-                            changed = True                  
-                        else:
-                            vmsg.log("sdnetworkgroup_source", v.error)                        
+        dnetworkgroup_ruledata = ''
+        if 'destination' in ruledata:
+            if 'group' in ruledata['destination']:
+                if 'network-group' in ruledata['destination']['group']:
+                    dnetworkgroup_ruledata = ruledata['destination']['group']['network-group']
 
-                # if criteria_sourcemac set, save it
-                if request.POST.get('criteria_sourcemac', None) == "1":
-                    # negate sdaddress_source
-                    if request.POST.get('smac_source_negate', None) == "1":
-                        sourcemac_negate = "!"
+        if len(dnetworkgroup) == 0: 
+            v = vapi.set_firewall_rule_destination_networkgroup_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Destination Network Group: delete success") 
+
+                if 'destination' in ruledata:
+                    if 'group' in ruledata['destination']:
+                        if 'network-group' in ruledata['destination']['group']:
+                            del ruledata['destination']['group']['network-group']
+            else:
+                msg.add_error("Criteria Destination Network Group: delete failed - " + v.reason)         
+        elif dnetworkgroup != dnetworkgroup_ruledata:
+            v = vapi.set_firewall_rule_destination_networkgroup(hostname_default, firewall_name, rulenumber, dnetworkgroup)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Destination Network Group: updated success") 
+
+                if 'destination' not in ruledata:
+                    ruledata['source'] = {}
+                if 'group' not in ruledata['destination']:
+                    ruledata['destination']['group'] = {}
+                ruledata['destination']['group']['network-group'] = dnetworkgroup              
+            else:
+                msg.add_error("Criteria Destination Network Group: updated failed - " + v.reason)         
+
+    ###############################################################################################################################################################
+    # update criteria_portgroup
+    if request.POST.get('criteria_portgroup', None) == "1":
+    
+        # source port
+        if request.POST.get('sportgroup', None) != None:              
+            sportgroup = request.POST.get('sportgroup').strip()
+        else:
+            sportgroup = ''
+
+        sportgroup_ruledata = ''
+        if 'source' in ruledata:
+            if 'group' in ruledata['source']:
+                if 'port-group' in ruledata['source']['group']:
+                    sportgroup_ruledata = ruledata['source']['group']['port-group']
+
+        if len(sportgroup) == 0: 
+            v = vapi.set_firewall_rule_source_portgroup_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Source Port Group: delete success") 
+
+                if 'source' in ruledata:
+                    if 'group' in ruledata['source']:
+                        if 'port-group' in ruledata['source']['group']:
+                            del ruledata['source']['group']['port-group']
+            else:
+                msg.add_error("Criteria Source Port Group: delete failed - " + v.reason)         
+
+        elif sportgroup != sportgroup_ruledata:
+            v = vapi.set_firewall_rule_source_portgroup(hostname_default, firewall_name, rulenumber, sportgroup)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Source Port Group: updated success") 
+
+                if 'source' not in ruledata:
+                    ruledata['source'] = {}
+                if 'group' not in ruledata['source']:
+                    ruledata['source']['group'] = {}
+                ruledata['source']['group']['port-group'] = sportgroup         
+            else:
+                msg.add_error("Criteria Source Port Group: updated failed - " + v.reason) 
+
+
+        # destination port
+        if request.POST.get('dportgroup', None) != None:              
+            dportgroup = request.POST.get('dportgroup').strip()
+        else:
+            dportgroup = ''
+
+        dportgroup_ruledata = ''
+        if 'destination' in ruledata:
+            if 'group' in ruledata['destination']:
+                if 'port-group' in ruledata['destination']['group']:
+                    dportgroup_ruledata = ruledata['destination']['group']['port-group']
+
+        if len(dportgroup) == 0: 
+            v = vapi.set_firewall_rule_destination_portgroup_delete(hostname_default, firewall_name, rulenumber)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Destination Port Group: delete success") 
+
+                if 'destination' in ruledata:
+                    if 'group' in ruledata['destination']:
+                        if 'port-group' in ruledata['destination']['group']:
+                            del ruledata['destination']['group']['port-group']
+            else:
+                msg.add_error("Criteria Destination Port Group: delete failed - " + v.reason)         
+        elif dportgroup != dportgroup_ruledata:
+            v = vapi.set_firewall_rule_destination_portgroup(hostname_default, firewall_name, rulenumber, dportgroup)
+            if v.success:   
+                changed = True
+                msg.add_success("Criteria Destination Port Group: updated success") 
+
+                if 'destination' not in ruledata:
+                    ruledata['source'] = {}
+                if 'group' not in ruledata['destination']:
+                    ruledata['destination']['group'] = {}
+                ruledata['destination']['group']['port-group'] = dportgroup              
+            else:
+                msg.add_error("Criteria Destination Port Group: updated failed - " + v.reason) 
+
+    ###############################################################################################################################################################
+    # update criteria_sourcemac
+    if request.POST.get('criteria_sourcemac', None) == "1":
+        if request.POST.get('smac_source', None) != None:              
+            smac = request.POST.get('smac_source')
+            smac = smac.replace("-",":")
+            smac = smac.lower()
+
+            if len(smac.strip()) == 0:             
+                v = vapi.set_firewall_rule_source_mac_delete(hostname_default, firewall_name, rulenumber)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Source Mac Address: clean success") 
+                    if 'source' in ruledata:
+                        if 'mac-address' in ruledata['source']:
+                            del ruledata['source']['mac-address']
+                else:
+                    msg.add_error("Criteria Source Mac Address: clean failed - " + v.reason)   
+            else:    
+                # negate smac
+                if request.POST.get('smac_source_negate', None) == "1":
+                    smac_negate = "!"
+                else:
+                    smac_negate = ""
+                                            
+                smac_txt = smac_negate + smac              
+                smac_original = ''
+                if 'source' in ruledata:
+                    if 'mac-address' in ruledata['source']:
+                        smac_original = ruledata['source']['mac-address']
+
+                if smac_txt != smac_original:
+                    v = vapi.set_firewall_rule_source_mac(hostname_default, firewall_name, rulenumber, smac_txt)
+                    if v.success:
+                        changed = True
+                        msg.add_success("Criteria Source Mac Address: updated success") 
+
+                        if 'source' not in ruledata:
+                            ruledata['source'] = {}
+                        ruledata['source']['mac-address'] = smac_txt
                     else:
-                        sourcemac_negate = ""               
+                        msg.add_error("Criteria Source Mac Address: updated failed - " + v.reason)
+
+    ###############################################################################################################################################################
+    # update criteria_packetstate
+    if request.POST.get('criteria_packetstate', None) == "1":
+        packetstates_all = ['established', 'invalid', 'new', 'related']
+
+        packetstates_form = []
+        packetstates_add = []
+        packetstates_delete = []
         
-                    if request.POST.get('smac_source', None) != None:
-                        sourcemac = request.POST.get('smac_source')
-                        sourcemac = sourcemac.replace("-",":")
-                        sourcemac = sourcemac.lower()
+        if request.POST.get('packetstate_established', None) == "1":
+            packetstates_form.append('established')
 
-                        sourcemac_txt = sourcemac_negate + sourcemac
+        if request.POST.get('packetstate_invalid', None) == "1":
+            packetstates_form.append('invalid')
 
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "mac-address", sourcemac_txt],
-                            description = "set source mac",
-                        )
-                        if v.success:
-                            changed = True 
+        if request.POST.get('packetstate_new', None) == "1":
+            packetstates_form.append('new')
 
-                # if criteria_packetstate set, save it
-                if request.POST.get('criteria_packetstate', None) == "1":
-                    packetstates = []
-                    if request.POST.get('packetstate_established', None) == "1":
-                        packetstates.append('established')
-                    if request.POST.get('packetstate_invalid', None) == "1":
-                        packetstates.append('invalid')
-                    if request.POST.get('packetstate_new', None) == "1":
-                        packetstates.append('new')
-                    if request.POST.get('packetstate_related', None) == "1":
-                        packetstates.append('related')
+        if request.POST.get('packetstate_related', None) == "1":
+            packetstates_form.append('related')
 
-                    if len(packetstates) > 0:
-                        for packetstate in packetstates:
-                            v = vapilib.api (
-                                hostname=   hostname_default,
-                                api =       "post",
-                                op =        "set",
-                                cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "state", packetstate, "enable"],
-                                description = "set criteria_packetstate",
-                            )
-                            if v.success:
-                                changed = True
+        if len(packetstates_form) == 0:
+            if 'state' in ruledata:
+                for pstate in ruledata['state']:
+                    packetstates_delete.append(pstate)
 
-                
+        if len(packetstates_form) > 0:
+            for pstate in packetstates_all:
+                # check what to add
+                if 'state' not in ruledata:
+                    if pstate in packetstates_form:
+                        packetstates_add.append(pstate)
+                else:
+                    if pstate not in ruledata['state']:
+                        if pstate in packetstates_form:
+                            packetstates_add.append(pstate)
+                    else:
+                        if ruledata['state'][pstate] != 'enable':
+                            if pstate in packetstates_form:
+                                packetstates_add.append(pstate)
 
-                # if criteria_portgroup set, save it
-                if request.POST.get('criteria_portgroup', None) == "1":
-                    if request.POST.get('sdportgroup_source', None) != None:
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "source", "group", "port-group", request.POST.get('sdportgroup_source')],
-                            description = "set sdportgroup_source",
-                        )
-                        if v.success:
-                            changed = True
+                # check what to delete
+                if 'state' in ruledata:
+                    if pstate in ruledata['state']:
+                        if ruledata['state'][pstate] == 'enable':
+                            if pstate not in packetstates_form:
+                                    packetstates_delete.append(pstate)
 
-                    if request.POST.get('sdportgroup_destination', None) != None:
-                        v = vapilib.api (
-                            hostname=   hostname_default,
-                            api =       "post",
-                            op =        "set",
-                            cmd =       ["firewall", "name", firewall_name, "rule", rulenumber, "destination", "group", "port-group", request.POST.get('sdportgroup_destination')],
-                            description = "set sdportgroup_destination",
-                        )
-                        if v.success:
-                            changed = True                        
+
+            if 'state' not in ruledata:
+                ruledata['state'] = {}
+            
+            for pstate in packetstates_add:
+                v = vapi.set_firewall_rule_packetstate(hostname_default, firewall_name, rulenumber, pstate)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Packet State: state added") 
+                    ruledata['state'][pstate] = 'enable'
+
+            for pstate in packetstates_delete:
+                v = vapi.set_firewall_rule_packetstate_delete(hostname_default, firewall_name, rulenumber, pstate)
+                if v.success:
+                    changed = True
+                    msg.add_success("Criteria Packet State: state delete") 
+                    if pstate in ruledata['state']:
+                        del ruledata['state'][pstate]
 
     if changed == True:
         msg.add_success("Firewall rule saved")
         
 
     ruledata_json = json.dumps(ruledata)
-    firewall_networkgroup_js = json.dumps(firewall_group['network-group'])
-    firewall_addressgroup_js = json.dumps(firewall_group['address-group'])    
-    vmsg.log("json", ruledata_json)
-
+    #vmsg.log("json", ruledata_json)
 
     template = loader.get_template(template_name)
     context = { 
@@ -806,10 +953,7 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'services_common' :                 netservices['common'],
         'firewall_networkgroup':            firewall_group['network-group'],
         'firewall_addressgroup':            firewall_group['address-group'],
-        'firewall_networkgroup_js':         firewall_networkgroup_js,
-        'firewall_addressgroup_js':         firewall_addressgroup_js,
-        'netservices_js' :                  netservices_js,
-        'portgroups_groups':                portgroups_groups,
+        'firewall_portgroup':               firewall_group['port-group'],
         'mode' :                            mode,
         'msg' :                             msg.get_all(),
         'ruledata' :                        ruledata,
@@ -817,9 +961,6 @@ def changerule(request, firewall_name, mode, template_name="firewall/addrule.htm
         'ruledata_json' :                   ruledata_json,
         'rulenumber' :                      rulenumber,
     }
-
-    if mode == "editrule":
-        pass
 
     return HttpResponse(template.render(context, request))
     

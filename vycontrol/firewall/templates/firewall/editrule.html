@@ -31,20 +31,6 @@
 
 
 
-
-{% comment %}
-<script type="text/javascript">
-    var firewall_networkgroup_data = '{{firewall_networkgroup_js|safe}}';
-    console.log(firewall_networkgroup_data);
-
-    var firewall_addressgroup_data = '{{firewall_addressgroup_js|safe}}';
-    console.log(firewall_addressgroup_data);    
-
-    var netservices_js = '{{netservices_js|safe}}';
-    console.log(netservices_js);   
-</script>
-{% endcomment %}
-
 <script type="text/javascript">
     var ruledata_js = JSON.parse('{{ruledata_json|safe}}');
 </script>
@@ -330,7 +316,7 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="saddressgroup">single choice - you cannot set a group and an adresss together</label><br>
+                    <label for="saddressgroup"><b>source address group</b><br>single choice<br>can't mix group and an adresss together</label><br>
                     <select name="saddressgroup" id="saddressgroup" size="10"  style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
@@ -338,14 +324,14 @@
                     </select>
 
                     <br>
-                    <input type="button" id="saddressgroup_clear" value="limpar">
+                    <input type="button" id="saddressgroup_clear" value="clear">
                 </p>
 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="daddressgroup">single choice - you cannot set a group and an adresss together</label><br>
+                    <label for="daddressgroup"><b>destination address group</b><br>single choice<br>can't mix group and an adresss together</label><br>
                     <select name="daddressgroup" id="daddressgroup" size="10" style="width: 200px;">
                         {% for f in firewall_addressgroup %}
                         <option value="{{ f }}">{{ f }}</option>
@@ -353,8 +339,7 @@
                     </select>
 
                     <br>
-                    <input type="button" id="daddressgroup_clear" value="limpar">
-
+                    <input type="button" id="daddressgroup_clear" value="clear">
                 </p>
 
 
@@ -368,26 +353,31 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="snetworkgroup">select at most one source network-group (can't mix destination address group and address)</label><br>
+                    <label for="snetworkgroup"><b>source network group</b><br>single choice<br>can't mix destination address group and address</label><br>
                     <select name="snetworkgroup" id="snetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
-                        <option>{{ f }}</option>
+                        <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="snetworkgroup_clear" value="clear">
                 </p>         
                 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="dnetworkgroup">select at most one destination network-group (can't mix destination address group and address)</label><br>
+                    <label for="dnetworkgroup"><b>destination network group</b><br>single choice<br>can't mix destination address group and address</label><br>
                     <select name="dnetworkgroup" id="dnetworkgroup" size="10" style="width: 200px;">
                         {% for f in firewall_networkgroup %}
-                        <option>{{ f }}</option>
+                        <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+              
+                    <br>
+                    <input type="button" id="dnetworkgroup_clear" value="clear">
                 </p>
-
 
           </div>
         </div>
@@ -399,24 +389,30 @@
         <div class="row">
             <div class="col">
                 <p>
-                    <label for="sdportgroup_source">source port group (single choice and can't mix source port group and port)</label><br>
-                    <select name="sdportgroup_source" id="sdportgroup_source" size="10" style="width: 200px;">
-                        {% for f in portgroups_groups %}
+                    <label for="sportgroup"><b>source port group</b><br>single choice<br>can't mix source port group and port</label><br>
+                    <select name="sportgroup" id="sportgroup" size="10" style="width: 200px;">
+                        {% for f in firewall_portgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="sportgroup_clear" value="clear">
                 </p>
 
             </div>
 
             <div class="col">
                 <p>
-                    <label for="sdportgroup_destination">destination port group (single choice and can't mix destination port group and port)</label><br>
-                    <select name="sdportgroup_destination" id="sdportgroup_destination" size="10" style="width: 200px;">
-                        {% for f in portgroups_groups %}
+                    <label for="dportgroup"><b>destination port group</b><br>single choice<br>can't mix destination port group and port</label><br>
+                    <select name="dportgroup" id="dportgroup" size="10" style="width: 200px;">
+                        {% for f in firewall_portgroup %}
                         <option value="{{ f }}">{{ f }}</option>
                         {% endfor %}
                     </select>
+
+                    <br>
+                    <input type="button" id="dportgroup_clear" value="clear">
                 </p>
 
 
@@ -742,7 +738,23 @@
 
         $('#saddressgroup_clear').click(function() {
             $('#saddressgroup').val([]);
-        });                     
+        });          
+
+        $('#dnetworkgroup_clear').click(function() {
+            $('#dnetworkgroup').val([]);
+        });     
+
+        $('#snetworkgroup_clear').click(function() {
+            $('#snetworkgroup').val([]);
+        });                             
+
+        $('#dportgroup_clear').click(function() {
+            $('#dportgroup').val([]);
+        });     
+
+        $('#sportgroup_clear').click(function() {
+            $('#sportgroup').val([]);
+        });                             
 
         
 
@@ -904,11 +916,11 @@
             if ($.inArray("destination", ruledata_js)) {
     
                 if ($.inArray("group", ruledata_js["destination"])) {
-                    console.log("destination group");
+                    /* console.log("destination group"); */
                     if (ruledata_js["destination"] && ruledata_js["destination"]['group']) {
                         for (g in ruledata_js["destination"]["group"]) {
                             group_text = ruledata_js["destination"]["group"][g];
-                            // console.log(g + " = ", group_text)
+                            /* console.log(g + " = ", group_text) */
 
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
@@ -918,7 +930,7 @@
                                 $("#dnetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_portgroup_count++;
-                                $("#sdportgroup_destination option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#dportgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             }                                                
                         }
                     }                
@@ -926,12 +938,11 @@
             }
             if ($.inArray("source", ruledata_js)) {          
                 if ($.inArray("group", ruledata_js["source"])) {
-                    console.log("source group");
+                    /* console.log("source group"); */
                     if (ruledata_js["source"] && ruledata_js["source"]['group']) {
                         for (g in ruledata_js["source"]["group"]) {
                             group_text = ruledata_js["source"]["group"][g];
-                            console.log(g + " = ", group_text)
-
+                            /* console.log(g + " = ", group_text) */
                             if (g == "address-group") {
                                 criteria_addressgroup_count++;
                                 $("#saddressgroup option[value='" + group_text + "']").prop("selected", 'selected');
@@ -940,7 +951,7 @@
                                 $("#snetworkgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             } else if (g == "port-group") {
                                 criteria_networkgroup_count++;
-                                $("#sdportgroup_source option[value='" + group_text + "']").prop("selected", 'selected');
+                                $("#sportgroup option[value='" + group_text + "']").prop("selected", 'selected');
                             }   
                         }
                     }
@@ -953,9 +964,9 @@
             }
 
             if (criteria_networkgroup_count > 0) {
-                $("#criteria_networkroup").prop("checked", true);
-                $("#criteria_networkroup_block").show(); 
-                $("#criteria_networkroup").hide();
+                $("#criteria_networkgroup").prop("checked", true);
+                $("#criteria_networkgroup_block").show(); 
+                $("#criteria_networkgroup").hide();
             }            
 
             if (criteria_portgroup_count > 0) {
@@ -981,6 +992,8 @@
                     $('#smac_source').val(macaddr);
                     $("#criteria_sourcemac").prop("checked", true);
                     $("#criteria_sourcemac_block").show(); 
+                    $("#criteria_sourcemac").hide(); 
+
                     console.log(macaddr);
                 }
             }
