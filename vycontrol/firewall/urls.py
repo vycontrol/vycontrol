@@ -30,6 +30,9 @@ urlpatterns = [
     path('firewall-portgroup-del/<str:groupname>', views.firewall_portgroup_del, name='firewall-portgroup-del'),
     path('firewall-portgroup-edit/<str:groupname>', views.firewall_portgroup_edit, name='firewall-portgroup-edit'),
 
+    path('zones', views.firewall_zones, name='firewall-zones'),
+    path('zones/add', views.firewall_zones_add, name='firewall-zones-add'),
+    path('zones/edit<str:zonename>', views.firewall_zones_edit, name='firewall-zones-edit'),
 
 
     path('addrule/<str:firewall_name>', views.addrule, name='addrule'),

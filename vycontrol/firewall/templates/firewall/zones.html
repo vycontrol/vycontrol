@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block header_title %}Firewall Zones{% endblock %}
+{% block section_title %}Firewall Zones{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+
+{{ allzones_pretty }}
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+</p>
+<p class="submenu2">
+    <a href="{% url 'firewall:firewall-zones-add' %}">Add Zone</a>
+</p>
+
+
+<h3>Firewall Zones</h3>
+
+{% if allzones %}
+
+    <table border="1" width="100%">
+    <tr>
+        <th>zone</th>
+        <th>description</th>
+    </tr>    
+    {% for zone in allzones %}
+        <tr>
+        <td><a href="{% url 'firewall:firewall-zones-edit' zone.name %}">{{ zone.name }}</a></td>
+        <td>{{ zone.description }}</td>
+        </tr>
+    {% endfor %}
+
+    </table>
+
+{% else %}
+<p>No firewall zone exists.</p>
+{% endif %}    
+
+
+{% endblock %}
+
+
+
