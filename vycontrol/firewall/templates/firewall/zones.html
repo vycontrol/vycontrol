@@ -25,8 +25,25 @@
 
 <h3>Firewall Zones</h3>
 
+{% if allzones %}
+
+    <table border="1" width="100%">
+    <tr>
+        <th>zone</th>
+        <th>description</th>
+    </tr>    
+    {% for zone in allzones %}
+        <tr>
+        <td><a href="{% url 'firewall:firewall-zones-edit' zone.name %}">{{ zone.name }}</a></td>
+        <td>{{ zone.description }}</td>
+        </tr>
+    {% endfor %}
+
+    </table>
+
+{% else %}
 <p>No firewall zone exists.</p>
-    
+{% endif %}    
 
 
 {% endblock %}

@@ -1584,6 +1584,14 @@ def firewall_zones(request):
                         interfaces_zone[zoneinterface] = zone
 
 
+    
+    if 'zone' in allzones:
+        allzones2 = []
+        for zone in allzones['zone']:
+            zonec = allzones['zone'][zone]
+            zonec['name'] = zone
+            allzones2.append(zonec)
+            
 
     template = loader.get_template('firewall/zones.html')
     context = { 
@@ -1592,8 +1600,8 @@ def firewall_zones(request):
         'hostname_default':                         hostname_default,
         'username':                                 request.user,
         'is_superuser' :                            is_superuser,
-        'allzones':                                 allzones,
-        'allzones_pretty':                          pprint.pformat(allzones, indent=4, width=120),
+        'allzones':                                 allzones2,
+        'allzones_pretty':                          pprint.pformat(allzones2, indent=4, width=120),
 
     }   
     return HttpResponse(template.render(context, request))
@@ -1710,6 +1718,152 @@ def firewall_zones_add(request):
         'interfaces_defined_form':      interfaces_defined_form,
         'interfaces_zone':              interfaces_zone,
         'form_added':                   valid,
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+
+
+
+
+@is_authenticated
+def firewall_zones_edit(request, zonename):
+    msg = vmsg.msg()
+
+    # basic methods all views should call
+    all_instances       = vyos.instance_getall()
+    hostname_default    = vyos.get_hostname_prefered(request)
+    is_superuser        = perms.get_is_superuser(request.user)
+
+    # local methods to prepare env
+    interfaces              = vyos.get_interfaces(hostname_default)
+    interfaces_all_names    = vyos.get_interfaces_all_names(hostname_default)
+    get_firewall_zones      = vapi.get_firewall_zones(hostname_default) # get all zones since we cannot allow an interface belongs more than one zone
+    get_firewall_zone       = vapi.get_firewall_zone(hostname_default, zonename)
+    zoneinfo                = get_firewall_zone.data
+
+    if zoneinfo == None:
+        msg.add_error("Zone not exists")
+        template = loader.get_template('firewall/zones-edit.html')
+        context = { 
+            #'interfaces': interfaces,
+            'instances':                    all_instances,
+            'hostname_default':             hostname_default,
+            'username':                     request.user,
+            'is_superuser':                 is_superuser,
+            'interfaces':                   interfaces,
+            'interfaces_all_names_pretty':  pprint.pformat(interfaces_all_names, indent=4, width=120),
+            'interfaces_all_names':         interfaces_all_names,
+            'msg' :                         msg.get_all(),
+            "zoneinfo":                     zoneinfo,
+            "exists":                       False
+        }   
+        return HttpResponse(template.render(context, request))
+
+
+
+    interfaces_defined          = []
+    interfaces_defined_form     = []
+    interfaces_zone             = {}
+    allzones                    = []
+
+    if get_firewall_zones.success:
+        allzones = get_firewall_zones.data
+        if 'zone' in allzones:
+            for zone in allzones['zone']:
+                if 'interface' in allzones['zone'][zone]:
+                    for zoneinterface in allzones['zone'][zone]['interface']:
+                        interfaces_defined.append(zoneinterface)
+                        interfaces_defined_form.append("interface_" + zoneinterface)
+                        interfaces_zone[zoneinterface] = zone
+
+    # local control vars
+    valid               = False
+    localzone           = False
+
+    if request.POST.get('name', None) != None or len(zonename) > 0:
+        if len(zonename) == 0:
+            zonename = request.POST.get('name')
+            zonename = zonename.strip()
+
+        if request.POST.get('localzone', None) != None:
+            # set local-zone
+            v = vapi.set_firewall_zone_localzone(hostname_default, zonename)
+            if v.success:   
+                valid = True
+                msg.add_success("Local-zone defined")       
+            else:
+                msg.add_success("Local-zone failed to set") 
+        else:
+            # add all interfaces
+            interfaces_form = []
+            for rv in request.POST:
+                iface_form = None
+                if rv.startswith("interface_"):
+                    rvprefixlen = len("interface_")
+                    iface_form = rv[rvprefixlen:]
+                    interfaces_form.append(iface_form)
+
+                    v = vapi.set_firewall_zone_interface(hostname_default, zonename, iface_form)
+                    if v.success:   
+                        valid = True
+                        msg.add_success("Interface added to zone: " +  iface_form)
+                    else:
+                        msg.add_success("Interface not added to zone: " +  iface_form + " - "  + v.reason)
+
+            if valid == True:
+                # if editing remove localzone if set
+                pass
+
+
+        if valid == True:
+            if request.POST.get('description', None) != None:
+                zonedescription = request.POST.get('description')
+                zonedescription = zonedescription.strip()
+                if len(zonedescription) > 0:
+                    v = vapi.set_firewall_zone_description(hostname_default, zonename, zonedescription)
+                    if v.success:   
+                        valid = True
+                        msg.add_success("Description defined")
+                    else:
+                        msg.add_success("Description failed to set")
+
+            if request.POST.get('action', None) != None:
+                zoneaction = request.POST.get('action')
+                zoneaction = zonedescription.strip()
+                if zoneaction in ['drop', 'reject']:
+                    v = vapi.set_firewall_zone_defaultaction(hostname_default, zonename, zoneaction)
+                    if v.success:   
+                        valid = True
+                        msg.add_success("Default action defined")       
+                    else:
+                        msg.add_success("Default action failed to set")                        
+
+
+            msg.add_success("Zone added") 
+
+    template = loader.get_template('firewall/zones-edit.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances':                    all_instances,
+        'hostname_default':             hostname_default,
+        'username':                     request.user,
+        'is_superuser':                 is_superuser,
+        'interfaces':                   interfaces,
+        'interfaces_pretty':            pprint.pformat(interfaces, indent=4, width=120),
+        'interfaces_all_names_pretty':  pprint.pformat(interfaces_all_names, indent=4, width=120),
+        'interfaces_all_names':         interfaces_all_names,
+        'msg' :                         msg.get_all(),
+        'allzones':                     allzones,
+        'interfaces_defined':           interfaces_defined,
+        'interfaces_defined_form':      interfaces_defined_form,
+        'interfaces_zone':              interfaces_zone,
+        'form_added':                   valid,
+        "zoneinfo":                     zoneinfo,
+        "zonename":                     zonename,
+        "exists":                       True,
+
     }   
     return HttpResponse(template.render(context, request))
 

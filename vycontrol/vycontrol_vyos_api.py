@@ -425,3 +425,57 @@ def get_firewall_zones(hostname):
     )
     return v
 
+
+def get_firewall_zone(hostname, zone):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "get",
+        op =        "showConfig",
+        cmd =       ["zone-policy", "zone", zone],
+        description = "get_firewall_zone",
+    )
+    return v
+
+
+def set_interface_firewall_ipv4(hostname, interface_type, interface_name, direction, firewall_name, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "firewall", direction, "name", firewall_name],
+            description = "set_interface_firewall_ipv4",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "firewall", direction, "name", firewall_name],
+            description = "set_interface_firewall_ipv4",
+        )
+    return v    
+
+def delete_interface_firewall_ipv4(hostname, interface_type, interface_name, direction, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "firewall", direction],
+            description = "delete_interface_firewall_ipv4",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "firewall", direction],
+            description = "delete_interface_firewall_ipv4",
+        )
+    return v    
+
+
+
+
+

@@ -6,11 +6,14 @@
 
 {% block debug %}
     {{ interfaces }}
+    {{ firewall_names }}
     {{ firewall_all }}
-    {{ interface_firewall_in }}
-    {{ interface_firewall_out }}
+    {{ interface_firewall_in_pretty }}
+    {{ interface_firewall_out_pretty }}
+    {{ interfaces_pretty }}
+    --------------
+    {{ interfaces_all_names_pretty }}
 {% endblock %}
-
 
 
 {% block content %}
@@ -22,7 +25,46 @@
         <table border="1" width="100%">
         <tr><th>type</th><th>name</th><th>address</th><th>firewall ipv4 in</th><th>firewall ipv4 out</th></th></tr>
 
-        {% for key, value in interfaces.items %}
+
+        {% for iname in interfaces_all_names %}
+            
+            <tr>
+                <td>{{ iname.type }}</td>
+                <td>{{ iname.interface_alias }}</td>
+                <td>
+                    {% for address in iname.address %}
+                        {{ address }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if iname.type == "loopback" or iname.type == "dummy" %}
+                        -
+                    {% else %}
+                        <select id="firewall-ipv4-in" name="firewall-ipv4-in.{{ iname.type }}.{{ iname.interface_alias }}"><option value="--remove--">None</option>
+                        {% for fname in firewall_names %}    
+                            <option value="{{ fname }}" {% if iname.firewall_in == fname %}selected="selected"{% endif %} >{{ fname }}</option>
+                        {% endfor %}
+                        </select>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if iname.type == "loopback" or iname.type == "dummy" %}
+                        -
+                    {% else %}
+                        <select id="firewall-ipv4-out" name="firewall-ipv4-out.{{ iname.type }}.{{ iname.interface_alias }}"><option value="--remove--">None</option>
+                        {% for fname in firewall_names %}    
+                            <option value="{{ fname }}" {% if iname.firewall_out == fname %}selected="selected"{% endif %} >{{ fname }}</option>
+                        {% endfor %}
+                        </select>
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+
+        {% comment %}
+        {% for key, value in interfaces_all_names.items %}
             <tr>
                 
                 <td>{{ key }} </td>
@@ -62,6 +104,8 @@
             {% endfor %}
             </tr>
         {% endfor %}
+        {% endcomment %}
+
 
         </table>
 

@@ -6,12 +6,18 @@
 
 {% block debug %}
 
+{{ zoneinfo }}
+
+
 {{ allzones }}
 
 {{ interfaces_defined }}
 
 {{ interfaces_zone }}
 
+{{ interfaces_pretty }}
+
+{{ interfaces_all_names_pretty }}
 
 {% endblock %}
 
@@ -22,75 +28,98 @@
     <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
     <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
     <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
-    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a> | 
+    <a href="{% url 'firewall:firewall-zones' %}">Zones</a>
 </p>
 
 
+{% if exists == True %} 
+    {% if form_added == False %}
+        <h3>Edit zone {{ zonename }}</h3>
 
-<h3>Create new zone</h3>
+        <form action="{% url 'firewall:firewall-zones-add' %}" method="post">
+            {% csrf_token %}
+        
+            <p>
+                <label for="alias">name</label><br>
+                <input type="text" name="name" id="name" value="" size="60">
+            </p>    
 
-<form action="{% url 'firewall:firewall-zones-add' %}" method="post">
-    {% csrf_token %}
-  
-    <p>
-        <label for="alias">name</label><br>
-        <input type="text" name="name" id="name" value="" size="60">
-    </p>    
+            <p>
+                <label for="alias">description</label><br>
+                <input type="text" name="description" id="description" value="" size="60">
+            </p>    
+            
+            <p>
+                <label for="hostname">default action</label><br>
+                <input type="radio" name="action" id="action" value="drop" {% if firewall.defaultaction == "drop" %}checked="checked"{% endif %}> drop
+                <input type="radio" name="action" id="action" value="reject" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> reject        
+            </p>
 
-    <p>
-        <label for="alias">description</label><br>
-        <input type="text" name="description" id="description" value="" size="60">
-    </p>    
-    
-    <p>
-        <label for="hostname">default action</label><br>
-        <input type="radio" name="action" id="action" value="drop" {% if firewall.defaultaction == "drop" %}checked="checked"{% endif %}> drop
-        <input type="radio" name="action" id="action" value="reject" {% if firewall.defaultaction == "accept" %}checked="checked"{% endif %}> reject        
-    </p>
-
-    <h2>Local-zone</h2>
-    <p>Local zones cannot bellong to any other interface and will be applied to the router itself.<br>
-        <input type="checkbox" name="localzone" value="1" id="localzone">
-        <label for="localzone">set as local-zone</label><br>
-    </p> 
-
-    <div id="interfacesdiv">
-    <h2>Interfaces to apply</h2>
-    {% for key, value in interfaces.items %}
-        {% if key != "loopback" %}
-            {% for ifkey, ifvalue in value.items %}
-                {% if ifkey not in interfaces_defined %}
-                    <input type="checkbox" name="interface_{{ ifkey }}" value="{{ ifkey }}" id="interface_{{ ifkey }}">
-                    <label for="interface_{{ ifkey }}">{{ key }} - {{ ifkey }}</label><br>
-                {% else %}
-                {{ key }} - {{ ifkey }} - already defined in zone {{ interfaces_zone|get_item:ifkey }} <br>
-
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-    </div>
-
-    
-    <input type="submit" value="Add Firewall">
-</form>
+            {% comment %}
+            <h2>Local-zone</h2>
+            <p>Local zones cannot bellong to any other interface and will be applied to the router itself.<br>
+                <input type="checkbox" name="localzone" value="1" id="localzone">
+                <label for="localzone">set as local-zone</label><br>
+            </p> 
+            {% endcomment %}
 
 
-   
-<script>
-    $(document).ready(function () {                            
-        $("#localzone").change(function () {
-            if ($("#localzone").is(":checked")) {
-                $('#interfacesdiv').hide();
-            }
-            else if ($("#localzone").not(":checked")) {
-                $('#interfacesdiv').show();
-            }
-        });
-    });
 
-</script>
+        
 
+
+            <div id="interfacesdiv">
+                <h2>Interfaces to apply</h2>
+                        {% for iface in interfaces_all_names %}
+                            {% if iface.type != "loopback" %}
+                                {% if iface.vif %}
+                                    {% with iface_id="interface_"|add:iface.interface_name|add:"."|add:iface.vif iface_js="interface_"|add:iface.interface_name|add:"_"|add:iface.vif  %}
+                                        {% if iface_id not in interfaces_defined_form %}
+                                            <input type="checkbox" name="{{ iface_id }}" value="{{ iface_id  }}" id="{{ iface_js }}">
+                                            <label for="{{ iface_id }}">{{ iface.type }} {{ iface.interface_name }}{% if iface.vif %}.{{ iface.vif }}{% endif %}</label><br>
+                                        {% else %}
+                                            <input type="checkbox" name="{{ iface_id }}" value="{{ iface_id  }}" id="{{ iface_js }}" disabled>
+                                            <label for="{{ iface_id }}">{{ iface.type }} {{ iface.interface_name }}{% if iface.vif %}.{{ iface.vif }}{% endif %} belongs to another zone</label><br>                            
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    {% with iface_id="interface_"|add:iface.interface_name iface_js="interface_"|add:iface.interface_name %}
+                                        {% if iface_id not in interfaces_defined_form %}
+                                            <input type="checkbox" name="{{ iface_id }}" value="{{ iface_id  }}" id="{{ iface_js }}">
+                                            <label for="{{ iface_id }}">{{ iface.type }} {{ iface.interface_name }}{% if iface.vif %}.{{ iface.vif }}{% endif %}</label><br>
+                                        {% else %}
+                                            <input type="checkbox" name="{{ iface_id }}" value="{{ iface_id  }}" id="{{ iface_js }}" disabled>
+                                            <label for="{{ iface_id }}">{{ iface.type }} {{ iface.interface_name }}{% if iface.vif %}.{{ iface.vif }}{% endif %} belongs to another zone</label><br>
+                                        {% endif %}
+                                    {% endwith %}                    
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+            </div>    
+            
+
+            
+            <input type="submit" value="Add Firewall">
+        </form>
+
+
+        
+        <script>
+            $(document).ready(function () {                            
+                $("#localzone").change(function () {
+                    if ($("#localzone").is(":checked")) {
+                        $('#interfacesdiv').hide();
+                    }
+                    else if ($("#localzone").not(":checked")) {
+                        $('#interfacesdiv').show();
+                    }
+                });
+            });
+
+        </script>
+    {% endif %}
+{% endif %}
 
 
 {% endblock %}

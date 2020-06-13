@@ -148,19 +148,7 @@ def get_firewall_all(hostname):
 
     return nfirewall_list
 
-def set_interface_firewall_ipv4(hostname, interface_type, interface_name, direction, firewall_name):
-    cmd = {"op": "set", "path": ["interfaces", interface_type, interface_name, "firewall", direction, "name", firewall_name]}
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-
-    success = api_set(hostname, cmd)
-    return success
-
-def delete_interface_firewall_ipv4(hostname, interface_type, interface_name, direction):
-    cmd = {"op": "delete", "path": ["interfaces", interface_type, interface_name, "firewall", direction]}
-    post = {'key': get_key(hostname), 'data': json.dumps(cmd)}
-
-    success = api_set(hostname, cmd)
-    return success    
+  
 
 def get_interfaces(hostname):
     cmd = {"op": "showConfig", "path": ["interfaces"]}
