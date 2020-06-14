@@ -34,16 +34,16 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 # roadmap 
 
 ## current version 
-- [x] [20.05.04 - improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [x] [20.05.10 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
 
 ## changelog
+- [x] [20.05.04 - improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
 - [x] 20.05.02 - working firewall without zones 
 - [x] 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 ## future versions
 
 ### firewall and vycontrol base   
-- [ ] [20.05.10.1000 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
 - [ ] [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
 - [ ] [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
 - [ ] [**20.06.15.LTS** - layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
