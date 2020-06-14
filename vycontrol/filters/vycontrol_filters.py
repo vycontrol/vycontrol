@@ -1,6 +1,6 @@
 from django.template.defaultfilters import register
 import random
-
+import pprint
 
 @register.filter
 def routepack(value): 
@@ -35,3 +35,7 @@ def random_int(a, b=None):
     if b is None:
         a, b = 0, a
     return random.randint(a, b)
+
+#@register.filter
+#def pretty(s):
+#    return pprint.pformat(s, indent=4, width=120),

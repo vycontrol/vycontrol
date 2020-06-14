@@ -7,6 +7,10 @@
 {% block debug %}
 
 {{ allzones_pretty }}
+
+<h3>allzonesrules</h3>
+{{ allzonesrules|pprint }} 
+
 {% endblock %}
 
 {% block content %}
@@ -19,7 +23,8 @@
     <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a>
 </p>
 <p class="submenu2">
-    <a href="{% url 'firewall:firewall-zones-add' %}">Add Zone</a>
+    <a href="{% url 'firewall:firewall-zones-add' %}">Add Zone</a> | 
+    <a href="{% url 'firewall:firewall-zones-addrule' %}">Add Ruleset</a> 
 </p>
 
 
@@ -29,13 +34,16 @@
 
     <table border="1" width="100%">
     <tr>
-        <th>zone</th>
-        <th>description</th>
+        <th width="25%">zone</th>
+        <th width="50%">description</th>
+        <th width="25%">action</th>
+    </tr>
     </tr>    
     {% for zone in allzones %}
         <tr>
         <td><a href="{% url 'firewall:firewall-zones-edit' zone.name %}">{{ zone.name }}</a></td>
         <td>{{ zone.description }}</td>
+        <td><a href="{% url 'firewall:firewall-zones-remove' zone.name %}">remove</a></td>
         </tr>
     {% endfor %}
 
@@ -43,6 +51,34 @@
 
 {% else %}
 <p>No firewall zone exists.</p>
+{% endif %}    
+
+
+<h3>Firewall Zones Rules</h3>
+
+{% if allzonesrules %}
+
+    <table border="1" width="100%">
+    <tr>
+        <th width="25%">zone destination</th>
+        <th width="25%">zone source</th>
+        <th width="25%">firewall</th>
+        <th width="25%">action</th>
+    </tr>
+    </tr>    
+    {% for rule in allzonesrules %}
+        <tr>
+            <td>{{ rule.dstzone }}</td>
+            <td>{{ rule.srczone }}</td>
+            <td>{{ rule.firewall }}</td>
+            <td><a href="{% url 'firewall:firewall-zones-removerule' rule.dstzone rule.srczone rule.firewall %}">remove</a></td>
+        </tr>
+    {% endfor %}
+
+    </table>
+
+{% else %}
+<p>No firewall zone rules exists.</p>
 {% endif %}    
 
 
