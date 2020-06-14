@@ -30,10 +30,10 @@ from filters.vycontrol_filters import get_item_network
 
 @is_authenticated
 def index(request):
+
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
-    msg = vmsg.msg()
 
 
     """firewall2 = vapilib.api(
@@ -66,7 +66,6 @@ def index(request):
         'firewall_all':                             firewall_all,
         'username':                                 request.user,
         'is_superuser' :                            is_superuser,
-        'msg' :                                     msg,
     }   
     return HttpResponse(template.render(context, request))
 
