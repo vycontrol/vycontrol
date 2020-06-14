@@ -500,3 +500,34 @@ def delete_interface_firewall_ipv4(hostname, interface_type, interface_name, dir
 
 
 
+def set_interface_firewall_zone_addrule(hostname, dstzone, srczone, firewall):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["zone-policy", "zone", dstzone, "from", srczone, "firewall", "name", firewall],
+        description = "set_interface_firewall_zone_addrule",
+    )
+    return v  
+
+
+def delete_interface_firewall_zone_rule(hostname, dstzone, srczone):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["zone-policy", "zone", dstzone, "from", srczone],
+        description = "delete_interface_firewall_zone_rule",
+    )
+    return v  
+
+
+def delete_interface_firewall_zone_rule_firewall(hostname, dstzone, srczone, firewall):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["zone-policy", "zone", dstzone, "from", srczone, "firewall", "name", firewall],
+        description = "delete_interface_firewall_zone_rule",
+    )
+    return v  

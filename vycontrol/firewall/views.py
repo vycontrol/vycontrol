@@ -12,7 +12,7 @@ import vycontrol_vyos_api_lib as vapilib
 import vycontrol_vyos_api as vapi
 import vycontrol_messages as vmsg
 
-
+from slugify import slugify
 from performance import timer
 from perms import is_authenticated
 import perms
@@ -33,16 +33,16 @@ def index(request):
     #interfaces = vyos.get_interfaces()
     all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
+    msg = vmsg.msg()
 
 
-    firewall2 = vapilib.api(
+    """firewall2 = vapilib.api(
         hostname =      hostname_default,
         api =           'get',
         op =            'showConfig',
         cmd =           {"op": "showConfig", "path": ["firewall"]},
         description =   "get all firewall",
-    )
-
+    )"""
 
 
     is_superuser = perms.get_is_superuser(request.user)
@@ -61,11 +61,12 @@ def index(request):
     template = loader.get_template('firewall/list.html')
     context = { 
         #'interfaces': interfaces,
-        'instances': all_instances,
-        'hostname_default': hostname_default,
-        'firewall_all':  firewall_all,
-        'username': request.user,
-        'is_superuser' : is_superuser,
+        'instances':                                all_instances,
+        'hostname_default':                         hostname_default,
+        'firewall_all':                             firewall_all,
+        'username':                                 request.user,
+        'is_superuser' :                            is_superuser,
+        'msg' :                                     msg,
     }   
     return HttpResponse(template.render(context, request))
 
@@ -1572,6 +1573,7 @@ def firewall_zones(request):
     interfaces_defined_form     = []
     interfaces_zone             = {}
     allzones                    = []
+    allzonesrules               = []
 
     if get_firewall_zones.success:
         allzones = get_firewall_zones.data
@@ -1582,9 +1584,21 @@ def firewall_zones(request):
                         interfaces_defined.append(zoneinterface)
                         interfaces_defined_form.append("interface_" + zoneinterface)
                         interfaces_zone[zoneinterface] = zone
+                if 'from' in allzones['zone'][zone]:
+                    zonerule = {}
+                    zonerule['dstzone'] = zone
 
+                    for zonesrc in allzones['zone'][zone]['from']:
+                        zonerule['srczone'] =       zonesrc
 
-    
+                        if 'firewall' in allzones['zone'][zone]['from'][zonesrc]:
+                            if 'name' in allzones['zone'][zone]['from'][zonesrc]['firewall']:
+                                zonerule['firewall'] =       allzones['zone'][zone]['from'][zonesrc]['firewall']['name']
+
+                    allzonesrules.append(zonerule)
+
+                    
+
     if 'zone' in allzones:
         allzones2 = []
         for zone in allzones['zone']:
@@ -1602,6 +1616,7 @@ def firewall_zones(request):
         'is_superuser' :                            is_superuser,
         'allzones':                                 allzones2,
         'allzones_pretty':                          pprint.pformat(allzones2, indent=4, width=120),
+        'allzonesrules' :                           allzonesrules,
 
     }   
     return HttpResponse(template.render(context, request))
@@ -1878,7 +1893,7 @@ def firewall_zones_edit(request, zonename):
     if request.POST.get('description', None) != None:
         zonedescription = request.POST.get('description')
         zonedescription = zonedescription.strip()
-        if zoneinfo['description'] != zonedescription:
+        if 'description' not in zoneinfo or zoneinfo['description'] != zonedescription:
             if len(zonedescription) > 0:
                 v = vapi.set_firewall_zone_description(hostname_default, zonename, zonedescription)
                 if v.success:   
@@ -1939,11 +1954,8 @@ def firewall_zones_edit(request, zonename):
         'interfaces_all_names_dict':        interfaces_all_names_dict,
         'interfaces_all_names_dict_pretty': pprint.pformat(interfaces_all_names_dict, indent=4, width=120),
         'zoneaction':                       zoneaction,
-
     }   
     return HttpResponse(template.render(context, request))
-
-
 
 @is_authenticated
 def firewall_zones_remove(request, zonename):
@@ -1985,5 +1997,154 @@ def firewall_zones_remove(request, zonename):
         'msg' :                         msg.get_all(),
         "zoneinfo":                     zoneinfo,
         "zonename":                     zonename,
+    }   
+    return HttpResponse(template.render(context, request))
+
+@is_authenticated
+def firewall_zones_addrule(request):
+    msg = vmsg.msg()
+    
+    # basic methods all views should call
+    all_instances       = vyos.instance_getall()
+    hostname_default    = vyos.get_hostname_prefered(request)
+    is_superuser        = perms.get_is_superuser(request.user)
+
+    # local methods to prepare env
+    interfaces              = vyos.get_interfaces(hostname_default)
+    interfaces_all_names    = vyos.get_interfaces_all_names(hostname_default)
+    get_firewall_zones      = vapi.get_firewall_zones(hostname_default) 
+
+    zones = []
+    if get_firewall_zones.success:
+        allzones = get_firewall_zones.data
+        if 'zone' in allzones:
+            for zone in allzones['zone']:
+                zones.append(zone)                        
+
+    firewalls = []
+    firewall_all = vyos.get_firewall_all(hostname_default)
+    if firewall_all == False:
+        return redirect('firewall:firewall-create')
+    if 'name' in firewall_all:
+        for firewall in firewall_all['name']:
+            firewalls.append(firewall)
+
+    reverse = False
+    if request.POST.get('reverse', None) == "1":
+        reverse = True
+
+    dstzone = None
+    srczone = None
+    firewallrule = None
+
+    if request.POST.get('dstzone', None) != None:
+        dstzone = request.POST.get('dstzone').strip()
+
+    if request.POST.get('srczone', None) != None:
+        srczone = request.POST.get('srczone').strip()
+
+    if request.POST.get('firewall', None) != None:
+        firewallrule = request.POST.get('firewall').strip()
+
+    if dstzone != None and srczone != None and firewallrule != None:
+        v = vapi.set_interface_firewall_zone_addrule(hostname_default, dstzone, srczone, firewallrule)
+        if v.success:   
+            msg.add_success("Zone ruleset zone {dst} from {src} firewall {firewall} added".format(
+                dst=dstzone,
+                src=srczone,
+                firewall=firewallrule
+            ))
+        else:
+            msg.add_error("Zone ruleset {dst} from {src} firewall {firewall} not added: {reason}".format(
+                dst=dstzone,
+                src=srczone,
+                firewall=firewallrule
+            ))
+
+        if reverse == True:
+            v = vapi.set_interface_firewall_zone_addrule(hostname_default, srczone, dstzone, firewallrule)
+            if v.success:   
+                msg.add_success("Zone reverse ruleset {dst} from {src} firewall {firewall} added".format(
+                    dst=srczone,
+                    src=dstzone,
+                    firewall=firewallrule
+                ))
+            else:
+                msg.add_error("Zone reverse ruleset {dst} from {src} firewall {firewall} not added: {reason}".format(  
+                    dst=srczone,
+                    src=dstzone,
+                    firewall=firewallrule
+                ))
+
+
+
+ 
+    template = loader.get_template('firewall/zones-addrule.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances':                    all_instances,
+        'hostname_default':             hostname_default,
+        'username':                     request.user,
+        'is_superuser':                 is_superuser,
+        'interfaces':                   interfaces,
+        'interfaces_all_names_pretty':  pprint.pformat(interfaces_all_names, indent=4, width=120),
+        'interfaces_all_names':         interfaces_all_names,
+        'msg' :                         msg.get_all(),
+        'zones' :                       zones,
+        'firewalls' :                   firewalls
+    }   
+    return HttpResponse(template.render(context, request))
+
+
+
+@is_authenticated
+def firewall_zones_removerule(request, dstzone, srczone, firewall):
+    # validation
+    dstzone = dstzone.strip()
+    srczone = srczone.strip()
+    firewall = firewall.strip()
+    
+    msg = vmsg.msg()
+    
+    # basic methods all views should call
+    all_instances       = vyos.instance_getall()
+    hostname_default    = vyos.get_hostname_prefered(request)
+    is_superuser        = perms.get_is_superuser(request.user)
+
+    # local methods to prepare env
+    interfaces              = vyos.get_interfaces(hostname_default)
+    interfaces_all_names    = vyos.get_interfaces_all_names(hostname_default)
+    get_firewall_zonedst    = vapi.get_firewall_zone(hostname_default, dstzone)
+    zoneinfodst             = get_firewall_zonedst.data
+    get_firewall_zonesrc    = vapi.get_firewall_zone(hostname_default, srczone)
+    zoneinfosrc             = get_firewall_zonesrc.data    
+
+    if zoneinfodst == None or zoneinfosrc == None:
+        msg.add_error("Zone not exists")
+    else:
+        v = vapi.delete_interface_firewall_zone_rule(hostname_default, dstzone, srczone)
+        if v.success:   
+            msg.add_success("Zone ruleset {dst} from {src} removed".format(  
+                dst=dstzone,
+                src=srczone,
+            ))            
+        else:
+            msg.add_error("Zone ruleset {dst} from {src} not removed: {reason}".format(  
+                dst=dstzone,
+                src=srczone,
+                reason=v.reason
+            ))
+
+    template = loader.get_template('firewall/zones-removerule.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances':                    all_instances,
+        'hostname_default':             hostname_default,
+        'username':                     request.user,
+        'is_superuser':                 is_superuser,
+        'interfaces':                   interfaces,
+        'interfaces_all_names_pretty':  pprint.pformat(interfaces_all_names, indent=4, width=120),
+        'interfaces_all_names':         interfaces_all_names,
+        'msg' :                         msg.get_all(),
     }   
     return HttpResponse(template.render(context, request))

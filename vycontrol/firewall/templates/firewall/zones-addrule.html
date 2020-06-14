@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block header_title %}Add Firewall Ruleset to Zone{% endblock %}
+{% block section_title %}Add Firewall Ruleset to Zone{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+
+<h3>interfaces</h3>
+{{ interfaces|pprint }}
+
+<h3>interfaces_all_names</h3>
+{{ interfaces_all_names|pprint }}
+
+<h3>zones</h3>
+{{ zones|pprint }}
+
+<h4>firewalls</h4>
+{{ firewalls|pprint }}
+
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a> | 
+    <a href="{% url 'firewall:firewall-zones' %}">Zones</a>
+</p>
+
+<h3>Add zone ruleset</h3>
+<form action="{% url 'firewall:firewall-zones-addrule' %}" method="post">
+    {% csrf_token %}
+
+    <p>
+        <input type="checkbox" name="reverse" id="reverse" value="1">
+        <label for="alias">create reverse ruleset (from source to destination) </label>
+    </p>        
+
+    <p>
+        <label for="dstzone">destination zone - single choice</label><br>
+        <select name="dstzone" id="dstzone" size="5" style="width: 200px;">
+            {% for zone in zones %}
+            <option value="{{ zone }}">{{ zone }}</option>
+            {% endfor %}
+        </select>
+    </p>
+
+
+    <p>
+        <label for="srczone">from zone - single choice</label><br>
+        <select name="srczone" id="srczone" size="5" style="width: 200px;">
+            {% for zone in zones %}
+            <option value="{{ zone }}">{{ zone }}</option>
+            {% endfor %}
+        </select>
+    </p>
+
+
+    <p>
+        <label for="firewall">firewall name - single choice</label><br>
+        <select name="firewall" id="firewall" size="5" style="width: 200px;">
+            {% for firewall in firewalls %}
+            <option value="{{ firewall }}">{{ firewall }}</option>
+            {% endfor %}
+        </select>
+
+    </p>
+
+    <p>
+        <input type="submit" value="Add zone ruleset">
+    </p>
+
+{% endblock %}
+
+
+

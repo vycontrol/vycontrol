@@ -32,6 +32,8 @@ urlpatterns = [
 
     path('zones', views.firewall_zones, name='firewall-zones'),
     path('zones/add', views.firewall_zones_add, name='firewall-zones-add'),
+    path('zones/addrule', views.firewall_zones_addrule, name='firewall-zones-addrule'),
+    path('zones/removerule/<str:dstzone>/<str:srczone>/<str:firewall>', views.firewall_zones_removerule, name='firewall-zones-removerule'),
     path('zones/edit/<str:zonename>', views.firewall_zones_edit, name='firewall-zones-edit'),
     path('zones/remove/<str:zonename>', views.firewall_zones_remove, name='firewall-zones-remove'),
 
