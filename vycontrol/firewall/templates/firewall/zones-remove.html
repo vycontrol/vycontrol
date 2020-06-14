@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block header_title %}Remove Firewall Zone{% endblock %}
+{% block section_title %}Remove Firewall Zone{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+
+<h3>interfaces</h3>
+{{ interfaces|pprint }}
+
+<h3>interfaces_all_names</h3>
+{{ interfaces_all_names|pprint }}
+
+<h3>zoneinfo</h3>
+{{ zoneinfo|pprint }}
+
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'firewall:firewall-list' %}">Firewall List</a> | 
+    <a href="{% url 'firewall:firewall-create' %}">Create new firewall</a> | 
+    <a href="{% url 'firewall:firewall-addressgroup-list' %}">Address Group</a> | 
+    <a href="{% url 'firewall:firewall-networkgroup-list' %}">Network Group</a> | 
+    <a href="{% url 'firewall:firewall-portgroup-list' %}">Port Group</a> | 
+    <a href="{% url 'firewall:firewall-zones' %}">Zones</a>
+</p>
+
+
+
+{% endblock %}
+
+
+
