@@ -1944,3 +1944,46 @@ def firewall_zones_edit(request, zonename):
     return HttpResponse(template.render(context, request))
 
 
+
+@is_authenticated
+def firewall_zones_remove(request, zonename):
+    # validation
+    zonename = zonename.strip()
+    
+    msg = vmsg.msg()
+    
+    # basic methods all views should call
+    all_instances       = vyos.instance_getall()
+    hostname_default    = vyos.get_hostname_prefered(request)
+    is_superuser        = perms.get_is_superuser(request.user)
+
+    # local methods to prepare env
+    interfaces              = vyos.get_interfaces(hostname_default)
+    interfaces_all_names    = vyos.get_interfaces_all_names(hostname_default)
+    get_firewall_zone       = vapi.get_firewall_zone(hostname_default, zonename)
+    zoneinfo                = get_firewall_zone.data
+
+    if zoneinfo == None:
+        msg.add_error("Zone not exists")
+    else:
+        v = vapi.delete_firewall_zone(hostname_default, zonename)
+        if v.success:   
+            msg.add_success("Zone {zone} removed".format(zone=zonename))
+        else:
+            msg.add_error("Zone {zone} not removed: {error}".format(zone=zonename, error=v.reason))
+
+    template = loader.get_template('firewall/zones-remove.html')
+    context = { 
+        #'interfaces': interfaces,
+        'instances':                    all_instances,
+        'hostname_default':             hostname_default,
+        'username':                     request.user,
+        'is_superuser':                 is_superuser,
+        'interfaces':                   interfaces,
+        'interfaces_all_names_pretty':  pprint.pformat(interfaces_all_names, indent=4, width=120),
+        'interfaces_all_names':         interfaces_all_names,
+        'msg' :                         msg.get_all(),
+        "zoneinfo":                     zoneinfo,
+        "zonename":                     zonename,
+    }   
+    return HttpResponse(template.render(context, request))

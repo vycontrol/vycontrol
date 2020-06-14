@@ -425,6 +425,16 @@ def delete_firewall_zone_interface(hostname, zonename, interface):
     )
     return v   
 
+def delete_firewall_zone(hostname, zonename):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["zone-policy", "zone", zonename],
+        description = "delete_firewall_zone",
+    )
+    return v       
+
 
 def get_firewall_zones(hostname):
     v = vapilib.api (

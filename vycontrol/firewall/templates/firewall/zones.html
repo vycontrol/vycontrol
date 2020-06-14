@@ -31,11 +31,14 @@
     <tr>
         <th>zone</th>
         <th>description</th>
+        <th>action</th>
+    </tr>
     </tr>    
     {% for zone in allzones %}
         <tr>
         <td><a href="{% url 'firewall:firewall-zones-edit' zone.name %}">{{ zone.name }}</a></td>
         <td>{{ zone.description }}</td>
+        <td><a href="{% url 'firewall:firewall-zones-remove' zone.name %}">remove</a></td>
         </tr>
     {% endfor %}
 
