@@ -20,6 +20,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 
 * [VyControl](https://www.vycontrol.com/) website
 * [VyOS](https://www.vyos.io/) linux firewall website (only compatible with rolling release / 1.3 VyOS)
+* [Reddit](https://www.reddit.com/r/vycontrol/) 
 
 # Plan to use VyControl?
 - [ ] **Subscribe to our announce list** at https://vycontrol.com/
