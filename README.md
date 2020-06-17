@@ -157,7 +157,7 @@ http://127.0.0.1:8000/
 * https://www.facebook.com/VyControl-101048288289351
 
 
-# screenshoots (keep in mind we're in early alpha stages)
+# screenshoots 
 
 ## Install VyControl
 ![Install VyControl](https://storage.googleapis.com/vycontrol/screenshoots/20.05.01/install.png)
