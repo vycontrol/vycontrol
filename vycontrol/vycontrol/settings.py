@@ -86,7 +86,7 @@ ROOT_URLCONF = 'vycontrol.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['vycontrol/templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'vycontrol', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
