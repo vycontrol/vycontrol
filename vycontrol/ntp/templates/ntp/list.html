@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header_title %}NTP{% endblock %}
+{% block section_title %}NTP{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+<h3>Servers</h3>
+
+<ul>
+{% for server in ntp_servers %}
+    <li>{{ server }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
