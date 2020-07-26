@@ -53,10 +53,11 @@ def index(request):
     if firewall_all == False:
         return redirect('firewall:firewall-create')
 
-    for xitem in firewall_all['name']:
-        if 'default-action' in firewall_all['name'][xitem]:
-            firewall_all['name'][xitem]['default_action'] = firewall_all['name'][xitem]['default-action']
-            del firewall_all['name'][xitem]['default-action']
+    if 'name' in firewall_all: 
+        for xitem in firewall_all['name']:
+            if 'default-action' in firewall_all['name'][xitem]:
+                firewall_all['name'][xitem]['default_action'] = firewall_all['name'][xitem]['default-action']
+                del firewall_all['name'][xitem]['default-action']
 
     template = loader.get_template('firewall/list.html')
     context = { 
