@@ -50,7 +50,7 @@ def index(request):
 
 
     firewall_all = vyos.get_firewall_all(hostname_default)
-    if firewall_all == False:
+    if firewall_all == False or firewall_all['name'] == False:
         return redirect('firewall:firewall-create')
 
     for xitem in firewall_all['name']:
