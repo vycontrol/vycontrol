@@ -130,7 +130,7 @@ pip3 install -r requirements.txt
 
 ### setup initial database
 ```
-cd vycenter
+cd vycontrol
 python3 manage.py migrate
 ```
 
