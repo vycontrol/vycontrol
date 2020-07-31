@@ -23,11 +23,12 @@ def static_list(request):
     is_superuser = perms.get_is_superuser(request.user)
 
     static_list = []
-    for s in static_dict['route']:
-        static_list.append({
-            'route': s,
-            'nexthop': static_dict['route'][s]['next-hop'],
-        })
+    if static_dict :
+        for s in static_dict['route']:
+            static_list.append({
+                'route': s,
+                'nexthop': static_dict['route'][s]['next-hop'],
+            })
 
     template = loader.get_template('static/list.html')
     context = { 
