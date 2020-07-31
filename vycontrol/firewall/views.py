@@ -1598,9 +1598,8 @@ def firewall_zones(request):
                     allzonesrules.append(zonerule)
 
                     
-
+    allzones2 = []
     if 'zone' in allzones:
-        allzones2 = []
         for zone in allzones['zone']:
             zonec = allzones['zone'][zone]
             zonec['name'] = zone
