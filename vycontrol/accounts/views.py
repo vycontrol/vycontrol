@@ -28,7 +28,7 @@ def index(request):
             return redirect('registration-login')
     else:
         if 'username' in request.POST and 'password' in request.POST:
-            user = User.objects.create_superuser(username=request.POST['username'], password=request.POST['password'])
+            user = User.objects.create_superuser(username=request.POST['username'], email='', password=request.POST['password'])
             user.save()
             return redirect('%s?next=%s' % (reverse('registration-login'), '/config/instance-add'))
     template = loader.get_template('registration/start.html')
