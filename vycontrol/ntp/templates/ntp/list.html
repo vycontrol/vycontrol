@@ -7,12 +7,20 @@
 {% endblock %}
 
 {% block content %}
+
+
+
 <h3>Servers</h3>
 
+{% if ntp_servers %}
 <ul>
 {% for server in ntp_servers %}
     <li>{{ server }}</li>
 {% endfor %}
 </ul>
+{% else %}
+<p>No NTP Server defined.</p>
+{% endif %}
+
 {% endblock %}
 

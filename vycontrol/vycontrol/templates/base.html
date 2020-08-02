@@ -65,59 +65,31 @@
 
 
 
-      <h2>Manage VyOS</h2>
-
+    <h2>Manage VyOS</h2>
     <ul>
     <li><a href="{% url 'interface:interface-list' %}">Interfaces</a></li>
     <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
-    </ul>
-
-    <h2>Manage Routing</h2>
-    <ul>
     <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
+    <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
+
     <!-- 
     <li><a href="{% url 'arp:arp-list' %}">ARP</a></li>
     <li><a href="{% url 'ospf:ospf-list' %}">OSPF</a></li>
     <li><a href="{% url 'bgp:bgp-list' %}">BGP</a></li>
-    -->
-    </ul>
-
-    <!--
-    <h2>Manage Services</h2>
-    <ul>
     <li><a href="{% url 'dhcp:dhcp-list' %}">DHCP</a></li>
     <li><a href="{% url 'ssh:ssh-list' %}">SSH</a></li>
-    </ul>
-
-    <h2>Manage VPN</h2>
-    <ul>
     <li><a href="{% url 'openvpn:openvpn-list' %}">OpenVPN</a></li>
     <li><a href="{% url 'ipsec:ipsec-list' %}">IPSEC</a></li>
-    </ul>
-
-    <h2>Manage NTP</h2>
-    <ul>
-      <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
-    </ul>
-
-    <h2>Manage NAT</h2>
-    <ul>
-      <li><a href="{% url 'nat:nat-list' %}">NAT</a></li>
-    </ul>
-    <h2>Manage QoS</h2>
-    <ul>
+    <li><a href="{% url 'nat:nat-list' %}">NAT</a></li>
     <li><a href="{% url 'qos:qos-list' %}">QoS</a></li>
-    </ul>    
-
-    <h2>Manage Wan Load Balancing</h2>
-    <ul>
     <li><a href="{% url 'wanlb:wanlb-list' %}">Wan Load Balancing</a></li>
-    </ul>        
     -->
+  </ul>
+
 
     <h2>Manage VyControl</h2>
     <ul>
-      {% if is_superuser %}<li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>{% endif %}
+    {% if is_superuser %}<li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>{% endif %}
     <li><a href="{% url 'config:instances' %}">List instances</a></li>
     {% if is_superuser %}<li><a href="{% url 'config:users-list' %}">List users</a></li>{% endif %}
     {% if is_superuser %}<li><a href="{% url 'config:user-add' %}">Add new user</a></li>{% endif %}
