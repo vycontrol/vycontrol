@@ -45,7 +45,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 ## future versions
 
 ### firewall and vycontrol base   
-- [ ] [20.06.05.1000 - improve users/group/perfil crud](https://github.com/vycontrol/vycontrol/milestones/16)
+- [ ] [20.06.05.1000 - improve users/group/profile crud](https://github.com/vycontrol/vycontrol/milestones/16)
 - [ ] [20.06.10.1000 - lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
 - [ ] [**20.06.15.LTS** - layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
 
