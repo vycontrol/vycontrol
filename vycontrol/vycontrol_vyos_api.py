@@ -446,7 +446,6 @@ def get_firewall_zones(hostname):
     )
     return v
 
-
 def get_firewall_zone(hostname, zone):
     v = vapilib.api (
         hostname=   hostname,
@@ -531,3 +530,13 @@ def delete_interface_firewall_zone_rule_firewall(hostname, dstzone, srczone, fir
         description = "delete_interface_firewall_zone_rule",
     )
     return v  
+
+def get_ntp(hostname):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "get",
+        op =        "showConfig",
+        cmd =       ["system","ntp"],
+        description = "get_ntp",
+    )
+    return v

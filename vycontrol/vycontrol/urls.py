@@ -45,19 +45,17 @@ urlpatterns = [
 
     path('interface/', include('interface.urls')),
 
-    path('firewall/', include('firewall.urls')),
-    path('static/', include('static.urls')),
     path('arp/', include('arp.urls')),
     path('bgp/', include('bgp.urls')),
     path('dhcp/', include('dhcp.urls')),
+    path('firewall/', include('firewall.urls')),
     path('ipsec/', include('ipsec.urls')),
     path('nat/', include('nat.urls')),
+    path('ntp/', include('ntp.urls')),
     path('openvpn/', include('openvpn.urls')),
     path('ospf/', include('ospf.urls')),
     path('qos/', include('qos.urls')),
     path('ssh/', include('ssh.urls')),
+    path('static/', include('static.urls')),
     path('wanlb/', include('wanlb.urls')),
 ]
-
-
-
