@@ -201,7 +201,9 @@ input[type=submit] {
 .msgs_error {
   background-color: rgb(160, 73, 73);
 }
-
+#credits {
+  text-align: right;
+}
 
 
 

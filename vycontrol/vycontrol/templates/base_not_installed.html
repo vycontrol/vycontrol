@@ -8,7 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "main.css" %}">
+    <link rel="stylesheet" href="{% static "main.css" %}?{% random_int 100000 500000 %} ">
 
     <title>{% block header_title %}{% endblock %} - VyControl</title>
 
@@ -65,6 +65,12 @@
   {% block debug %}{% endblock %}
 </pre>
 </div>
+
+<hr>
+<div class="container" id="credits">
+  <a href="https://vycontrol.com/">VyControl VyOS FrontEnd</a>
+</div></hr>
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
