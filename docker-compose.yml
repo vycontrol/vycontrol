@@ -1,11 +1,11 @@
 version: "2.2"
 services:
   django:
-    container_name: vycenter
+    container_name: vycontrol
     build:
       context: .
       dockerfile: Dockerfile
-    image: vycenter
+    image: vycontrol
     stdin_open: true
     tty: true
     ports:
