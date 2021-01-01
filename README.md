@@ -154,7 +154,7 @@ http://127.0.0.1:8000/
 * https://docs.vyos.io/en/latest/appendix/http-api.html
 * https://forum.vyos.io/t/http-api-for-show/3922
 * https://blog.vyos.io/vyos-rolling-release-has-got-an-http-api 
-* https://www.facebook.com/VyControl-101048288289351
+* https://www.facebook.com/vycontrol
 
 
 # screenshoots 
