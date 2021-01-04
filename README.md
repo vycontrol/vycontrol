@@ -89,11 +89,6 @@ Note that versions numbers are not related to dates.
 
 Will give 20.05.05.1010
 
-## lifecycle
-* initially LTS (Long Term Support) versions will be supported by 6 months just to bugfixes
-* in the future we will extend the time span of LTS versions
-
-
 # installation 
 
 * for your security edit SECRET_KEY in inside Django settings.py and change to something random, maybe using 
