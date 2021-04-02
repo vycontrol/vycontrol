@@ -89,47 +89,44 @@ http://127.0.0.1:8000/
 
 # changelog
 - [x] NTP servers add/list/delete
-- [x] [zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
-- [x] [improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [x] zone based firewall
+- [x] improve firewall UI and error returns to end users
 - [x] working firewall without zones 
 - [x] version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 # roadmap
 
 ## firewall and vycontrol base   
-- [ ] [improve users/group/profile crud](https://github.com/vycontrol/vycontrol/milestones/16)
-- [ ] [lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
-- [ ] [layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
+- [ ] improve users/group/profile crud
+- [ ] lost password recovery using external SMTP server
+- [ ] layout improvements and user input validation
+- [ ] use python logging
 
 ## IPSEC / OpenVPN focus 
-- [ ] [openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
-- [ ] [ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
-- [ ] [Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
+- [ ] openvpn features
+- [ ] ipsec features
+- [ ] Finish some firewall options
 
 ## vlans, interfaces and system users
-- [ ] [system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
-- [ ] [basic interfaces configuration and vlans](https://github.com/vycontrol/vycontrol/milestone/10)
-- [ ] [host information and default gateway](https://github.com/vycontrol/vycontrol/milestone/12)
-- [ ] [timezone](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] system ssh / logins config
+- [ ] basic interfaces configuration and vlans
+- [ ] host information and default gateway
+- [ ] timezone
 
 ## basic dynamic routing features
-- [ ] [OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
+- [ ] OSPF features
 
 ## addons features 
-- [ ] [FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
-- [ ] [save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
-- [ ] [s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
-- [ ] [granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
-- [ ] [commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
+- [ ] FastNetMon one-click integration
+- [ ] save/commit/load features
+- [ ] s3 backup scheduler and commit confirm
+- [ ] granular permissions and improvements
 
 ## advanced dynamic routing features
-- [ ] [BGP features](https://github.com/vycontrol/vycontrol/milestone/14)
+- [ ] BGP features
 
 ## IPV6 features
-- [ ] [ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
-
-## other features
-- [ ] [other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
+- [ ] ipv6 milestone
 
 # references
 * https://docs.vyos.io/en/latest/appendix/http-api.html
