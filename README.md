@@ -27,69 +27,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 - [ ] Join Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
 - [ ] Add new enhancement requests at https://github.com/vycontrol/vycontrol/issues
 
-# Plan to develop VyControl?
-- [ ] Solve Issues at https://github.com/vycontrol/vycontrol/issues
-- [ ] Forks and pull requests are welcome!
-- [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
-
-# roadmap 
-
-## current version 
-- [x] [20.05.10 - zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
-
-## changelog
-- [x] [20.05.04 - improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
-- [x] 20.05.02 - working firewall without zones 
-- [x] 20.05.01 - version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
-
-## future versions
-
-### firewall and vycontrol base   
-- [ ] [improve users/group/profile crud](https://github.com/vycontrol/vycontrol/milestones/16)
-- [ ] [lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
-- [ ] [layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
-
-### IPSEC / OpenVPN focus 
-- [ ] [openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
-- [ ] [ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
-- [ ] [Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
-
-## vlans, interfaces and system users
-- [ ] [system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
-- [ ] [basic interfaces configuration and vlans](https://github.com/vycontrol/vycontrol/milestone/10)
-- [ ] [host information and default gateway](https://github.com/vycontrol/vycontrol/milestone/12)
-- [ ] [timezone / ntp](https://github.com/vycontrol/vycontrol/milestone/12)
-
-### basic dynamic routing features
-- [ ] [OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
-
-### addons features 
-- [ ] [FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
-- [ ] [save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
-- [ ] [s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
-- [ ] [granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
-- [ ] [commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
-
-### advanced dynamic routing features
-- [ ] [BGP features](https://github.com/vycontrol/vycontrol/milestone/14)
-
-### IPV6 features
-- [ ] [ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
-
-### other features
-- [ ] [other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
-
-### versions convention
-
-Note that versions numbers are not related to dates.
-* major eg 20
-  * minor eg 05
-    * feature eg 05
-       * build eg 1010
-
-Will give 20.05.05.1010
-
-# installation 
+# Install instructions 
 
 * for your security edit SECRET_KEY in inside Django settings.py and change to something random, maybe using 
 ```
@@ -144,6 +82,54 @@ http://127.0.0.1:8000/
 * click on *List Instances*
 * click on *Test Connection*
 
+# Plan to help develop VyControl?
+- [ ] Solve Issues at https://github.com/vycontrol/vycontrol/issues
+- [ ] Forks and pull requests are welcome!
+- [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
+
+# changelog
+- [x] NTP servers add/list/delete
+- [x] [zone based firewall](https://github.com/vycontrol/vycontrol/milestone/13)
+- [x] [improve firewall UI and error returns to end users](https://github.com/vycontrol/vycontrol/milestone/17)
+- [x] working firewall without zones 
+- [x] version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
+
+# roadmap
+
+## firewall and vycontrol base   
+- [ ] [improve users/group/profile crud](https://github.com/vycontrol/vycontrol/milestones/16)
+- [ ] [lost password recovery](https://github.com/vycontrol/vycontrol/milestone/11)
+- [ ] [layout improvements and user input validation](https://github.com/vycontrol/vycontrol/milestone/5)
+
+## IPSEC / OpenVPN focus 
+- [ ] [openvpn features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [ipsec features](https://github.com/vycontrol/vycontrol/milestone/8)
+- [ ] [Finish some firewall options](https://github.com/vycontrol/vycontrol/milestone/15)
+
+## vlans, interfaces and system users
+- [ ] [system ssh / logins config](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] [basic interfaces configuration and vlans](https://github.com/vycontrol/vycontrol/milestone/10)
+- [ ] [host information and default gateway](https://github.com/vycontrol/vycontrol/milestone/12)
+- [ ] [timezone](https://github.com/vycontrol/vycontrol/milestone/12)
+
+## basic dynamic routing features
+- [ ] [OSPF features](https://github.com/vycontrol/vycontrol/milestone/14)
+
+## addons features 
+- [ ] [FastNetMon one-click integration](https://github.com/vycontrol/vycontrol/milestone/19)
+- [ ] [save/commit/load features](https://github.com/vycontrol/vycontrol/milestone/18)
+- [ ] [s3 backup scheduler and commit confirm](https://github.com/vycontrol/vycontrol/milestone/4)
+- [ ] [granular permissions and improvements](https://github.com/vycontrol/vycontrol/milestone/1)
+- [ ] [commit, save, load config](https://github.com/vycontrol/vycontrol/milestone/3)
+
+## advanced dynamic routing features
+- [ ] [BGP features](https://github.com/vycontrol/vycontrol/milestone/14)
+
+## IPV6 features
+- [ ] [ipv6 milestone](https://github.com/vycontrol/vycontrol/milestone/6)
+
+## other features
+- [ ] [other features or dependencies](https://github.com/vycontrol/vycontrol/milestone/9)
 
 # references
 * https://docs.vyos.io/en/latest/appendix/http-api.html
