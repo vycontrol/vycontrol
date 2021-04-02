@@ -30,7 +30,13 @@
             
             <tr>
                 <td>{{ iname.type }}</td>
-                <td>{{ iname.interface_alias }}</td>
+                {% if iname.type == "loopback" %}
+                    <td><a href="{% url 'interface:interface-show' interface_type=iname.type interface_name=iname.type %}">{{ iname.interface_alias }}</td>
+                {% else %}
+                    <td><a href="{% url 'interface:interface-show' interface_type=iname.type interface_name=iname.interface_alias %}">{{ iname.interface_alias }}</td>
+                {% endif %}
+
+
                 <td>
                     {% for address in iname.address %}
                         {{ address }}<br>
@@ -62,51 +68,6 @@
 
             </tr>
         {% endfor %}
-
-        {% comment %}
-        {% for key, value in interfaces_all_names.items %}
-            <tr>
-                
-                <td>{{ key }} </td>
-            {% for ifkey, ifvalue in value.items %}
-            <td>{% url 'interface:interface-show' key ifkey as url_interface %}<a href="{{ url_interface }}">{{ ifkey }}</a></td><td>{{ ifvalue.address }}</td>
-            <td>
-                {% if key == "loopback" %}
-                    -
-                {% else %}
-                    <select id="firewall-ipv4-in" name="firewall-ipv4-in.{{ key }}.{{ ifkey }}"><option value="--remove--">None</option>
-                    {% if firewall_all != False %}
-                        {% for fkey, fvalue in firewall_all.items %}    
-                            {% for fitemkey, fitemvalue in fvalue.items %}
-                            <option value="{{ fitemkey }}" {% if interface_firewall_in|get_item:ifkey == fitemkey %}selected="selected"{% endif %} >{{ fitemkey }}</option>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-                    </select>
-                {% endif %}
-            </td>
-            <td>
-                {% if key == "loopback" %}
-                    -
-                {% else %}
-                    <select id="firewall-ipv4-out" name="firewall-ipv4-out.{{ key }}.{{ ifkey }}"><option value="--remove--">None</option>
-                    {% if firewall_all != False %}
-                        {% for fkey, fvalue in firewall_all.items %}    
-                            {% for fitemkey, fitemvalue in fvalue.items %}
-                            <option value="{{ fitemkey }}" {% if interface_firewall_out|get_item:ifkey == fitemkey %}selected="selected"{% endif %} >{{ fitemkey }}</option>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-                    </select>
-                {% endif %}
-            </td>
-
-            {% endfor %}
-            </tr>
-        {% endfor %}
-        {% endcomment %}
-
-
         </table>
 
         <div id="submit-firewall" class="text-right">

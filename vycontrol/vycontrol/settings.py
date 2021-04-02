@@ -172,3 +172,15 @@ STATICFILES_DIRS = [
     BASE_DIR + '/s/'
 ]
 STATIC_URL = '/s/'
+
+# based on https://simpleisbetterthancomplex.com/tutorial/2016/09/19/how-to-create-password-reset-view.html 
+# There are many transactional email services out there. SendGrid, MailGun, Mandrill. see also https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'testsite_app'
+# EMAIL_HOST_PASSWORD = 'mys3cr3tp4ssw0rd'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@example.com>'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+

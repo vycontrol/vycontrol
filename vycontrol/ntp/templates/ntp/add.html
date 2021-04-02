@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block header_title %}NTP{% endblock %}
+{% block section_title %}NTP{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'ntp:ntp-list' %}">List ntp servers</a>
+</p>
+<p class="submenu2">
+    
+</p>
+
+
+<h2>Add new ntp server</h2>
+
+<form action="{% url 'ntp:ntp-add'  %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="server">server</label><br>
+        <input type="text" name="server" id="server" value="{{ server }}" size="30">
+    </p>
+
+    <input type="submit" value="Add NTP Server">
+</form>
+
+
+
+{% endblock %}

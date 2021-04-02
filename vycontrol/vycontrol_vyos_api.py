@@ -540,3 +540,23 @@ def get_ntp(hostname):
         description = "get_ntp",
     )
     return v
+
+def delete_ntp(hostname, server):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["system","ntp","server",server],
+        description = "delete_ntp",
+    )
+    return v
+    
+def set_ntp(hostname, server):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["system","ntp","server",server],
+        description = "set_ntp",
+    )
+    return v  
