@@ -1,7 +1,7 @@
 # VyControl
 
 <p align="center">
-<img align="center" width="150" height="150" src="https://storage.googleapis.com/vycontrol/logos/logo_transparent.png">
+<img align="center" width="150" height="150" src="https://storage.googleapis.com/vycontrol/logos/logotxt.png">
 </p>
 
 
