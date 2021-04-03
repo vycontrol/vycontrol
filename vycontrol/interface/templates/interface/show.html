@@ -16,14 +16,11 @@
 
 {% if interface %}
 
-{% if interface_type == "loopback" %}
-<form action="{% url 'interface:interface-show' interface_type=interface_type interface_name=interface_type %}" method="post">
-{% else %}
-<form action="{% url 'interface:interface-show' interface_type=interface_type interface_name=interface_name %}" method="post">
-{% endif %}
+    <form action="{% url 'interface:interface-set' interface_type=interface_type interface_name=interface_name %}" method="post">  
+    {% csrf_token %}
 
     <table border="1" width="100%">
-        <tr>
+            <tr>
             <th width="30%">dhcp</th>
             <td width="70%">
                 <input type="checkbox" name="dhcp" value="1" {% if interface.address == "dhcp" %}checked{% endif %} id="dhcp">
@@ -42,47 +39,49 @@
 
     <input type="submit" value="Save">
 
-</form>
-
-{% else %}
-    <p>Invalid interface.</p>
-{% endif %}
+    </form>
 
 
-<div class="separe-form">
-<h2>Set Interface Firewall</h2>
-<form action="{% url 'interface:interface-show' interface_type interface_name %}" method="post">
-    {% csrf_token %}
+    <div class="separe-form">
+    <h2>Set Interface Firewall</h2>
+    <form action="{% url 'interface:interface-set-firewall' interface_type=interface_type interface_name=interface_name %}" method="post">
+        {% csrf_token %}
+        
+        <p>
+            <label for="alias">IPv4 Inbound</label><br>
+            <select id="firewall-ipv4-in" name="firewall-ipv4-in"><option value="">None</option>
+                {% if firewall_all != False %}
+                    {% for fkey, fvalue in firewall_all.items %}    
+                        {% for fitemkey, fitemvalue in fvalue.items %}
+                        <option value="{{ fitemkey }}" {% if fitemkey == interface.firewall.in.name %}selected{% endif %}>{{ fitemkey }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </select>
+        </p>
     
-    <p>
-        <label for="alias">IPv4 Inbound</label><br>
-        <select id="firewall-ipv4-in" name="firewall-ipv4-in"><option value="">None</option>
+        <p>
+            <label for="alias">IPv4 Outbound</label><br>
+            <select id="firewall-ipv4-out" name="firewall-ipv4-out"><option value="">None</option>
             {% if firewall_all != False %}
                 {% for fkey, fvalue in firewall_all.items %}    
                     {% for fitemkey, fitemvalue in fvalue.items %}
-                    <option value="{{ fitemkey }}">{{ fitemkey }}</option>
+                    <option value="{{ fitemkey }}" {% if fitemkey == interface.firewall.out.name %}selected{% endif %}>{{ fitemkey }}</option>
                     {% endfor %}
                 {% endfor %}
             {% endif %}
         </select>
-    </p>
+        </p>    
+        
+        <input type="submit" value="Set Interface Firewall">
+        </form>
+    </div>
 
-    <p>
-        <label for="alias">IPv4 Outbound</label><br>
-        <select id="firewall-ipv4-out" name="firewall-ipv4-out"><option value="">None</option>
-        {% if firewall_all != False %}
-            {% for fkey, fvalue in firewall_all.items %}    
-                {% for fitemkey, fitemvalue in fvalue.items %}
-                <option value="{{ fitemkey }}">{{ fitemkey }}</option>
-                {% endfor %}
-            {% endfor %}
-        {% endif %}
-    </select>
-    </p>    
     
-    <input type="submit" value="Set Interface Firewall">
-    </form>
-</div>
+{% else %}
+    <p>Invalid interface.</p>
+{% endif %}
+
 
 
 <script>

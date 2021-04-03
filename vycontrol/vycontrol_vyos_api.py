@@ -560,3 +560,83 @@ def set_ntp(hostname, server):
         description = "set_ntp",
     )
     return v  
+
+def set_interface_address(hostname, interface_type, interface_name, address, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "address", address],
+            description = "set_interface_dhcp",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "address", address],
+            description = "set_interface_dhcp",
+        )
+    return v    
+
+
+def delete_interface_address(hostname, interface_type, interface_name, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "address"],
+            description = "delete_interface_address",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "address"],
+            description = "delete_interface_address",
+        )
+    return v      
+
+
+
+def set_interface_mtu(hostname, interface_type, interface_name, mtu, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "mtu", mtu],
+            description = "set_interface_mtu",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "mtu", mtu],
+            description = "set_interface_mtu",
+        )
+    return v    
+
+
+def delete_interface_mtu(hostname, interface_type, interface_name, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "mtu"],
+            description = "delete_interface_mtu",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif, "mtu"],
+            description = "delete_interface_mtu",
+        )
+    return v        

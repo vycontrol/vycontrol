@@ -178,9 +178,32 @@ def get_interfaces_all_names(hostname):
     
     return all_names
 
+def detail_interface(interface_type, interface_name):
+    vlan = False
+    vlan_id = None
+
+    if interface_type == "ethernet":
+        isplit = interface_name.split(".")
+        if len(isplit) == 2:
+            vlan = True
+            vlan_id = isplit[1]
+            interface_name = isplit[0]
+
+    return {
+        "interface_name":   interface_name,
+        "vlan":             vlan,
+        "vlan_id":          vlan_id,
+        "interface_type":   interface_type
+    }
 
 def get_interface(interface_type, interface_name, hostname):
-    cmd = {"op": "showConfig", "path": ["interfaces", interface_type, interface_name]}
+    inteface_detail = detail_interface(interface_type, interface_name)
+
+        
+    if inteface_detail['vlan'] == True:
+        cmd = {"op": "showConfig", "path": ["interfaces", inteface_detail['interface_type'], inteface_detail['interface_name'], "vif", inteface_detail['vlan_id']]}
+    else:
+        cmd = {"op": "showConfig", "path": ["interfaces", inteface_detail['interface_type'], inteface_detail['interface_name']]}
 
     result1 = api_get(hostname, cmd)
     return result1

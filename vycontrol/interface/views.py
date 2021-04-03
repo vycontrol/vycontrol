@@ -213,7 +213,8 @@ def interfaceshow(request, interface_type, interface_name):
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
-    firewall_all = vyos.get_firewall_all(hostname_default)   
+    firewall_all = vyos.get_firewall_all(hostname_default)  
+
     interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
   
@@ -253,4 +254,69 @@ def interfacefirewall(request, interface_type, interface_name):
     }   
     return HttpResponse(template.render(context, request))
 
+
+@is_authenticated    
+def interface_set_firewall(request, interface_type, interface_name):
+    hostname_default = vyos.get_hostname_prefered(request)
+    
+    interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
+    interface_detail = vyos.detail_interface(interface_type, interface_name)
+    interface_vif = interface_detail['vlan_id']
+    interface_name_short = interface_detail['interface_name']
+
+    actual_firewall_in = None
+    if 'firewall' in interface:
+        if 'in' in interface['firewall']:
+            if 'name' in interface['firewall']['in']:
+                actual_firewall_in = interface['firewall']['in']['name']
+
+    actual_firewall_out = None
+    if 'firewall' in interface:
+        if 'out' in interface['firewall']:
+            if 'name' in interface['firewall']['out']:
+                actual_firewall_out = interface['firewall']['out']['name']                
+
+    if request.POST.get('firewall-ipv4-in', None) != None and request.POST.get('firewall-ipv4-out', None) != None:
+        if request.POST.get('firewall-ipv4-in') == '':
+            v = vapi.delete_interface_firewall_ipv4(hostname_default, interface_type, interface_name_short, "in", interface_vif)
+        elif actual_firewall_in == None or request.POST.get('firewall-ipv4-in') != interface['firewall']['in']['name']:
+            v = vapi.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name_short, "in", request.POST.get('firewall-ipv4-in'), interface_vif) 
+
+        if request.POST.get('firewall-ipv4-out') == '':
+            v = vapi.delete_interface_firewall_ipv4(hostname_default, interface_type, interface_name_short, "out", interface_vif)
+        elif actual_firewall_out == None or request.POST.get('firewall-ipv4-out') != interface['firewall']['out']['name']:
+            v = vapi.set_interface_firewall_ipv4(hostname_default, interface_type, interface_name_short, "out", request.POST.get('firewall-ipv4-out'), interface_vif)       
+            
+    return redirect('interface:interface-show', interface_type=interface_type, interface_name=interface_name)
+
+@is_authenticated    
+def interface_set(request, interface_type, interface_name):
+    hostname_default = vyos.get_hostname_prefered(request)   
+    #interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
+    interface_detail = vyos.detail_interface(interface_type, interface_name)
+    interface_vif = interface_detail['vlan_id']
+    interface_name_short = interface_detail['interface_name']   
+
+    address = 'dhcp'
+    if request.POST.get('dhcp', None) != "1":
+        address = request.POST.get('address', None)
+        if address != None:
+            address = address.strip()
+
+
+    mtu = None
+    if request.POST.get('mtu','').strip().isdigit():
+        mtu = request.POST.get('mtu').strip()
+    
+    if mtu == None:
+        v = vapi.delete_interface_mtu(hostname_default, interface_type, interface_name_short, vif=interface_vif)
+    else:
+        v = vapi.set_interface_mtu(hostname_default, interface_type, interface_name_short, mtu, vif=interface_vif)
+
+    v = vapi.delete_interface_address(hostname_default, interface_type, interface_name_short, vif=interface_vif)
+    v = vapi.set_interface_address(hostname_default, interface_type, interface_name_short, address, vif=interface_vif)
+
+
+
+    return redirect('interface:interface-show', interface_type=interface_type, interface_name=interface_name)
 

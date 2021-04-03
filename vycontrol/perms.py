@@ -15,8 +15,7 @@ def is_authenticated(func):
     def wrapper_perm(*args, **kwargs):
         request = args[0]
         if not request.user.is_authenticated:
-           return redirect('%s?next=%s' % (reverse('registration-login'), request.path))
-           #return redirect('registration-login')
+           return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
 
         hostname_default = vyos.get_hostname_prefered(request)
 
@@ -46,7 +45,7 @@ def is_superuser(func):
 
         if is_admin == False:
             auth.logout(request)
-            return redirect('registration-login')
+            return redirect('accounts-login')
 
         value = func(*args, **kwargs)
         return value

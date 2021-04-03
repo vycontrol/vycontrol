@@ -88,6 +88,7 @@ http://127.0.0.1:8000/
 - [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 # changelog
+- [x] edit interfaces
 - [x] lost password recovery using external SMTP server
 - [x] NTP servers add/list/delete
 - [x] zone based firewall
