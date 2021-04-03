@@ -29,7 +29,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 
 # Install instructions 
 
-* for your security edit SECRET_KEY in inside Django settings.py and change to something random, maybe using 
+* for your security edit SECRET_KEY in inside Django settings/production.py and change to something random, maybe using 
 ```
 openssl rand -hex 32
 ```
