@@ -75,6 +75,19 @@ http://127.0.0.1:8000/
 * click on *List Instances*
 * click on *Test Connection*
 
+## setup email provider
+VyControl send email to users when they click on Forget Password. So you need to setup a email provider to be able to use this features.
+
+* edit vycontrol/settings/production.py
+* change according your mail provider, you can use gmail accounts, sendergrid, amazon ses, mailgun etc
+```
+EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'user'
+EMAIL_HOST_PASSWORD = 'password'
+EMAIL_USE_TLS = True
+```
+
 # Plan to help develop VyControl?
 - [ ] Solve Issues at https://github.com/vycontrol/vycontrol/issues
 - [ ] Forks and pull requests are welcome!
