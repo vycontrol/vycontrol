@@ -83,20 +83,15 @@ def users_list(request):
                 try:
                     el_userid = User.objects.get(username=el_username) 
                 except User.DoesNotExist:
-                    print("zerou") 
                     return redirect('config:users_list')
-
-
 
                 try:
                     if el_userid.groups.exists():
                         for g in el_userid.groups.all():
                             el_userid.groups.remove(g)
                 except Group.DoesNotExist:
-                    print("zerou2") 
                     return redirect('config:users_list')
 
-                print("kkk", el_groupname, el_username) 
 
 
                 if el_groupname == "--remove--":
@@ -106,14 +101,13 @@ def users_list(request):
                     el_groupadd.user_set.add(el_userid)
                     has_group_add = has_group_add  + 1
 
-
-
     if has_group_add > 0:
         return redirect('config:users-list')
 
 
     user_groups = {}
     for user in users:
+        print(user.email)
         user_groups_list = user.groups.all()
         if len(user_groups_list) > 0:
             user_groups[str(user)] = str(user_groups_list[0])

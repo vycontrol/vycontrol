@@ -20,5 +20,5 @@ EMAIL_USE_TLS = True
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*wv2=o(o5$i2qim7yxras_7jf%n!*1rrzehv3o2f-ebsr@ba%4'
+SECRET_KEY = ''
 

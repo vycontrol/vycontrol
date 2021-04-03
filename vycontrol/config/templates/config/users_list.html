@@ -30,12 +30,14 @@
     <table border="1" width="100%">
     <tr>
         <th>name</th>
+        <th>email</th>
         <th>group</th>
     </tr>
 
     {% for user in users %}
     <tr>
         <td>{{ user }}</td>
+        <td>{{ user.email }}</td>
         <td><select id="group-{{ user }}" name="group-{{ user }}"><option value="--remove--">None</option>
             {% if groups != False %}
                 {% for fkey in groups %}    
