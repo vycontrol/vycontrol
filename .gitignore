@@ -138,4 +138,4 @@ db.sqlite3
 *.code-workspace
 
 # development config
-vycontrol/settings/development.py
+vycontrol/vycontrol/settings/development.py
