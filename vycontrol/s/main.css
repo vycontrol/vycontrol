@@ -1,5 +1,5 @@
 body {
-    background-color: #333;
+    background-color: #eee;
     color: white;
     font-size: 12px;    
 
@@ -12,7 +12,7 @@ body {
     color: black;
 }
 .menu { 
-    background-color: #888;
+    background-color: #eee;
     padding: 5px;
 }
 
@@ -20,27 +20,27 @@ body {
   color: #000;
 }    
 .content { 
-    background-color: #ccc;
+    background-color: #eee;
     padding: 0 10px 0 10px;
 }
 .content a {
-  color: #640000;
+  color: #101088;
 }
 #menu-logotop h1 {
   font-size: 10px;      
 }
 #menu-logotop {
-  background-color: #333;
+  background-color: #999;
   padding: 0 0px 4px 0px;
 }
 
 #menu-logotop a {
-  color:#af1d1d ;
+  color:#101088 ;
 }
 
 #menu-topline {
   padding-top: 3px;
-  background-color: #e14342;
+  background-color: #101088;
   margin-bottom: 2px;
 }
 #menu-logotop h2 {
@@ -62,7 +62,7 @@ form.instancedefault {
 }
 
 #debug {
-    background-color: #AB425E;
+    background-color: #ccccff;
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -109,7 +109,9 @@ h4 {
 }
 
 input[type=submit] {
-  background-color: #EACD65;
+  background-color: #101088;
+  color: #fff;
+  padding: 3px 6px;
   border: 0;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -152,7 +154,7 @@ input[type=submit] {
 
 #menu-username {
   margin-right: 10px;
-  color:#af1d1d ;
+  color:#101088 ;
 }
 
 .label_for_h3 {

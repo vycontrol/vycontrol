@@ -136,3 +136,6 @@ db.sqlite3
 
 # visual studio
 *.code-workspace
+
+# development config
+vycontrol/settings/development.py

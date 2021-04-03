@@ -11,22 +11,22 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 import pathlib
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#VYCONTROL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = str(Path(__file__).resolve().parents[2])
+
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*wv2=o(o5$i2qim7yxras_7jf%n!*1rrzehv3o2f-ebsr@ba%4'
+
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60 * 60 # 60 minutes
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 # put all your hosts here
 ALLOWED_HOSTS = ['127.0.0.1']
@@ -84,10 +84,13 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 ROOT_URLCONF = 'vycontrol.urls'
 
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'vycontrol/templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'vycontrol', 'templates')],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -173,14 +176,4 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/s/'
 
-# based on https://simpleisbetterthancomplex.com/tutorial/2016/09/19/how-to-create-password-reset-view.html 
-# There are many transactional email services out there. SendGrid, MailGun, Mandrill. see also https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
-# EMAIL_HOST = 'smtp.sendgrid.net'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'testsite_app'
-# EMAIL_HOST_PASSWORD = 'mys3cr3tp4ssw0rd'
-# EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@example.com>'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
