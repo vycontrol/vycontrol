@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block header_title %}Profile{% endblock %}
+{% block section_title %}Profile{% endblock %}
+
+{% block debug %}
+{{ user }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<form method="post" action="{% url 'accounts:accounts-profile' %}">
+{% csrf_token %}
+<table width="100%" border="1">
+    <tr>
+        <th width="50%">username</th>
+        <td>{{ username }}</td>
+    </tr>
+    <tr>
+        <th width="50%">email</th>
+        <td><input type="text" name="email" id="email" value="{{ user.email }}"></td>
+    </tr>
+</table>
+
+<h2>Change password</h2>
+<table width="100%" border="1">
+    <tr>
+        <th width="50%">password</th>
+        <td><input type="password" name="pass1" id="pass1"></td>
+    </tr>
+    <tr>
+        <th width="50%">confirm</th>
+        <td><input type="password" name="pass2" id="pass2"></td>
+    </tr>
+</table>
+
+<input type="submit" value="update profile">
+
+    
+</form>
+
+
+
+{% endblock %}

@@ -107,7 +107,7 @@ def users_list(request):
 
     user_groups = {}
     for user in users:
-        print(user.email)
+        #print(user.email)
         user_groups_list = user.groups.all()
         if len(user_groups_list) > 0:
             user_groups[str(user)] = str(user_groups_list[0])

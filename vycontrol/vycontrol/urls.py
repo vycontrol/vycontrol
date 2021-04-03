@@ -28,13 +28,14 @@ from . import views
 
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
-
+from accounts import views as accounts_views
 
 
 app_name = 'vycontrol'
 
 urlpatterns = [
-    path('', include('accounts.urls'), name="main-page"),
+    path('', accounts_views.index, name='main-page'),
+    path('accounts/', include('accounts.urls')),
     path('config/', include('config.urls')),
     path('dashboard/', include('dashboard.urls')),
     #path('', views.vycontrol_login, name='vycontrol-login'),

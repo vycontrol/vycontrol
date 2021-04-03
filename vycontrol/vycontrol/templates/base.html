@@ -46,7 +46,7 @@
               </select>
             
 
-              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
+              <span id="menu-username"><a href="{%  url 'accounts:accounts-profile' %}">{% block username %}{% endblock %}</a></span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
 
 
           </p>
