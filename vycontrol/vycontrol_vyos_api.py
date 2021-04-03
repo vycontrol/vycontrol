@@ -640,3 +640,42 @@ def delete_interface_mtu(hostname, interface_type, interface_name, vif=None):
             description = "delete_interface_mtu",
         )
     return v        
+
+
+def delete_interface(hostname, interface_type, interface_name, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name],
+            description = "delete_interface",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "delete",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif],
+            description = "delete_interface",
+        )
+    return v
+    
+def set_interface(hostname, interface_type, interface_name, vif=None):
+    if vif == None:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name],
+            description = "set_interface_dhcp",
+        )
+    else:
+        v = vapilib.api (
+            hostname=   hostname,
+            api =       "post",
+            op =        "set",
+            cmd =       ["interfaces", interface_type, interface_name, "vif", vif],
+            description = "set_interface_dhcp",
+        )
+    return v   

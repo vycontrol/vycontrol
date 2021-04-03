@@ -20,7 +20,7 @@ from django.template.defaultfilters import register
 from perms import is_authenticated
 import perms
 
-from filters.vycontrol_filters import get_item
+from libs.vycontrol_filters import get_item
 
 
 

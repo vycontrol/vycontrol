@@ -13,6 +13,13 @@
 
 {% block content %}
 
+{% if interface_type == "ethernet" and interface_vif == None %}
+<p class="submenu1">
+    <a href="{% url 'interface:interface-add-vlan' interface_type=interface_type interface_name=interface_name %}">Create new vlan</a> 
+</p>
+<p class="submenu2"></p>
+{% endif %}
+
 
 {% if interface %}
 
@@ -77,7 +84,31 @@
         </form>
     </div>
 
-    
+    {% if interface_type == "ethernet" and interface_vif == None %}
+
+    {% if interface_children|length > 0 %}
+        <h2>Vlans</h2>
+
+        <table border="1" width="100%">
+            <th width="30%">Vlan ID</th>
+            <th width="40%">Actions</th>
+        </tr>
+
+        {% for children in interface_children %}
+        <tr>
+            <td><a href="{% url 'interface:interface-show' interface_type=interface_type interface_name=interface_name|add:"."|add:children.vif %}">{{ children.vif }}</a></td>
+            <td><a href="{% url 'interface:interface-delete' interface_type=interface_type interface_name=interface_name interface_vif=children.vif %}">delete</a></td>
+        </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+
+    {% endif %}
+
+
+
+
 {% else %}
     <p>Invalid interface.</p>
 {% endif %}

@@ -100,7 +100,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'vycontrol_filters.py': 'filters.vycontrol_filters',
+                'vycontrol_filters.py': 'libs.vycontrol_filters',
             },
         }        
     },

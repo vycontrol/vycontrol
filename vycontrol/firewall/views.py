@@ -22,9 +22,9 @@ import pprint
 import types
 
 
-from filters.vycontrol_filters import get_item
-from filters.vycontrol_filters import get_item_port
-from filters.vycontrol_filters import get_item_network
+from libs.vycontrol_filters import get_item
+from libs.vycontrol_filters import get_item_port
+from libs.vycontrol_filters import get_item_network
 
 
 

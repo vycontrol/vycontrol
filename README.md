@@ -1,19 +1,11 @@
-# VyControl
-
 <p align="center">
-<img align="center" width="150" height="30" src="https://storage.googleapis.com/vycontrol/logos/logotxt.png">
+<img align="center" width="150" height="30" src="https://storage.googleapis.com/vycontrol/logos/logotxt.png" alt="VyControl">
 </p>
 
 
-VyControl is a single frontend interface to manage a single or multiple VyoS servers. Only download [VyOS](https://www.vyos.io/) Rolling Release, since VyControl needs the latest VyOS API.
+VyControl is frontend interface to manage a single or multiple VyoS servers. 
 
-
-Still in 2020, the most important functionalities that until then were only possible through CLI (command line interface), will be possible through a friendly web interface developed in Django / Python.
-
-Standalone VyoS installations can now have a control panel.
-
-Datacenter installations with multiple VyoS will be able to offer their customers (with users, groups and granular control) firewall as a service.
-
+Datacenters can to offer their customers (with users, groups and granular control) firewall and router as a service.
 
 
 # Main links
@@ -29,6 +21,7 @@ Datacenter installations with multiple VyoS will be able to offer their customer
 
 # Install instructions 
 
+* download [VyOS](https://www.vyos.io/) Rolling Release, since VyControl needs the latest VyOS API.
 * for your security edit SECRET_KEY in inside Django settings/production.py and change to something random, maybe using 
 ```
 openssl rand -hex 32
@@ -88,7 +81,7 @@ http://127.0.0.1:8000/
 - [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 # changelog
-- [x] edit interfaces
+- [x] edit/add/delete interfaces
 - [x] lost password recovery using external SMTP server
 - [x] NTP servers add/list/delete
 - [x] zone based firewall

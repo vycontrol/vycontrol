@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block header_title %}Interface add vlan{% endblock %}
+{% block section_title %}Interface add vlan{% endblock %}
+{% block username %}{{ username }}{% endblock %}
+
+{% block debug %}
+{{ interface }}
+{{ interface_type }}
+{{ interface_name }}
+{% endblock %}
+
+
+{% block content %}
+
+{% if changed == False %}
+
+    <form action="{% url 'interface:interface-add-vlan' %}" method="post">  
+    <input type="hidden" name="interface_type" id="interface_type" value="{{ interface_type }}">
+    <input type="hidden" name="interface_name" id="interface_name" value="{{ interface_name }}">
+
+    {% csrf_token %}
+
+    <table border="0" width="100%">
+        
+        <tr>
+            <th width="30%">vlan</th>
+            <td><input type="text" name="vlan" id="vlan"></td>
+        </tr>
+        
+        <tr>
+            <th width="30%">dhcp</th>
+            <td width="70%">
+                <input type="checkbox" name="dhcp" value="1" id="dhcp">
+            </td>
+        </tr>
+        
+        
+
+        <tr id="tr_address" style="display:none">
+        <th>address</th> 
+        <td><input type="text" name="address"  id="address"></td>
+        </tr>
+
+        <tr>
+        <th>mtu</th> 
+        <td><input type="text" name="mtu"  id="mtu"></td>
+        </tr>
+
+    </table>
+
+    <input type="submit" value="Add Interface Vlan">
+
+    </form>
+
+
+
+    <script>
+        $(document).ready(function () {   
+            $("#dhcp").click(function () {
+                if ($("#dhcp").is(':checked')) {
+                    $('#tr_address').hide();
+                } else {
+                    $('#tr_address').show();
+                }
+
+            });
+
+            if ($("#dhcp").is(':checked')) {
+                $('#tr_address').hide();
+            } else {
+                $('#tr_address').show();
+            }
+
+        })
+    </script>
+
+{% else %}
+<p class="submenu1">
+    <a href="{% url 'interface:interface-list' %}">List Interfaces</a> 
+</p>
+<p class="submenu2"></p>
+{% endif %}
+
+
+{% endblock %}
+
+

@@ -18,12 +18,19 @@
 
 {% block content %}
 
+<p class="submenu1">
+    <a href="{% url 'interface:interface-add' %}">Create new interface</a>
+</p>
+<p class="submenu2"></p>
+
+
+
 {% if interfaces %}
     <form action="{% url 'interface:interface-list' %}" method="post">
         {% csrf_token %}
 
         <table border="1" width="100%">
-        <tr><th>type</th><th>name</th><th>address</th><th>firewall ipv4 in</th><th>firewall ipv4 out</th></th></tr>
+        <tr><th>type</th><th>name</th><th>address</th><th>firewall ipv4 in</th><th>firewall ipv4 out</th><th>actions</th></tr>
 
 
         {% for iname in interfaces_all_names %}
@@ -65,6 +72,13 @@
                         </select>
                     {% endif %}
                 </td>
+
+                <td>
+                    {% if iname.vif == None %}
+                        <a href="{% url 'interface:interface-delete' interface_type=iname.type interface_name=iname.interface_short %}">delete</a></td>              
+                    {% else %}
+                        <a href="{% url 'interface:interface-delete' interface_type=iname.type interface_name=iname.interface_short interface_vif=iname.vif %}">delete</a></td>              
+                    {% endif %}
 
             </tr>
         {% endfor %}

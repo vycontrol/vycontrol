@@ -156,28 +156,6 @@ def get_interfaces(hostname):
     result1 = api_get(hostname, cmd)
     return result1
 
-def get_interfaces_all_names(hostname):
-    interfaces = get_interfaces(hostname)
-
-    all_names = []
-
-    for itype in interfaces:
-        for iname in interfaces[itype]:
-            all_names.append({
-                'interface_name':           iname,
-                'type':                     itype              
-            })
-            if 'vif' in interfaces[itype][iname]:
-                for vif in interfaces[itype][iname]['vif']:
-
-                    all_names.append({
-                        'interface_name':   iname,
-                        'type':             itype,
-                        'vif':              vif
-                    })                    
-    
-    return all_names
-
 def detail_interface(interface_type, interface_name):
     vlan = False
     vlan_id = None
@@ -195,6 +173,34 @@ def detail_interface(interface_type, interface_name):
         "vlan_id":          vlan_id,
         "interface_type":   interface_type
     }
+
+def get_interfaces_all_names(hostname):
+    interfaces = get_interfaces(hostname)
+
+    all_names = []
+
+    for itype in interfaces:
+        for iname in interfaces[itype]:
+            interface_info = detail_interface(itype, iname)
+
+            all_names.append({
+                'interface_name':           iname,
+                'type':                     itype,
+                'interface_short':          interface_info['interface_name']
+            })
+            
+            if 'vif' in interfaces[itype][iname]:
+                for vif in interfaces[itype][iname]['vif']:
+
+                    all_names.append({
+                        'interface_name':   iname,
+                        'type':             itype,
+                        'vif':              vif,
+                        'interface_short':  interface_info['interface_name']
+                    })                    
+    
+    return all_names
+
 
 def get_interface(interface_type, interface_name, hostname):
     inteface_detail = detail_interface(interface_type, interface_name)
@@ -395,3 +401,16 @@ def ip_route(hostname):
 
     result1 = api_show(hostname, cmd)
     return result1        
+
+
+def get_interface_children(hostname, interface_name):
+    interfaces_all_names = get_interfaces_all_names(hostname)
+
+    interface_children = []
+
+    for iname in interfaces_all_names:
+        if interface_name == iname['interface_name']:
+            if 'vif' in iname:
+                interface_children.append({'name': interface_name, 'vif': iname['vif'], 'type': iname['type']})
+
+    return interface_children        

@@ -11,7 +11,8 @@ import vyos
 from perms import is_authenticated
 import perms
 import vycontrol_vyos_api as vapi
-
+from libs.vycontrol_validators import *
+import vycontrol_messages as vmsg
 
 from config.models import Instance
 
@@ -21,6 +22,7 @@ import pprint
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
 
 @is_authenticated    
 def index(request):
@@ -209,18 +211,27 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 @is_authenticated    
-def interfaceshow(request, interface_type, interface_name):
+def interface_show(request, interface_type, interface_name):
         
     all_instances = vyos.instance_getall()
     hostname_default = vyos.get_hostname_prefered(request)
-    firewall_all = vyos.get_firewall_all(hostname_default)  
-
-    interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
-  
+    
+    firewall_all = vyos.get_firewall_all(hostname_default)  
+    interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
+    interface_detail = vyos.detail_interface(interface_type, interface_name)
+    interface_vif = interface_detail['vlan_id']
+    interface_name_short = interface_detail['interface_name']
+    interface_children = vyos.get_interface_children(hostname_default, interface_name_short)
+
+
+
+
     template = loader.get_template('interface/show.html')
     context = { 
+        'interface_children': interface_children,
         'interface': interface,
+        'interface_vif' : interface_vif,
         'instances': all_instances,
         'interface_type' : interface_type,
         'interface_name' : interface_name,
@@ -233,7 +244,7 @@ def interfaceshow(request, interface_type, interface_name):
 
 
 @is_authenticated    
-def interfacefirewall(request, interface_type, interface_name):
+def interface_firewall(request, interface_type, interface_name):
         
     all_instances = vyos.instance_getall()
     is_superuser = perms.get_is_superuser(request.user)
@@ -316,7 +327,189 @@ def interface_set(request, interface_type, interface_name):
     v = vapi.delete_interface_address(hostname_default, interface_type, interface_name_short, vif=interface_vif)
     v = vapi.set_interface_address(hostname_default, interface_type, interface_name_short, address, vif=interface_vif)
 
-
-
     return redirect('interface:interface-show', interface_type=interface_type, interface_name=interface_name)
 
+@is_authenticated    
+def interface_delete(request, interface_type, interface_name, interface_vif=None):
+    hostname_default = vyos.get_hostname_prefered(request)   
+    
+    if interface_vif == None:
+        v = vapi.delete_interface(hostname_default, interface_type, interface_name)
+    else:
+        v = vapi.delete_interface(hostname_default, interface_type, interface_name, vif=interface_vif)
+
+    return redirect('interface:interface-list')
+
+@is_authenticated    
+def interface_add(request):      
+    all_instances = vyos.instance_getall()
+    is_superuser = perms.get_is_superuser(request.user)
+    hostname_default = vyos.get_hostname_prefered(request)
+    msg = vmsg.msg()
+
+    changed = False
+
+    if request.POST.get('name', None) == None:
+        pass
+    else:
+        interface_name = None
+        if validator_letters_numbers(request.POST.get('name', '').strip()):
+            interface_name = request.POST.get('name', '').strip()
+
+        interface_address = None
+        if validator_ipv4_cidr(request.POST.get('address', '')):
+            interface_address = request.POST.get('address', '').strip()
+
+        interface_dhcp = False
+        if request.POST.get('dhcp', '0') == '1':
+            interface_dhcp = True
+            interface_address = 'dhcp'
+
+        interface_mtu = None
+        if request.POST.get('mtu','').strip().isdigit():
+            interface_mtu = request.POST.get('mtu').strip()
+            try:
+                interface_mtu = int(interface_mtu)
+            except:
+                interface_mtu = 1450
+            
+            if not validators.between(interface_mtu, min=1000, max=9000):
+                interface_mtu = 1450
+        
+        interface_type = 'ethernet'
+        interface_types = ['ethernet', 'dummy', 'loopback']
+        if request.POST.get('type','ethernet') in interface_types:
+            interface_type = request.POST.get('type','ethernet')
+
+        v = vapi.set_interface(hostname_default, interface_type, interface_name)
+
+        if v.success == False:
+            msg.add_error("Action: failed to add interface - " + v.reason)
+        else:
+            msg.add_success("Action: interface added")
+            changed = True
+
+        v = vapi.set_interface_mtu(hostname_default, interface_type, interface_name, interface_mtu)
+        if v.success == False:
+            msg.add_error("Action: failed to set MTU - " + v.reason)
+        else:
+            msg.add_success("Action: MTU set")
+
+        v = vapi.set_interface_address(hostname_default, interface_type, interface_name, interface_address)
+        if v.success == False:
+            msg.add_error("Action: failed to set address - " + v.reason)
+        else:
+            msg.add_success("Action: address set")
+        
+
+
+
+    template = loader.get_template('interface/add.html')
+    context = { 
+        'instances':            all_instances,
+        'hostname_default':     hostname_default,
+        'username':             request.user,      
+        'is_superuser':         is_superuser, 
+        'msg':                  msg.get_all(),
+        'changed':              changed,
+
+
+    }       
+
+    return HttpResponse(template.render(context, request))
+
+
+@is_authenticated    
+def interface_add_vlan(request, interface_type=None, interface_name=None):      
+    all_instances = vyos.instance_getall()
+    is_superuser = perms.get_is_superuser(request.user)
+    hostname_default = vyos.get_hostname_prefered(request)
+    msg = vmsg.msg()
+
+    changed = False
+
+    if interface_type == None and interface_name == None:
+        interface_type = request.POST.get('interface_type')
+        interface_name = request.POST.get('interface_name')
+        if validator_letters_numbers(interface_type) and validator_letters_numbers(interface_name):
+            pass
+        else:
+            return redirect('interface:interface-list')
+
+
+    interface_vlan = request.POST.get('vlan', '').strip()
+    try:
+        interface_vlan = int(interface_vlan)
+    except:
+        interface_vlan = 0
+
+    if interface_vlan == 0:
+        pass
+    elif not validators.between(interface_vlan, min=1, max=4095):
+        msg.add_error("VLAN need to be between 1 and 4095")
+    else:
+        interface_address = None
+        if validator_ipv4_cidr(request.POST.get('address', '')):
+            interface_address = request.POST.get('address', '').strip()
+
+        interface_dhcp = False
+        if request.POST.get('dhcp', '0') == '1':
+            interface_dhcp = True
+            interface_address = 'dhcp'
+
+        interface_mtu = 0
+        if request.POST.get('mtu','').strip().isdigit():
+            interface_mtu = request.POST.get('mtu').strip()
+            try:
+                interface_mtu = int(interface_mtu)
+            except:
+                interface_mtu = 1450
+            
+        if not validators.between(interface_mtu, min=1000, max=9000):
+            interface_mtu = 1450
+    
+        
+        interface_mtu = str(interface_mtu)
+        interface_vlan = str(interface_vlan)
+
+        interface_type = 'ethernet'
+
+        v = vapi.set_interface(hostname_default, interface_type, interface_name, vif=interface_vlan)
+
+        if v.success == False:
+            msg.add_error("Action: failed to add interface - " + v.reason)
+        else:
+            msg.add_success("Action: interface added")
+            changed = True
+
+        v = vapi.set_interface_mtu(hostname_default, interface_type, interface_name, interface_mtu, vif=interface_vlan)
+        if v.success == False:
+            msg.add_error("Action: failed to set MTU - " + v.reason)
+        else:
+            msg.add_success("Action: MTU set")
+
+        v = vapi.set_interface_address(hostname_default, interface_type, interface_name, interface_address, vif=interface_vlan)
+        if v.success == False:
+            msg.add_error("Action: failed to set address - " + v.reason)
+        else:
+            msg.add_success("Action: address set")
+        
+
+
+
+    template = loader.get_template('interface/add_vlan.html')
+    context = { 
+        'instances':            all_instances,
+        'hostname_default':     hostname_default,
+        'username':             request.user,      
+        'is_superuser':         is_superuser, 
+        'msg':                  msg.get_all(),
+        'changed':              changed,
+
+        'interface_name':       interface_name,
+        'interface_type':       interface_type,
+
+
+    }       
+
+    return HttpResponse(template.render(context, request))
