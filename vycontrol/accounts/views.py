@@ -25,13 +25,13 @@ def index(request):
         if request.user.is_authenticated:
             return redirect('interface:interface-list')
         else:
-            return redirect('registration-login')
+            return redirect('accounts-login')
     else:
         if 'username' in request.POST and 'password' in request.POST:
             user = User.objects.create_superuser(username=request.POST['username'], email='', password=request.POST['password'])
             user.save()
             return redirect('%s?next=%s' % (reverse('registration-login'), '/config/instance-add'))
-    template = loader.get_template('registration/start.html')
+    template = loader.get_template('accounts/start.html')
     context = { 
         'users_admin': users_admin.all()
     }   

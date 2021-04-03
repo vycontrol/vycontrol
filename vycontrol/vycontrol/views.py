@@ -9,7 +9,7 @@ from config.models import Instance
 
 def vycontrol_login(request):
     
-    template = loader.get_template('vycontrol/vycontrol_login.html')
+    template = loader.get_template('login.html')
     context = {
     }
     return HttpResponse(template.render(context, request))

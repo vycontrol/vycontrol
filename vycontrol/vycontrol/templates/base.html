@@ -46,7 +46,7 @@
               </select>
             
 
-              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycontrol-config-menu"> <a href="{% url 'registration-logout' %}">Logout</a></span>
+              <span id="menu-username">{% block username %}{% endblock %}</span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
 
 
           </p>
@@ -72,18 +72,7 @@
     <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
     <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
 
-    <!-- 
-    <li><a href="{% url 'arp:arp-list' %}">ARP</a></li>
-    <li><a href="{% url 'ospf:ospf-list' %}">OSPF</a></li>
-    <li><a href="{% url 'bgp:bgp-list' %}">BGP</a></li>
-    <li><a href="{% url 'dhcp:dhcp-list' %}">DHCP</a></li>
-    <li><a href="{% url 'ssh:ssh-list' %}">SSH</a></li>
-    <li><a href="{% url 'openvpn:openvpn-list' %}">OpenVPN</a></li>
-    <li><a href="{% url 'ipsec:ipsec-list' %}">IPSEC</a></li>
-    <li><a href="{% url 'nat:nat-list' %}">NAT</a></li>
-    <li><a href="{% url 'qos:qos-list' %}">QoS</a></li>
-    <li><a href="{% url 'wanlb:wanlb-list' %}">Wan Load Balancing</a></li>
-    -->
+
   </ul>
 
 
