@@ -12,7 +12,10 @@
 
 {% block content %}
 
-
+<p class="submenu1">
+    {% if is_superuser %}<a href="{% url 'config:group-add' %}">Add new group</a>{% endif %}
+</p>
+<p class="submenu2"></p>
 
 
 

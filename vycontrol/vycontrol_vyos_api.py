@@ -531,6 +531,35 @@ def delete_interface_firewall_zone_rule_firewall(hostname, dstzone, srczone, fir
     )
     return v  
 
+def get_dnsresolver(hostname):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "get",
+        op =        "showConfig",
+        cmd =       ["system","name-server"],
+        description = "get_dnsresolver",
+    )
+    return v
+    
+def set_dnsresolver(hostname, server):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["system","name-server",server],
+        description = "set_dnsresolverntp",
+    )
+    return v  
+def delete_dnsresolver(hostname, server):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "delete",
+        cmd =       ["system","name-server",server],
+        description = "delete_dnsresolver",
+    )
+    return v
+
 def get_ntp(hostname):
     v = vapilib.api (
         hostname=   hostname,
@@ -541,6 +570,15 @@ def get_ntp(hostname):
     )
     return v
 
+def set_ntp(hostname, server):
+    v = vapilib.api (
+        hostname=   hostname,
+        api =       "post",
+        op =        "set",
+        cmd =       ["system","ntp","server",server],
+        description = "set_ntp",
+    )
+    return v  
 def delete_ntp(hostname, server):
     v = vapilib.api (
         hostname=   hostname,

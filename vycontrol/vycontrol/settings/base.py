@@ -14,16 +14,10 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-#VYCONTROL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = str(Path(__file__).resolve().parents[2])
-
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60 * 60 # 60 minutes
@@ -31,9 +25,7 @@ SESSION_COOKIE_AGE = 60 * 60 # 60 minutes
 # put all your hosts here
 ALLOWED_HOSTS = ['127.0.0.1']
 
-
 # Application definition
-
 INSTALLED_APPS = [
  
     'django.contrib.contenttypes',
@@ -41,25 +33,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #'vauth.apps.VauthConfig',
     'accounts.apps.AccountsConfig',
-
     'config.apps.ConfigConfig',
-
     'interface.apps.InterfaceConfig',
     'firewall.apps.FirewallConfig',
     'static.apps.StaticConfig',
-    'arp.apps.ArpConfig',
-    'bgp.apps.BgpConfig',
-    'dhcp.apps.DhcpConfig',
-    'ipsec.apps.IpsecConfig',
-    'nat.apps.NatConfig',
     'ntp.apps.NtpConfig',
-    'qos.apps.QosConfig',
-    'openvpn.apps.OpenvpnConfig',
-    'ospf.apps.OspfConfig',
-    'ssh.apps.SshConfig',
-    'wanlb.apps.WanlbConfig',
+    'dnsresolver.apps.DnsresolverConfig',
+
+    #'arp.apps.ArpConfig',
+    #'bgp.apps.BgpConfig',
+    #'dhcp.apps.DhcpConfig',
+    #'ipsec.apps.IpsecConfig',
+    #'nat.apps.NatConfig',
+    #'qos.apps.QosConfig',
+    #'openvpn.apps.OpenvpnConfig',
+    #'ospf.apps.OspfConfig',
+    #'ssh.apps.SshConfig',
+    #'wanlb.apps.WanlbConfig',
 
     'django.contrib.auth',
     'django.contrib.admin',
@@ -175,5 +166,3 @@ STATICFILES_DIRS = [
     BASE_DIR + '/s/'
 ]
 STATIC_URL = '/s/'
-
-

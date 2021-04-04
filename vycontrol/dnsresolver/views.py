@@ -18,20 +18,20 @@ def index(request):
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    ntp_srv = vapi.get_ntp(hostname_default)
-    ntp_servers = {}
-    if ntp_srv.success:
-        if ntp_srv.data['server'] != None:
-            ntp_servers = ntp_srv.data['server']
+    dnsresolver_srv = vapi.get_dnsresolver(hostname_default)
+    dnsresolver_servers = {}
+    if dnsresolver_srv.success:
+        if dnsresolver_srv.data['name-server'] != None:
+            dnsresolver_servers = dnsresolver_srv.data['name-server']
 
     context = {
         'instances':                                all_instances,
         'hostname_default':                         hostname_default,
-        'ntp_servers' :                             ntp_servers,
+        'dnsresolver_servers' :                     dnsresolver_servers,
         'is_superuser' :                            is_superuser,
     }
 
-    return render(request, 'ntp/list.html', context)
+    return render(request, 'dnsresolver/list.html', context)
 
 
 @login_required
@@ -43,14 +43,14 @@ def add(request):
     is_superuser = perms.get_is_superuser(request.user)
 
     if 'server' in request.POST:
-        if validators.ipv6(request.POST['server'].strip()) or validators.ipv4(request.POST['server'].strip()) or validators.domain(request.POST['server'].strip()):
-            v = vapi.set_ntp(hostname_default, request.POST['server'].strip())
+        if validators.ipv6(request.POST['server'].strip()) or validators.ipv4(request.POST['server'].strip()):
+            v = vapi.set_dnsresolver(hostname_default, request.POST['server'].strip())
             if v.success == False: 
-                msg.add_error("NTP server add fail - " + v.reason)
+                msg.add_error("dnsresolver server add fail - " + v.reason)
             else:
-                msg.add_success("NTP server added")
+                msg.add_success("dnsresolver server added")
         else:
-            msg.add_error("ntp server add fail - insert only domains or IPv4 or IPv6")
+            msg.add_error("dnsresolver server add fail - insert only IPv4 or IPv6")
 
     context = {
         'instances':                                all_instances,
@@ -59,21 +59,20 @@ def add(request):
         'msg' :                                     msg.get_all(),
     }
 
-    return render(request, 'ntp/add.html', context)
+    return render(request, 'dnsresolver/add.html', context)
 
 
 @login_required
 def remove(request, server):
     hostname_default = vyos.get_hostname_prefered(request)
 
-    ntp_servers = vapi.get_ntp(hostname_default)
+    dnsresolver_srv = vapi.get_dnsresolver(hostname_default)
+    if len(dnsresolver_srv.data['name-server']) == 0:
+        return redirect('dnsresolver:dnsresolver-list')
 
-    if len(ntp_servers.data['name-server']) == 0:
-        return redirect('ntp:ntp-list')
+    if dnsresolver_srv.success:
+        if 'name-server' in dnsresolver_srv.data:
+            if validators.ipv6(server.strip()) or validators.ipv4(server.strip()):
+                v = vapi.delete_dnsresolver(hostname_default, server.strip())
 
-    if ntp_servers.success:
-        if 'server' in ntp_servers.data:
-            if validators.ipv6(server.strip()) or validators.ipv4(server.strip()) or validators.domain(server.strip()):
-                v = vapi.delete_ntp(hostname_default, server.strip())
-
-    return redirect('ntp:ntp-list')
+    return redirect('dnsresolver:dnsresolver-list')

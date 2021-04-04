@@ -64,26 +64,23 @@
       </p>
 
 
+    <h2>Router</h2>
 
-    <h2>Manage VyOS</h2>
     <ul>
     <li><a href="{% url 'interface:interface-list' %}">Interfaces</a></li>
     <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
-    <li><a href="{% url 'static:static-list' %}">Static Routing</a></li>
+    <li><a href="{% url 'static:static-list' %}">Static Routes</a></li>
+    <li><a href="{% url 'dnsresolver:dnsresolver-list' %}">DNS resolver</a></li>
     <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
+    </ul>
+    
 
 
-  </ul>
-
-
-    <h2>Manage VyControl</h2>
+    <h2>Configuration</h2>
     <ul>
-    {% if is_superuser %}<li><a href="{% url 'config:instance-add' %}">Add new instance</a></li>{% endif %}
-    <li><a href="{% url 'config:instances' %}">List instances</a></li>
-    {% if is_superuser %}<li><a href="{% url 'config:users-list' %}">List users</a></li>{% endif %}
-    {% if is_superuser %}<li><a href="{% url 'config:user-add' %}">Add new user</a></li>{% endif %}
-    {% if is_superuser %}<li><a href="{% url 'config:groups-list' %}">List groups</a></li>{% endif %}
-    {% if is_superuser %}<li><a href="{% url 'config:group-add' %}">Add new group</a></li>{% endif %}
+    <li><a href="{% url 'config:instances' %}">Instances</a></li>
+    {% if is_superuser %}<li><a href="{% url 'config:users-list' %}">Users</a></li>{% endif %}
+    {% if is_superuser %}<li><a href="{% url 'config:groups-list' %}">Groups</a></li>{% endif %}
 
   </ul>
 

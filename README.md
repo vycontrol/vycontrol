@@ -3,9 +3,16 @@
 </p>
 
 
-VyControl is frontend interface to manage a single or multiple VyoS servers. 
+VyControl is web frontend interface to manage a single or multiple VyoS servers. It is developed in Python/Django using VyOS API.
 
-Datacenters can to offer their customers (with users, groups and granular control) firewall and router as a service.
+
+# Use Cases:
+
+VyControl can be a web gui for one single VyOS installation, but it requires a separeted webserver from VyOS to a single network admin user or a TI department from a company
+
+VyControl can be a web gui for multiple VyOS installation in a same enterprise, to a single network admin user or a TI department from a company
+
+VyControl can be a web gui for multiple VyOS installation in a datacenter. Each of datacenter customer have a VyControl user to manage their own VyOSes (each user can manage several VyOS).
 
 
 # Main links
@@ -94,13 +101,14 @@ EMAIL_USE_TLS = True
 - [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 # changelog
-- [x] change email/change password user profile
-- [x] edit/add/delete interfaces
+- [x] create/read/update/delete DNS Resolver
+- [x] create/read/update/delete email/password in user profile
+- [x] create/read/update/delete interfaces and vlans
 - [x] lost password recovery using external SMTP server
-- [x] NTP servers add/list/delete
-- [x] zone based firewall
+- [x] create/read/update/delete NTP Serrves
+- [x] create/read/update/delete zone based firewall
 - [x] improve firewall UI and error returns to end users
-- [x] working firewall without zones 
+- [x] working firewall
 - [x] version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 # roadmap

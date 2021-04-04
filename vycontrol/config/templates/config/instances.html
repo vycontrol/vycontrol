@@ -12,6 +12,12 @@
 
 {% block content %}
 
+<p class="submenu1">
+    {% if is_superuser %}<a href="{% url 'config:instance-add' %}">Add new instance</a>{% endif %}
+</p>
+<p class="submenu2"></p>
+
+
 {% if instances %}
 
     <table border="1" width="100%">

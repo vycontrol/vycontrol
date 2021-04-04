@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block header_title %}dnsresolver{% endblock %}
+{% block section_title %}dnsresolver{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'dnsresolver:dnsresolver-list' %}">List dnsresolver servers</a>
+</p>
+<p class="submenu2">
+    
+</p>
+
+
+<h2>Add new dnsresolver server</h2>
+
+<form action="{% url 'dnsresolver:dnsresolver-add'  %}" method="post">
+    {% csrf_token %}
+    
+    <p>
+        <label for="server">server</label><br>
+        <input type="text" name="server" id="server" value="{{ server }}" size="30">
+    </p>
+
+    <input type="submit" value="Add dnsresolver Server">
+</form>
+
+
+
+{% endblock %}

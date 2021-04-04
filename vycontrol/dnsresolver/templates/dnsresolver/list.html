@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header_title %}dnsresolver{% endblock %}
+{% block section_title %}dnsresolver{% endblock %}
+
+{% block debug %}
+{% endblock %}
+
+{% block content %}
+
+<p class="submenu1">
+    <a href="{% url 'dnsresolver:dnsresolver-add' %}">Add new dnsresolver server</a>
+</p>
+<p class="submenu2">
+    
+</p>
+
+
+{% if dnsresolver_servers %}
+
+    <table border="1" width="100%">
+    <tr>
+        <th>server</th>
+        <th>action</th>
+    </tr>
+
+    {% for server in dnsresolver_servers %}
+    <tr>
+        <td>{{ server }}</td>
+        <td>
+            <a href="{% url 'dnsresolver:dnsresolver-remove' server=server %}">delete</a></td>
+        </td>
+    </tr>
+
+    {% endfor %}
+
+    </table>   
+{% else %}
+<p>No dnsresolver Server defined.</p>
+{% endif %}
+
+{% endblock %}
+
