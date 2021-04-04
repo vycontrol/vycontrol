@@ -10,6 +10,8 @@ from django.contrib import auth
 
 import vyos
 
+
+
 def is_authenticated(func):
     @functools.wraps(func)
     def wrapper_perm(*args, **kwargs):
@@ -176,3 +178,4 @@ def get_hostname_prefered(request):
             except Instance.DoesNotExist:
                 pass
     return None
+

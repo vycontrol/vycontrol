@@ -121,12 +121,14 @@
 </div>
 
 
+{% if debugactive == True %}
 <div class="container" id="debug">
   <h3>Debug</h3>
   <pre>
   {% block debug %}{% endblock %}
 </pre>
 </div>
+{% endif %}
 
 <hr>
 <div class="container" id="credits">

@@ -3,6 +3,7 @@
 {% block header_title %}dnsresolver{% endblock %}
 {% block section_title %}dnsresolver{% endblock %}
 {% block username %}{{ username }}{% endblock %}
+{% block debugactive %}{{ debug }}{% endblock %}
 
 
 {% block debug %}
@@ -11,7 +12,7 @@
 {% block content %}
 
 <p class="submenu1">
-    <a href="{% url 'dnsresolver:dnsresolver-add' %}">Add new dnsresolver server</a>
+    <a href="{% url 'dnsresolver:dnsresolver-add' %}">Add new resolver</a>
 </p>
 <p class="submenu2">
     
