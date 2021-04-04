@@ -113,36 +113,32 @@ EMAIL_USE_TLS = True
 
 # roadmap
 
-## firewall and vycontrol base   
-- [ ] improve users/group/profile crud
-- [ ] layout improvements and user input validation
-- [ ] use python logging
+## vycontrol configuration
+- [ ] finish users 
+- [ ] finish groups
 
-## IPSEC / OpenVPN focus 
-- [ ] openvpn features
-- [ ] ipsec features
-- [ ] Finish some firewall options
+## vpn services
+- [ ] openvpn
+- [ ] ipsec
 
-## vlans, interfaces and system users
-- [ ] system ssh / logins config
-- [ ] basic interfaces configuration and vlans
-- [ ] host information and default gateway
+## basic router configuration
+- [ ] ssh service
+- [ ] logins
+- [ ] hostname
+- [ ] domain-name
 - [ ] timezone
 
-## basic dynamic routing features
-- [ ] OSPF features
+## dynamic routing
+- [ ] OSPF
+- [ ] BGP
 
 ## addons features 
-- [ ] FastNetMon one-click integration
-- [ ] save/commit/load features
-- [ ] s3 backup scheduler and commit confirm
-- [ ] granular permissions and improvements
+- [ ] FastNetMon integration
+- [ ] save/commit/load
+- [ ] s3 backup scheduler
 
-## advanced dynamic routing features
-- [ ] BGP features
-
-## IPV6 features
-- [ ] ipv6 milestone
+## IPV6
+- [ ] ipv6
 
 # references
 * https://docs.vyos.io/en/latest/appendix/http-api.html
