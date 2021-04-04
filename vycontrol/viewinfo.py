@@ -1,6 +1,6 @@
 import vyos
 import perms
-import vycontrol_messages as vmsg
+import vmsg
 from django.conf import settings
 
 class prepareClass:
@@ -20,6 +20,7 @@ def prepare(request):
     p.request = request
     p.msg = vmsg.msg()
     p.debug = settings.DEBUG
+    p.vycontrol_credits = settings.VYCONTROL_CREDITS
 
     return p
 
@@ -31,6 +32,7 @@ def context(prepare):
         'username':                                 prepare.request.user,   
         'msg' :                                     prepare.msg.get_all(),
         'debugactive' :                             prepare.debug,
-                       
+        'vycontrol_credits' :                       prepare.vycontrol_credits,
+                               
     }
     return contextPrepare

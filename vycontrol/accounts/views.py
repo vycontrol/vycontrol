@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.views.generic.base import TemplateView
 from django.conf import settings
@@ -9,18 +10,16 @@ from django.urls import reverse
 
 
 from django.contrib.auth.models import User
-
-import vyos
-from perms import is_authenticated
-import perms
-import vycontrol_vyos_api as vapi
-from libs.vycontrol_validators import *
-import vycontrol_messages as vmsg
-
 from config.models import Instance
 
-import pprint
+import vyos
+import perms
+import vapi
+import vmsg
+import viewinfo
 import validators
+from perms import is_authenticated
+from libs.vycontrol_validators import *
 
 
 
@@ -40,21 +39,17 @@ def index(request):
             user = User.objects.create_superuser(username=request.POST['username'], email='', password=request.POST['password'])
             user.save()
             return redirect('%s?next=%s' % (reverse('registration-login'), '/config/instance-add'))
-    template = loader.get_template('accounts/start.html')
     context = { 
-        'users_admin': users_admin.all()
+        'users_admin': users_admin.all(),
     }   
-    return HttpResponse(template.render(context, request))
+    return render(request, 'accounts/start.html', context)
 
 
 
 @is_authenticated    
 def profile(request):
-    all_instances = vyos.instance_getall_by_group(request)
-    is_superuser = perms.get_is_superuser(request.user)
-    hostname_default = vyos.get_hostname_prefered(request)
-    msg = vmsg.msg()
-
+    vinfo = viewinfo.prepare(request)
+    
     user = User.objects.get(
         username=request.user,
         is_active=True
@@ -73,17 +68,10 @@ def profile(request):
                 user.set_password(pass_new)
                 user.save()
 
-
-
-    template = loader.get_template('accounts/profile.html')
-    context = { 
-        'instances':            all_instances,
-        'hostname_default':     hostname_default,
-        'username':             request.user,      
-        'is_superuser':         is_superuser, 
-        'msg':                  msg.get_all(),
+    context = viewinfo.context(vinfo)    
+    localcontext = {
         'user':                 user,
+    }
+    context.update(localcontext)
 
-
-    }   
-    return HttpResponse(template.render(context, request))
+    return render(request, 'accounts/profile.html', context)

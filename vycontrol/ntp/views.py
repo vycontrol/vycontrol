@@ -7,8 +7,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 import vyos
-import vycontrol_vyos_api as vapi
-import vycontrol_messages as vmsg
+import vapi
+import vmsg
 import perms
 import validators
 from perms import is_authenticated

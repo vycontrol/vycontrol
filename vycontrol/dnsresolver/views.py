@@ -6,8 +6,8 @@ from django.conf import settings
 from django.urls import reverse
 
 import vyos
-import vycontrol_vyos_api_lib as vapilib
-import vycontrol_vyos_api as vapi
+import vapilib
+import vapi
 
 from perms import is_authenticated
 from libs.vycontrol_filters import routeunpack

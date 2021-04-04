@@ -21,7 +21,6 @@ app_name = 'accounts'
 
 urlpatterns = [
    path('', views.profile, name='accounts-profile'),
-   # path('', include('django.contrib.auth.urls', name='vauth-login')
 ]
 
 

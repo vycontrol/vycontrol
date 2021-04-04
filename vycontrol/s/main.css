@@ -11,6 +11,11 @@ body {
 .container {
     color: black;
 }
+
+ul.menuleft  {
+  padding-left: 16px;
+}
+
 .menu { 
     background-color: #eee;
     padding: 5px;

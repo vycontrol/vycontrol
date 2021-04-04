@@ -41,17 +41,6 @@ INSTALLED_APPS = [
     'ntp.apps.NtpConfig',
     'dnsresolver.apps.DnsresolverConfig',
 
-    #'arp.apps.ArpConfig',
-    #'bgp.apps.BgpConfig',
-    #'dhcp.apps.DhcpConfig',
-    #'ipsec.apps.IpsecConfig',
-    #'nat.apps.NatConfig',
-    #'qos.apps.QosConfig',
-    #'openvpn.apps.OpenvpnConfig',
-    #'ospf.apps.OspfConfig',
-    #'ssh.apps.SshConfig',
-    #'wanlb.apps.WanlbConfig',
-
     'django.contrib.auth',
     'django.contrib.admin',
 ]
@@ -166,3 +155,7 @@ STATICFILES_DIRS = [
     BASE_DIR + '/s/'
 ]
 STATIC_URL = '/s/'
+
+
+# show footer link to VyControl
+VYCONTROL_CREDITS = True

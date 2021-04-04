@@ -4,7 +4,7 @@ import pprint
 import sys
 import logging
 
-import vycontrol_vyos_api_lib as vapilib
+import vapilib
 import perms
 
 

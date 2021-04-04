@@ -6,9 +6,9 @@ from django.conf import settings
 from django.urls import reverse
 
 import vyos
-import vycontrol_messages as vmsg
-import vycontrol_vyos_api_lib as vapilib
-import vycontrol_vyos_api as vapi
+import vmsg
+import vapilib
+import vapi
 
 from perms import is_authenticated
 from libs.vycontrol_filters import routeunpack

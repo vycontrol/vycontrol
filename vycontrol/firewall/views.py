@@ -8,9 +8,9 @@ from django.http import QueryDict
 
 
 import vyos
-import vycontrol_vyos_api_lib as vapilib
-import vycontrol_vyos_api as vapi
-import vycontrol_messages as vmsg
+import vapilib
+import vapi
+import vmsg
 
 from slugify import slugify
 from performance import timer

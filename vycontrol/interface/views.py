@@ -10,9 +10,9 @@ from django.template.defaultfilters import register
 import vyos
 from perms import is_authenticated
 import perms
-import vycontrol_vyos_api as vapi
+import vapi
 from libs.vycontrol_validators import *
-import vycontrol_messages as vmsg
+import vmsg
 
 from config.models import Instance
 
