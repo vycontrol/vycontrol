@@ -74,7 +74,7 @@ def index(request):
 def create(request):
         
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -107,7 +107,7 @@ def create(request):
 
 @is_authenticated
 def firewall_removerule(request, firewall_name, firewall_rulenumber):
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     firewall = vyos.get_firewall(hostname_default, firewall_name)
@@ -122,7 +122,7 @@ def changerule(request, firewall_name, mode, rulenumber=None):
     msg = vmsg.msg()
 
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -975,7 +975,7 @@ def editrule(request, firewall_name, rulenumber):
 def show(request, firewall_name):
         
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -1471,7 +1471,7 @@ def firewall_networkgroup_desc(request, groupname):
 @is_authenticated
 def firewall_config(request, firewall_name):  
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
     
@@ -1494,7 +1494,7 @@ def firewall_config(request, firewall_name):
 def firewall_global(request):
    
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     if int(request.POST.get('allping', 0)) == 1:
@@ -1514,7 +1514,7 @@ def firewall_global(request):
 def firewall_remove(request, firewall_name):
        
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     firewall = vyos.delete_firewall(hostname_default, firewall_name)
@@ -1525,7 +1525,7 @@ def firewall_remove(request, firewall_name):
 def firewall_edit(request, firewall_name):
    
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     firewall = vyos.get_firewall(hostname_default, firewall_name)
     firewall['defaultaction'] = firewall['default-action']
@@ -1562,7 +1562,7 @@ def firewall_edit(request, firewall_name):
 @is_authenticated
 def firewall_zones(request):
     # basic methods all views should call
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -1625,7 +1625,7 @@ def firewall_zones_add(request):
     msg = vmsg.msg()
 
     # basic methods all views should call
-    all_instances       = vyos.instance_getall()
+    all_instances       = vyos.instance_getall_by_group(request)
     hostname_default    = vyos.get_hostname_prefered(request)
     is_superuser        = perms.get_is_superuser(request.user)
 
@@ -1743,7 +1743,7 @@ def firewall_zones_edit(request, zonename):
     msg = vmsg.msg()
     
     # basic methods all views should call
-    all_instances       = vyos.instance_getall()
+    all_instances       = vyos.instance_getall_by_group(request)
     hostname_default    = vyos.get_hostname_prefered(request)
     is_superuser        = perms.get_is_superuser(request.user)
 
@@ -1964,7 +1964,7 @@ def firewall_zones_remove(request, zonename):
     msg = vmsg.msg()
     
     # basic methods all views should call
-    all_instances       = vyos.instance_getall()
+    all_instances       = vyos.instance_getall_by_group(request)
     hostname_default    = vyos.get_hostname_prefered(request)
     is_superuser        = perms.get_is_superuser(request.user)
 
@@ -2004,7 +2004,7 @@ def firewall_zones_addrule(request):
     msg = vmsg.msg()
     
     # basic methods all views should call
-    all_instances       = vyos.instance_getall()
+    all_instances       = vyos.instance_getall_by_group(request)
     hostname_default    = vyos.get_hostname_prefered(request)
     is_superuser        = perms.get_is_superuser(request.user)
 
@@ -2106,7 +2106,7 @@ def firewall_zones_removerule(request, dstzone, srczone, firewall):
     msg = vmsg.msg()
     
     # basic methods all views should call
-    all_instances       = vyos.instance_getall()
+    all_instances       = vyos.instance_getall_by_group(request)
     hostname_default    = vyos.get_hostname_prefered(request)
     is_superuser        = perms.get_is_superuser(request.user)
 

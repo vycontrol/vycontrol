@@ -37,7 +37,6 @@ urlpatterns = [
     path('', accounts_views.index, name='main-page'),
     path('accounts/', include('accounts.urls')),
     path('config/', include('config.urls')),
-    path('dashboard/', include('dashboard.urls')),
     path('admin/', admin.site.urls, name="django-admin"),
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name="accounts-login"),
     path('logout/', auth_views.LogoutView.as_view(template_name='accounts/logout.html'), name="accounts-logout"),

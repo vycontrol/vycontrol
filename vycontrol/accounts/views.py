@@ -50,7 +50,7 @@ def index(request):
 
 @is_authenticated    
 def profile(request):
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
     hostname_default = vyos.get_hostname_prefered(request)
     msg = vmsg.msg()

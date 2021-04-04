@@ -11,10 +11,12 @@ import vycontrol_vyos_api as vapi
 import vycontrol_messages as vmsg
 import perms
 import validators
+from perms import is_authenticated
 
-@login_required
+
+@is_authenticated
 def index(request):
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -29,16 +31,17 @@ def index(request):
         'hostname_default':                         hostname_default,
         'dnsresolver_servers' :                     dnsresolver_servers,
         'is_superuser' :                            is_superuser,
+        'username':                                 request.user,
     }
 
     return render(request, 'dnsresolver/list.html', context)
 
 
-@login_required
+@is_authenticated
 def add(request):
     msg = vmsg.msg()
 
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -55,14 +58,16 @@ def add(request):
     context = {
         'instances':                                all_instances,
         'hostname_default':                         hostname_default,
+        'username':                                 request.user,
         'is_superuser' :                            is_superuser,
+
         'msg' :                                     msg.get_all(),
     }
 
     return render(request, 'dnsresolver/add.html', context)
 
 
-@login_required
+@is_authenticated
 def remove(request, server):
     hostname_default = vyos.get_hostname_prefered(request)
 

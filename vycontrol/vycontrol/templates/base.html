@@ -5,6 +5,9 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
 
     <!-- Bootstrap CSS -->
@@ -17,7 +20,7 @@
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 
-
+    
     <title>{% block header_title %}{% endblock %} - VyControl</title>
   </head>
   <body >
@@ -46,7 +49,8 @@
               </select>
             
 
-              <span id="menu-username"><a href="{%  url 'accounts:accounts-profile' %}">{% block username %}{% endblock %}</a></span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
+              <span id="menu-username"><a href="{%  url 'accounts:accounts-profile' %}"><i class="material-icons" id="icon-username">person</i>
+              {% block username %}{% endblock %}</a></span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
 
 
           </p>
@@ -74,15 +78,20 @@
     <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
     </ul>
     
-
-
-    <h2>Configuration</h2>
+ 
+    {% if is_superuser %}
+    <h2>VyControl Administrator</h2>
     <ul>
     <li><a href="{% url 'config:instances' %}">Instances</a></li>
-    {% if is_superuser %}<li><a href="{% url 'config:users-list' %}">Users</a></li>{% endif %}
-    {% if is_superuser %}<li><a href="{% url 'config:groups-list' %}">Groups</a></li>{% endif %}
-
-  </ul>
+    <li><a href="{% url 'config:users-list' %}">Users</a></li>
+    <li><a href="{% url 'config:groups-list' %}">Groups</a></li>
+    </ul>
+    {% else %}
+    <h2>VyControl</h2>
+    <ul>
+    <li><a href="{% url 'config:instances' %}">Instances</a></li>
+    </ul>
+    {% endif %}
 
 
     </div>

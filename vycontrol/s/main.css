@@ -162,6 +162,13 @@ input[type=submit] {
   color:#101088 ;
 }
 
+#icon-username {
+  font-size: 10x;
+  position: relative;
+  top: 5px;
+  left: 2px;
+}
+
 .label_for_h3 {
   margin-bottom: 0;
 }

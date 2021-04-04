@@ -11,10 +11,12 @@ import vycontrol_vyos_api as vapi
 import vycontrol_messages as vmsg
 import perms
 import validators
+from perms import is_authenticated
 
-@login_required
+
+@is_authenticated
 def index(request):
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -28,17 +30,18 @@ def index(request):
         'instances':                                all_instances,
         'hostname_default':                         hostname_default,
         'ntp_servers' :                             ntp_servers,
+        'username':                                 request.user,
         'is_superuser' :                            is_superuser,
     }
 
     return render(request, 'ntp/list.html', context)
 
 
-@login_required
+@is_authenticated
 def add(request):
     msg = vmsg.msg()
 
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -56,13 +59,14 @@ def add(request):
         'instances':                                all_instances,
         'hostname_default':                         hostname_default,
         'is_superuser' :                            is_superuser,
+        'username':                                 request.user,
         'msg' :                                     msg.get_all(),
     }
 
     return render(request, 'ntp/add.html', context)
 
 
-@login_required
+@is_authenticated
 def remove(request, server):
     hostname_default = vyos.get_hostname_prefered(request)
 

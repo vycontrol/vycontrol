@@ -30,7 +30,7 @@ def index(request):
     is_superuser = perms.get_is_superuser(request.user)
  
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     for instance in all_instances:
         if group == None:
             all_instance[instance]['group'] = "admin"
@@ -55,7 +55,7 @@ def users_list(request):
 
 
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     users = User.objects.all()
     groups = Group.objects.all()
@@ -133,7 +133,7 @@ def groups_list(request):
     is_superuser = perms.get_is_superuser(request.user)
 
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
     groups = Group.objects.all()
 
@@ -187,7 +187,7 @@ def instance_add(request):
     is_superuser = perms.get_is_superuser(request.user)
         
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     if len(request.POST) > 0:
@@ -221,7 +221,7 @@ def group_add(request):
     is_superuser = perms.get_is_superuser(request.user)
         
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     error_message = None
@@ -254,7 +254,7 @@ def user_add(request):
     is_superuser = perms.get_is_superuser(request.user)
 
     #interfaces = vyos.get_interfaces()
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     error_message = None
@@ -314,7 +314,7 @@ def user_add(request):
 def instance_conntry(request, hostname):
     is_superuser = perms.get_is_superuser(request.user)
        
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
     hostname_default = vyos.get_hostname_prefered(request)
 
     if perms.user_has_hostname_access(request.user, hostname) == False:
@@ -342,7 +342,7 @@ def instance_conntry(request, hostname):
 @is_authenticated
 def instance_change(request, hostname = False):
         
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
 
     #method = None  
     if hostname != "__none__":
@@ -377,7 +377,7 @@ def instance_change(request, hostname = False):
 @is_authenticated
 def instance_remove(request, hostname):
         
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
 
     # permcheck
     instance = Instance.objects.get(hostname=hostname)
@@ -393,7 +393,7 @@ def instance_remove(request, hostname):
 @is_authenticated
 def instance_changegroup(request, hostname):
        
-    all_instances = vyos.instance_getall()
+    all_instances = vyos.instance_getall_by_group(request)
 
     group_name = request.POST.get('group')
     print(group_name, hostname)
