@@ -6,7 +6,6 @@ from . import views
 app_name = 'config'
 
 urlpatterns = [
-    path('', views.index, name='index'),
     path('instance-change/<str:hostname>', views.instance_change, name='instance-change'),
     path('users-list', views.users_list, name='users-list'),
     path('groups-list', views.groups_list, name='groups-list'),
