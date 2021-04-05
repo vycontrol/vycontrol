@@ -57,7 +57,7 @@ def is_superuser(func):
 
         if is_admin == False:
             auth.logout(request)
-            return redirect('accounts-login')
+            return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
 
         value = func(*args, **kwargs)
         return value

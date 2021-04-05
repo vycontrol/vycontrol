@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block header_title %}dnsresolver{% endblock %}
+{% block section_title %}dnsresolver{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'config:group-edit' group %}" method="post">
+{% csrf_token %}
+
+<p>Name only accept letters, numbers and _-.</p>
+
+<p>
+    <label for="alias">Name</label><br>
+    <input type="text" name="name" id="name" value="{{ group.name }}" size="60">
+</p>
+
+
+<input type="submit" value="Edit user">
+</form>
+
+
+
+{% endblock %}
+

@@ -398,3 +398,32 @@ def group_activate(request, group_name):
         group.save()
 
     return redirect('config:groups-list')
+
+
+@perms.is_superuser
+@is_authenticated    
+def group_edit(request, group_name):
+    vinfo = viewinfo.prepare(request)
+
+    if validator_group(group_name):
+        group = Group.objects.get(name=group_name)
+
+        if request.POST.get('name', None) != None:
+            newname = request.POST.get('name').strip()
+
+            if validator_group(newname):
+                group.name = newname
+                group.save()
+            else:
+                vinfo.msg.add_error('Group name only accept letters, numbers and _-.')
+            
+    else:
+        return redirect('config:groups-list')
+
+    context = viewinfo.context(vinfo)    
+    localcontext = {
+        'group':             group
+    }
+    context.update(localcontext)
+
+    return render(request, 'config/group_edit.html', context)     

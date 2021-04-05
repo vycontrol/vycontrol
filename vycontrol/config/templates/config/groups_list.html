@@ -6,9 +6,9 @@
 {% endblock %}
 
 
-{% block header_title %}Manage groups{% endblock %}
-{% block section_title %}Manage groups{% endblock %}
-{% block username %}{{ username }}{% endblock %}
+{% block header_title %}dnsresolver{% endblock %}
+{% block section_title %}dnsresolver{% endblock %}
+
 
 {% block content %}
 
@@ -33,6 +33,7 @@
         <td>{{ group }}</td>
         <td>{% if group.active == True %}active{% else %}inactive{% endif %}</td>
         <td>
+            <a href="{% url 'config:group-edit' group %}">edit</a> | 
             {% if group.active == True %}<a href="{% url 'config:group-inactivate' group %}">inactivate</a>{% else %}<a href="{% url 'config:group-activate' group %}">activate</a>{% endif %}
         </td>
 

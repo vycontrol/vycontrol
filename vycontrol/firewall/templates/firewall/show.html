@@ -2,7 +2,6 @@
 
 {% block header_title %}Firewall {{firewall_name}}{% endblock %}
 {% block section_title %}<a href="{% url 'firewall:show' firewall_name %}">Firewall {{firewall_name}}</a>{% endblock %}
-{% block username %}{{ username }}{% endblock %}
 
 {% block debug %}
 {{ firewall }}
