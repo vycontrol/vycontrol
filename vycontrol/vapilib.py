@@ -5,7 +5,6 @@ import sys
 import logging
 #logger = logging.getLogger(__name__)
 
-
 from config.models import Instance
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
@@ -20,7 +19,6 @@ class vyapi:
     data =      None
     reason =    None
     def __init__(self, result, data = None, reason=None):
-
         if result == True:
             self.success = True
         else:
@@ -28,8 +26,6 @@ class vyapi:
         self.result = result
         self.data = data
         self.reason = reason
-
-log("api " + " !!!!!!!!!!!!!! START NEW WEB PROCESS", end=False)
 
 API_LIST = {}
 API_LIST["get"] = {}
@@ -97,10 +93,6 @@ def get_api_data(hostname, api, op, cmd):
     if api_exists == False:
         return False
     else:
-        #log("api_path ", api_path)
-        #log("protocol ", protocol)
-        #log("instance.hostname ", instance.hostname)
-        #log("instance.port ", instance.port)
         api_url = protocol + "://" + instance.hostname + ":" + str(instance.port) + "/" + api_path
         api_data = {
             'api_url':          api_url,
@@ -148,15 +140,10 @@ def api(hostname, api, op, cmd, description = ""):
 
         return v
 
-
-
     try:
         respjson = resp.json()
     except json.JSONDecodeError:
         respjson = {'success': False, 'error': None, 'data': None}
-
-    #log("api raw", respjson)
-
 
     v = vyapi(
         result =    respjson['success'],
@@ -165,9 +152,6 @@ def api(hostname, api, op, cmd, description = ""):
     )   
 
     log("api resp", [v.result, v.reason, v.data])
-
-
-
 
     log_vars = {
         'api_url':      api_data['api_url'],
@@ -183,7 +167,3 @@ def api(hostname, api, op, cmd, description = ""):
     log("api " + description, log_vars)
 
     return v
-
-    
-
-
