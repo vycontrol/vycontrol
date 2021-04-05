@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<p class="margin-topbottom">VyOS vyos-api need to be configurated using vyos cli/ssh according <a href="https://docs.vyos.io/" target="_blank">VyOS documentation</a>.</p>
+
+<form action="{% url 'config:instance-edit' instance.hostname %}" method="post">
+
+
+{% csrf_token %}
+
+<p>
+<label for="alias">Alias</label><br>
+<input type="text" name="alias" id="alias" value="{{ instance.alias }}" size="20">
+</p>
+
+<p>
+<label for="hostname">VyOS API Hosname/IP</label><br>
+<input type="text" name="hostname" id="hostname" value="{{ instance.hostname }}" size="60">
+</p>
+
+<p>
+<label for="port">VyOS API TCP Port</label><br>
+<input type="text" name="port" id="port" value="{{ instance.port }}" size="6">
+</p>
+
+<p>
+<label for="key">VyOS API Key</label><br>
+<input type="text" name="key" id="key" value="{{ instance.key }}" size="60">
+</p>
+
+
+<p>
+<label for="https">VyOS is https?</label><br>
+<input type="checkbox" name="https" id="https" value="1" {% if instance.https == True %}checked="checked"{% endif %}>
+</p>
+
+<input type="submit" value="Edit Instance">
+</form>
+
+
+
+{% endblock %}
+
