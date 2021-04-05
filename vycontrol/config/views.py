@@ -93,7 +93,7 @@ def users_list(request):
 @perms.is_superuser
 @is_authenticated
 def groups_list(request):
-    vinfo = viewinfo.prepare(request)
+    vinfo = viewinfo.prepare(request, title="Groups list")
 
     groups = Group.objects.all()
 
@@ -108,7 +108,7 @@ def groups_list(request):
 
 @is_authenticated
 def instances(request):
-    vinfo = viewinfo.prepare(request)
+    vinfo = viewinfo.prepare(request, "Instances List")
 
     if vinfo.hostname_default == None:
         if vinfo.all_instances.count() > 0:
@@ -376,6 +376,61 @@ def instance_changegroup(request, hostname):
 
     return redirect('config:instances')
 
+@perms.is_superuser
+@is_authenticated
+def instance_edit(request, hostname):
+
+    if not validators.domain(hostname) and not validators.ipv4(hostname):
+        return redirect('config:instances')
+
+    vinfo = viewinfo.prepare(request, "Instance edit " + hostname)
+
+    try:
+        instance = Instance.objects.get(hostname=hostname)
+    except Instance.DoesNotExist:
+        return redirect('config:instances')
+
+    if len(request.POST) > 0:
+        error = False
+
+        instance.alias = request.POST.get('alias').strip()
+        instance.hostname = request.POST.get('hostname').strip()
+        instance.port = request.POST.get('port').strip()
+        try:
+            port_number = int(instance.port)
+        except:
+            port_number = 0
+        instance.key = request.POST.get('key').strip()
+
+        if 'https' in request.POST:
+            instance.https = True
+        else:
+            instance.https = False
+
+        if not validator_letters_numbers(instance.alias):
+            error = True
+            vinfo.msg.add_error("Alias need to be letters and numbers only")
+        if not validators.domain(instance.hostname) and not validators.ipv4(instance.hostname):
+            error = True
+            vinfo.msg.add_error("Hostname need to be only domain or ipv4")
+        if not validator_letters_numbers(instance.key):
+            error = True
+            vinfo.msg.add_error("Key need to be letters and numbers only")
+        if not validators.between(port_number, 1, 65535):
+            error = True
+            vinfo.msg.add_error("Port need to be between 1 and 65535")
+
+        if error == False:
+            instance.save()
+
+    context = viewinfo.context(vinfo)    
+    localcontext = {
+        'instance':         instance,
+    }
+    context.update(localcontext)
+
+    return render(request, 'config/instance_edit.html', context) 
+
 
 @perms.is_superuser
 @is_authenticated    
@@ -403,7 +458,7 @@ def group_activate(request, group_name):
 @perms.is_superuser
 @is_authenticated    
 def group_edit(request, group_name):
-    vinfo = viewinfo.prepare(request)
+    vinfo = viewinfo.prepare(request, title="Group edit")
 
     if validator_group(group_name):
         group = Group.objects.get(name=group_name)

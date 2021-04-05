@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% block header_title %}dnsresolver{% endblock %}
-{% block section_title %}dnsresolver{% endblock %}
-
 
 {% block debug %}
     {% for instance in instances %}
@@ -36,7 +33,7 @@
     {% for instance in instances %}
     <tr>
         <td>{{ instance.alias }}</td>
-        <td>{{ instance.hostname }}</td>
+        <td><a href="{% url 'config:instance-edit' instance.hostname %}">{{ instance.hostname }}</a></td>
         <td>{{ instance.port }}</td>
         <td>show</td>
         <td>{{ instance.https }}</td>

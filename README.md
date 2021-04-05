@@ -101,6 +101,8 @@ EMAIL_USE_TLS = True
 - [ ] Discussion VyControl at VyOS forum https://forum.vyos.io/t/vycenter-alpha-stage-announcement-vyos-web-interface/5221/4
 
 # changelog
+- [x] create/read/update/delete users 
+- [x] create/read/update/delete groups
 - [x] create/read/update/delete DNS Resolver
 - [x] create/read/update/delete email/password in user profile
 - [x] create/read/update/delete interfaces and vlans
@@ -112,10 +114,6 @@ EMAIL_USE_TLS = True
 - [x] version created to start project framework, organize permission systems and concept test with some firewall and interface functions and statics routes
 
 # roadmap
-
-## vycontrol configuration
-- [ ] finish users 
-- [ ] finish groups
 
 ## vpn services
 - [ ] openvpn

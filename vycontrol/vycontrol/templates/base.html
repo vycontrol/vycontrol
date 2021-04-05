@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  <title>{% block header_title %}{% endblock %} - VyControl</title>
+  <title>{% if title %}{{ title }}{% else %}{% block header_title %}{% endblock %}{% endif %} - VyControl</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -96,7 +96,7 @@
 
     </div>
     <div class="col content">
-        <h2>{% block section_title %}{% endblock %}</h2>
+        <h2>{% if title %}{{ title }}{% else %}{% block section_title %}{% endblock %}{% endif %}</h2>
 
         {% block submenu %}{% endblock %}
 

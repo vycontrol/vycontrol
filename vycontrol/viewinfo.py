@@ -10,8 +10,10 @@ class prepareClass:
     request = None
     msg = None
     debug = False
+    vycontrol_credits = False
+    title = ""
 
-def prepare(request):
+def prepare(request, title=None):
     p = prepareClass()
 
     p.all_instances = perms.instance_getall_by_group(request)
@@ -21,6 +23,8 @@ def prepare(request):
     p.msg = vmsg.msg()
     p.debug = settings.DEBUG
     p.vycontrol_credits = settings.VYCONTROL_CREDITS
+    if title != None:
+        p.title = title
 
     return p
 
@@ -33,6 +37,7 @@ def context(prepare):
         'msg' :                                     prepare.msg.get_all(),
         'debugactive' :                             prepare.debug,
         'vycontrol_credits' :                       prepare.vycontrol_credits,
+        'title' :                                   prepare.title,
                                
     }
     return contextPrepare
