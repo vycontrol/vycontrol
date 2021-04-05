@@ -7,6 +7,11 @@ import re
 def validator_letters_numbers(value):
     if re.match("^[A-Za-z0-9]*$", value):
         return True
+
+@validator
+def validator_group(value):
+    if re.match("^[A-Za-z0-9\.\-_]*$", value):
+        return True
        
 @validator
 def validator_ipv4_cidr(value):

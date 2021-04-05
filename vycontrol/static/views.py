@@ -17,8 +17,8 @@ import perms
 
 @is_authenticated    
 def static_list(request):
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     static_dict = vyos.get_route_static(hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -45,8 +45,8 @@ def static_list(request):
 def static_add(request):
     msg = vmsg.msg()
 
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     static_list = vyos.get_route_static(hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
 
@@ -73,8 +73,8 @@ def static_add(request):
 @is_authenticated    
 def static_remove(request, route, nexthop):
         
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     static_list = vyos.get_route_static(hostname_default)
 
     print(route)

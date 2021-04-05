@@ -14,8 +14,8 @@ class prepareClass:
 def prepare(request):
     p = prepareClass()
 
-    p.all_instances = vyos.instance_getall_by_group(request)
-    p.hostname_default = vyos.get_hostname_prefered(request)
+    p.all_instances = perms.instance_getall_by_group(request)
+    p.hostname_default = perms.get_hostname_prefered(request)
     p.is_superuser = perms.get_is_superuser(request.user)
     p.request = request
     p.msg = vmsg.msg()

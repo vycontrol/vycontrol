@@ -12,5 +12,4 @@ class Instance(models.Model):
     group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
 
     
-
-
+Group.add_to_class('active', models.BooleanField(default=True))

@@ -118,7 +118,7 @@ def instances(request):
         else:
             return redirect('config:instance-add')
 
-    groups = Group.objects.all()
+    groups = Group.objects.filter(active=True)
 
     context = viewinfo.context(vinfo)    
     localcontext = {
@@ -256,7 +256,7 @@ def user_activate(request, username):
         user.is_active = True
         user.save()
 
-    return redirect('config:users-list') 
+    return redirect('config:users-list')
 
     
 @perms.is_superuser
@@ -375,3 +375,26 @@ def instance_changegroup(request, hostname):
 
 
     return redirect('config:instances')
+
+
+@perms.is_superuser
+@is_authenticated    
+def group_inactivate(request, group_name):
+    vinfo = viewinfo.prepare(request)
+    if validator_group(group_name):
+        group = Group.objects.get(name=group_name)
+        group.active = False
+        group.save()
+
+    return redirect('config:groups-list')
+
+@perms.is_superuser
+@is_authenticated    
+def group_activate(request, group_name):
+    vinfo = viewinfo.prepare(request)
+    if validator_group(group_name):
+        group = Group.objects.get(name=group_name)
+        group.active = True
+        group.save()
+
+    return redirect('config:groups-list')

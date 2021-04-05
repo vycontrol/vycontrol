@@ -13,6 +13,10 @@ urlpatterns = [
     path('user-edit/<str:username>', views.user_edit, name='user-edit'),
     path('groups-list', views.groups_list, name='groups-list'),
     path('group-add', views.group_add, name='group-add'),
+    #path('group-edit/<str:group_name>', views.group_edit, name='group-edit'),
+    path('group-activate/<str:group_name>', views.group_activate, name='group-activate'),
+    path('group-inactivate/<str:group_name>', views.group_inactivate, name='group-inactivate'),
+
     path('user-add', views.user_add, name='user-add'),
     path('instance-add', views.instance_add, name='instance-add'),
     path('instance-conntry/<str:hostname>', views.instance_conntry, name='instance-conntry'),

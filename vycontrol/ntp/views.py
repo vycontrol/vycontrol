@@ -16,8 +16,8 @@ from perms import is_authenticated
 
 @is_authenticated
 def index(request):
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
     ntp_srv = vapi.get_ntp(hostname_default)
@@ -41,8 +41,8 @@ def index(request):
 def add(request):
     msg = vmsg.msg()
 
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
 
     if 'server' in request.POST:
@@ -68,7 +68,7 @@ def add(request):
 
 @is_authenticated
 def remove(request, server):
-    hostname_default = vyos.get_hostname_prefered(request)
+    hostname_default = perms.get_hostname_prefered(request)
 
     ntp_servers = vapi.get_ntp(hostname_default)
 

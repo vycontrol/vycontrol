@@ -27,6 +27,11 @@ def is_authenticated(func):
         if user.count() != 1:
             return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
         
+        # check if return a valid hostname
+        hostname = get_hostname_prefered(request)
+        if hostname == None:
+            return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
+
         value = func(*args, **kwargs)
         return value
     return wrapper_perm
@@ -90,7 +95,6 @@ def instance_getall_by_group(request):
         instances = Instance.objects.all()
         return instances
     else:
-        # get usergroup - VyControl groups is one to one
         try:
             usergroup = Group.objects.get(user=username)
         except Group.DoesNotExist:
@@ -139,7 +143,7 @@ def get_hostname_prefered(request):
 
     # get usergroup - VyControl groups is one to one
     try:
-        usergroup = Group.objects.get(user=username)
+        usergroup = Group.objects.get(user=username, active=True)
     except Group.DoesNotExist:
         usergroup = None
 
@@ -162,6 +166,7 @@ def get_hostname_prefered(request):
         except Instance.DoesNotExist:
             pass
 
+
     # if we have no hostname yet try to get the default one from database
     if hostname == None:
         try:
@@ -182,5 +187,5 @@ def get_hostname_prefered(request):
 
             except Instance.DoesNotExist:
                 pass
-    return None
-
+   
+    return hostname

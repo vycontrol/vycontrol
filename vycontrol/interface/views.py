@@ -27,8 +27,8 @@ def get_item(dictionary, key):
 @is_authenticated    
 def index(request):
     
-    hostname_default = vyos.get_hostname_prefered(request)
-    all_instances = vyos.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
     firewall_all = vyos.get_firewall_all(hostname_default)
     interfaces = vyos.get_interfaces(hostname_default)
     is_superuser = perms.get_is_superuser(request.user)
@@ -213,8 +213,8 @@ def index(request):
 @is_authenticated    
 def interface_show(request, interface_type, interface_name):
         
-    all_instances = vyos.instance_getall_by_group(request)
-    hostname_default = vyos.get_hostname_prefered(request)
+    all_instances = perms.instance_getall_by_group(request)
+    hostname_default = perms.get_hostname_prefered(request)
     is_superuser = perms.get_is_superuser(request.user)
     
     firewall_all = vyos.get_firewall_all(hostname_default)  
@@ -246,10 +246,10 @@ def interface_show(request, interface_type, interface_name):
 @is_authenticated    
 def interface_firewall(request, interface_type, interface_name):
         
-    all_instances = vyos.instance_getall_by_group(request)
+    all_instances = perms.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
 
-    hostname_default = vyos.get_hostname_prefered(request)
+    hostname_default = perms.get_hostname_prefered(request)
     
     interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     
@@ -268,7 +268,7 @@ def interface_firewall(request, interface_type, interface_name):
 
 @is_authenticated    
 def interface_set_firewall(request, interface_type, interface_name):
-    hostname_default = vyos.get_hostname_prefered(request)
+    hostname_default = perms.get_hostname_prefered(request)
     
     interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     interface_detail = vyos.detail_interface(interface_type, interface_name)
@@ -302,7 +302,7 @@ def interface_set_firewall(request, interface_type, interface_name):
 
 @is_authenticated    
 def interface_set(request, interface_type, interface_name):
-    hostname_default = vyos.get_hostname_prefered(request)   
+    hostname_default = perms.get_hostname_prefered(request)   
     #interface = vyos.get_interface(interface_type, interface_name, hostname=hostname_default)
     interface_detail = vyos.detail_interface(interface_type, interface_name)
     interface_vif = interface_detail['vlan_id']
@@ -331,7 +331,7 @@ def interface_set(request, interface_type, interface_name):
 
 @is_authenticated    
 def interface_delete(request, interface_type, interface_name, interface_vif=None):
-    hostname_default = vyos.get_hostname_prefered(request)   
+    hostname_default = perms.get_hostname_prefered(request)   
     
     if interface_vif == None:
         v = vapi.delete_interface(hostname_default, interface_type, interface_name)
@@ -342,9 +342,9 @@ def interface_delete(request, interface_type, interface_name, interface_vif=None
 
 @is_authenticated    
 def interface_add(request):      
-    all_instances = vyos.instance_getall_by_group(request)
+    all_instances = perms.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
-    hostname_default = vyos.get_hostname_prefered(request)
+    hostname_default = perms.get_hostname_prefered(request)
     msg = vmsg.msg()
 
     changed = False
@@ -421,9 +421,9 @@ def interface_add(request):
 
 @is_authenticated    
 def interface_add_vlan(request, interface_type=None, interface_name=None):      
-    all_instances = vyos.instance_getall_by_group(request)
+    all_instances = perms.instance_getall_by_group(request)
     is_superuser = perms.get_is_superuser(request.user)
-    hostname_default = vyos.get_hostname_prefered(request)
+    hostname_default = perms.get_hostname_prefered(request)
     msg = vmsg.msg()
 
     changed = False

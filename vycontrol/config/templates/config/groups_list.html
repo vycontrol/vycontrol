@@ -24,12 +24,18 @@
     <table border="1" width="100%">
     <tr>
         <th>name</th>
+        <th>status</th>
+        <th>actions</th>
     </tr>
 
     {% for group in groups %}
     <tr>
         <td>{{ group }}</td>
-    
+        <td>{% if group.active == True %}active{% else %}inactive{% endif %}</td>
+        <td>
+            {% if group.active == True %}<a href="{% url 'config:group-inactivate' group %}">inactivate</a>{% else %}<a href="{% url 'config:group-activate' group %}">activate</a>{% endif %}
+        </td>
+
     </tr>
 
     {% endfor %}

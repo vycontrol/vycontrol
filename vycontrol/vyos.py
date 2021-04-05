@@ -10,16 +10,6 @@ from django.contrib.auth.models import User
 
 import perms
 
-def instance_getall(*args, **kwargs):
-    return perms.instance_getall(*args, **kwargs)
-
-
-def get_hostname_prefered(*args, **kwargs):
-    return perms.get_hostname_prefered(*args, **kwargs)
-
-def instance_getall_by_group(*args, **kwargs):
-    return perms.instance_getall_by_group(*args, **kwargs)
-
 def repvar(s):
     return s.replace("-", "_")
 
