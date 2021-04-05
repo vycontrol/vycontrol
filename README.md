@@ -64,12 +64,12 @@ pip3 install -r requirements.txt
 ### setup initial database
 ```
 cd vycontrol
-python3 manage.py migrate
+python3 manage.py --settings=vycontrol.settings.production migrate
 ```
 
 ### run webserver
 ```
-python3 manage.py runserver
+python3 manage.py  --settings=vycontrol.settings.production runserver
 ```
 
 ## access webpage
