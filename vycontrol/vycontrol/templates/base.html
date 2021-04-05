@@ -67,32 +67,32 @@
         <h1 align="center"><a href="/"><img src="https://storage.googleapis.com/vycontrol/logos/logotxt.png?x" width="170"  height="30" alt="vycontrol"></a></h1>
       </p>
 
+    {% if not noinstance %}
+      <h2>Router</h2>
 
-    <h2>Router</h2>
-
-    <ul class="menuleft">
-    <li><a href="{% url 'interface:interface-list' %}">Interfaces</a></li>
-    <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
-    <li><a href="{% url 'static:static-list' %}">Static Routes</a></li>
-    <li><a href="{% url 'dnsresolver:dnsresolver-list' %}">DNS resolver</a></li>
-    <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
-    </ul>
-    
- 
-    {% if is_superuser %}
-    <h2>VyControl Administrator</h2>
-    <ul class="menuleft">
-    <li><a href="{% url 'config:instances' %}">Instances</a></li>
-    <li><a href="{% url 'config:users-list' %}">Users</a></li>
-    <li><a href="{% url 'config:groups-list' %}">Groups</a></li>
-    </ul>
-    {% else %}
-    <h2>VyControl</h2>
-    <ul class="menuleft">
-    <li><a href="{% url 'config:instances' %}">Instances</a></li>
-    </ul>
+      <ul class="menuleft">
+      <li><a href="{% url 'interface:interface-list' %}">Interfaces</a></li>
+      <li><a href="{% url 'firewall:firewall-list' %}">Firewall</a></li>
+      <li><a href="{% url 'static:static-list' %}">Static Routes</a></li>
+      <li><a href="{% url 'dnsresolver:dnsresolver-list' %}">DNS resolver</a></li>
+      <li><a href="{% url 'ntp:ntp-list' %}">NTP</a></li>
+      </ul>
+      
+  
+      {% if is_superuser %}
+      <h2>VyControl Administrator</h2>
+      <ul class="menuleft">
+      <li><a href="{% url 'config:instances' %}">Instances</a></li>
+      <li><a href="{% url 'config:users-list' %}">Users</a></li>
+      <li><a href="{% url 'config:groups-list' %}">Groups</a></li>
+      </ul>
+      {% else %}
+      <h2>VyControl</h2>
+      <ul class="menuleft">
+      <li><a href="{% url 'config:instances' %}">Instances</a></li>
+      </ul>
+      {% endif %}
     {% endif %}
-
 
     </div>
     <div class="col content">

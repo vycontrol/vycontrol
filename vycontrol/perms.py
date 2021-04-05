@@ -29,7 +29,8 @@ def is_authenticated(func):
         
         # check if return a valid hostname
         hostname = get_hostname_prefered(request)
-        if hostname == None:
+        userdata = user[0]
+        if hostname == None and userdata.is_superuser == False:
             return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
 
         value = func(*args, **kwargs)

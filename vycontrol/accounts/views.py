@@ -39,11 +39,8 @@ def index(request):
         if 'username' in request.POST and 'password' in request.POST:
             user = User.objects.create_superuser(username=request.POST['username'], email='', password=request.POST['password'])
             user.save()
-            return redirect('interface:interface-list')
-
-    context = { 
-        'users_admin': users_admin.all(),
-    }   
+            return redirect('instances')
+ 
     return render(request, 'accounts/start.html', context)
 
 

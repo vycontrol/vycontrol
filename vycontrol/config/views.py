@@ -120,10 +120,14 @@ def instances(request):
 
     groups = Group.objects.filter(active=True)
 
+
     context = viewinfo.context(vinfo)    
     localcontext = {
         'groups' : groups,
     }
+    if len(vinfo.all_instances) == 0:
+        localcontext['noinstance'] = True
+        
     context.update(localcontext)
 
     return render(request, 'config/instances.html', context)   

@@ -15,7 +15,11 @@ def repvar(s):
 
 def get_url(hostname):
     # permcheck
-    instance = Instance.objects.get(hostname=hostname)
+    try:
+        instance = Instance.objects.get(hostname=hostname)
+    except Instance.DoesNotExist:
+        return ''
+
     if instance.https == True:
         protocol = "https"
     else:
@@ -45,8 +49,11 @@ def get_url_retrieve(hostname):
     return url
 
 def get_key(hostname):
-    # permcheck
-    instance = Instance.objects.get(hostname=hostname)
+    try:
+        instance = Instance.objects.get(hostname=hostname)
+    except Instance.DoesNotExist:
+        return None
+
     return instance.key
 
 def api(type, hostname, cmd):
