@@ -5,3 +5,4 @@ sqlparse==0.4.1
 requests==2.25.1
 python-slugify==4.0.1
 validators==0.18.2
+python-memcached==1.59

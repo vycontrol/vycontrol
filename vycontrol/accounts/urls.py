@@ -14,14 +14,6 @@ from . import views
 
 app_name = 'accounts'
 
-
-
-
-
-
 urlpatterns = [
    path('', views.profile, name='accounts-profile'),
 ]
-
-
-
