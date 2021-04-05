@@ -19,9 +19,14 @@ def is_authenticated(func):
         if not request.user.is_authenticated:
            return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
 
-        hostname_default = vyos.get_hostname_prefered(request)
-
-
+        # check if username is active
+        user = User.objects.filter(
+            username=request.user,
+            is_active=True
+        )
+        if user.count() != 1:
+            return redirect('%s?next=%s' % (reverse('accounts-login'), request.path))
+        
         value = func(*args, **kwargs)
         return value
     return wrapper_perm

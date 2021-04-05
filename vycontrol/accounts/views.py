@@ -8,8 +8,8 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.urls import reverse
 
-
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from config.models import Instance
 
 import vyos
@@ -19,9 +19,10 @@ import vmsg
 import viewinfo
 import validators
 from perms import is_authenticated
+
 from libs.vycontrol_validators import *
-
-
+from django.template.defaultfilters import register
+from libs.vycontrol_filters import get_item
 
 def index(request):
     users_admin = User.objects.filter(
@@ -39,11 +40,11 @@ def index(request):
             user = User.objects.create_superuser(username=request.POST['username'], email='', password=request.POST['password'])
             user.save()
             return redirect('%s?next=%s' % (reverse('registration-login'), '/config/instance-add'))
+
     context = { 
         'users_admin': users_admin.all(),
     }   
     return render(request, 'accounts/start.html', context)
-
 
 
 @is_authenticated    

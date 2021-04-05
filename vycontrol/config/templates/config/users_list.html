@@ -34,13 +34,16 @@
     <tr>
         <th>name</th>
         <th>email</th>
+        <th>status</th>
         <th>group</th>
+        <th>actions</th>
     </tr>
 
     {% for user in users %}
     <tr>
         <td>{{ user }}</td>
         <td>{{ user.email }}</td>
+        <td>{% if user.is_active == True %}active{% else %}inactive{% endif %}</td>
         <td><select id="group-{{ user }}" name="group-{{ user }}"><option value="--remove--">None</option>
             {% if groups != False %}
                 {% for fkey in groups %}    
@@ -48,6 +51,9 @@
                 {% endfor %}
             {% endif %}
         </select></td>
+        <td><a href="{% url 'config:user-edit' user %}">edit</a> | {% if user.is_active == True %}<a href="{% url 'config:user-inactivate' user %}">inactivate</a>{% else %}<a href="{% url 'config:user-activate' user %}">activate</a>{% endif %}</td>
+
+
     </tr>
 
     {% endfor %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block header_title %}Profile{% endblock %}
-{% block section_title %}Profile{% endblock %}
+{% block header_title %}User edit{% endblock %}
+{% block section_title %}User edit{% endblock %}
 {% block username %}{{ username }}{% endblock %}
 {% block debugactive %}{{ debug }}{% endblock %}
 {% block creditsactive %}{{ vycontrol_credits }}{% endblock %}
@@ -14,12 +14,12 @@
 {% block content %}
 
 
-<form method="post" action="{% url 'accounts:accounts-profile' %}">
+<form method="post" action="{% url 'config:user-edit' user %}">
 {% csrf_token %}
 <table width="100%" border="1">
     <tr>
         <th width="50%">username</th>
-        <td>{{ username }}</td>
+        <td>{{ user }}</td>
     </tr>
     <tr>
         <th width="50%">email</th>

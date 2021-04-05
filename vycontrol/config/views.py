@@ -236,6 +236,60 @@ def user_add(request):
 
     return render(request, 'config/user_add.html', context) 
 
+@perms.is_superuser
+@is_authenticated    
+def user_inactivate(request, username):
+    vinfo = viewinfo.prepare(request)
+    if validator_letters_numbers(username):
+        user = User.objects.get(username=username)
+        user.is_active = False
+        user.save()
+
+    return redirect('config:users-list')
+
+@perms.is_superuser
+@is_authenticated    
+def user_activate(request, username):
+    vinfo = viewinfo.prepare(request)
+    if validator_letters_numbers(username):
+        user = User.objects.get(username=username)
+        user.is_active = True
+        user.save()
+
+    return redirect('config:users-list') 
+
+    
+@perms.is_superuser
+@is_authenticated    
+def user_edit(request, username):
+    vinfo = viewinfo.prepare(request)
+    if validator_letters_numbers(username):
+        user = User.objects.get(username=username)
+        if request.POST.get('email', None) != None:
+            email_new = request.POST.get('email').strip()
+
+            if validators.email(email_new):
+                user.email = email_new
+                user.save()
+    
+        if request.POST.get('pass1', None) != None and request.POST.get('pass2', None) != None:
+            if request.POST.get('pass1') == request.POST.get('pass2'):
+                pass_new = request.POST.get('pass1').strip()
+                if pass_new != '':
+                    user.set_password(pass_new)
+                    user.save()
+    else:
+        return redirect('config:users-list')
+
+    context = viewinfo.context(vinfo)    
+    localcontext = {
+        'user':             user
+    }
+    context.update(localcontext)
+
+    return render(request, 'config/user_edit.html', context) 
+
+
 @is_authenticated
 def instance_conntry(request, hostname):
     vinfo = viewinfo.prepare(request)
