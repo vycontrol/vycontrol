@@ -34,27 +34,29 @@
           
         </div>
         <div class="col-9">
-          <form action="{% url 'config:instance-change' '--none--' %}" method="post" id="instancedefault">
-            {% csrf_token %}
+          {% if not noinstance %}
+            <form action="{% url 'config:instance-change' '--none--' %}" method="post" id="instancedefault">
+              {% csrf_token %}
 
 
-            <p class="text-right menu-config">
-            
-              <select name="vyos-id" id="vyos-id" onchange="this.form.submit();">
-                {% for instance in instances %}
-                <option value="{{instance.hostname}}" {% if hostname_default == instance.hostname %}selected="selected"{% endif %}>{{instance.alias}}</option>
-                {% endfor %}
-          
-                
+              <p class="text-right menu-config">
               
-              </select>
+                <select name="vyos-id" id="vyos-id" onchange="this.form.submit();">
+                  {% for instance in instances %}
+                  <option value="{{instance.hostname}}" {% if hostname_default == instance.hostname %}selected="selected"{% endif %}>{{instance.alias}}</option>
+                  {% endfor %}
             
+                  
+                
+                </select>
+              
 
-              <span id="menu-username"><a href="{%  url 'accounts:accounts-profile' %}"><i class="material-icons" id="icon-username">person</i>{{ username }}</a></span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
+                <span id="menu-username"><a href="{%  url 'accounts:accounts-profile' %}"><i class="material-icons" id="icon-username">person</i>{{ username }}</a></span> <span id="vycontrol-config-menu"> <a href="{% url 'accounts-logout' %}">Logout</a></span>
 
 
-          </p>
-        </form>
+            </p>
+            </form>
+          {% endif %}
         </div>
       </div>
     </div>

@@ -125,9 +125,7 @@ def instances(request):
     localcontext = {
         'groups' : groups,
     }
-    if len(vinfo.all_instances) == 0:
-        localcontext['noinstance'] = True
-        
+
     context.update(localcontext)
 
     return render(request, 'config/instances.html', context)   
@@ -156,6 +154,8 @@ def instance_add(request):
     context = viewinfo.context(vinfo)    
     localcontext = {
     }
+    if len(vinfo.all_instances) == 0:
+        localcontext['noinstance'] = True
     context.update(localcontext)
 
     return render(request, 'config/instance_add.html', context)  
