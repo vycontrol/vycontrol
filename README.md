@@ -70,6 +70,7 @@ now you can access http://127.0.0.1:8000
 Right now we are using db.sqlite3, you can edit composer and to change to mySQL/PostgreSQL if needed.
 
 ```
+find vycontrol | grep migrations | xargs rm -rf
 docker-compose build
 docker-compose up
 ```
@@ -83,11 +84,19 @@ source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
+### create your own configuration
+```
+cp -a vycontrol/vycontrol/settings_example/ /vycontrol/vycontrol/settings_available/
+```
+edit according your needs
+
 ### setup initial database
 ```
 source env/bin/activate
 cd vycontrol
-python3 manage.py migrate --settings=vycontrol.settings_available.production
+python3 manage.py makemigrations config --settings=vycontrol.settings_available.production 
+python3 manage.py makemigrations --settings=vycontrol.settings_available.production 
+python3 manage.py migrate --settings=vycontrol.settings_available.production 
 ```
 
 ### run webserver
