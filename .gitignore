@@ -139,3 +139,5 @@ db.sqlite3
 
 # development config
 vycontrol/vycontrol/settings/development.py
+migrations
+vycontrol/vycontrol/settings_available
