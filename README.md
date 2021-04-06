@@ -34,29 +34,10 @@ VyControl can be a web gui for multiple VyOS installation in a datacenter. Each 
 ## Docker
 latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
 
-
-your configuration will be mounted on Docker to /etc/vycontrol/production.py
-```
-mkdir /etc/vycontrol
-cd /etc/vycontrol
-wget https://raw.githubusercontent.com/vycontrol/vycontrol/master/vycontrol/vycontrol/settings/production.py
-````
-
-now edit production.py:
-* ALLOWED_HOSTS currently 127.0.0.1 is ok for tests
-* for tests you don't need to edit EMAIL settings, but forget password will not work
-* sqlite is ok for tests, but you can change to MySQL/PostgreSQL. 
-* SECRET_KEY edit to anything random, you can use openssl for example:
-
-```
-openssl rand -hex 32
-```
-
-now download latest docker image:
+download latest docker image:
 ```
 docker pull robertoberto/vycontrol
 ```
-
 
 run docker:
 ```
@@ -88,7 +69,15 @@ pip3 install -r requirements.txt
 ```
 cp -a vycontrol/vycontrol/settings_example/ /vycontrol/vycontrol/settings_available/
 ```
-edit according your needs
+edit according your needs:
+* ALLOWED_HOSTS currently 127.0.0.1 is ok for tests
+* for tests you don't need to edit EMAIL settings, but forget password will not work
+* sqlite is ok for tests, but you can change to MySQL/PostgreSQL. 
+* SECRET_KEY edit to anything random, you can use openssl for example:
+
+```
+openssl rand -hex 32
+```
 
 ### setup initial database
 ```
