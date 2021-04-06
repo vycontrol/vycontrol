@@ -2,6 +2,8 @@ version: "2.2"
 services:
   django:
     container_name: vycontrol
+    volumes:
+      - /etc/vycontrol/settings_available:/code/vycontrol/settings_available
     build:
       context: .
       dockerfile: Dockerfile

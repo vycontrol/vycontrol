@@ -29,27 +29,49 @@ VyControl can be a web gui for multiple VyOS installation in a datacenter. Each 
 # Install instructions 
 
 * download [VyOS](https://www.vyos.io/) Rolling Release, since VyControl needs the latest VyOS API.
-* for your security edit SECRET_KEY in inside Django settings/production.py and change to something random, maybe using 
+* configure VyOS-API according VyOS documentation
+
+## Docker
+latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
+
+
+your configuration will be mounted on Docker to /etc/vycontrol/production.py
+```
+mkdir /etc/vycontrol
+cd /etc/vycontrol
+wget https://raw.githubusercontent.com/vycontrol/vycontrol/master/vycontrol/vycontrol/settings/production.py
+````
+
+now edit production.py:
+* ALLOWED_HOSTS currently 127.0.0.1 is ok for tests
+* for tests you don't need to edit EMAIL settings, but forget password will not work
+* sqlite is ok for tests, but you can change to MySQL/PostgreSQL. 
+* SECRET_KEY edit to anything random, you can use openssl for example:
+
 ```
 openssl rand -hex 32
 ```
 
-
-## by dockerhub
-latest VyControl is being autobuilt at dockerhub https://hub.docker.com/r/robertoberto/vycontrol
+now download latest docker image:
 ```
 docker pull robertoberto/vycontrol
-docker run -p 8000:8000 -t robertoberto/vycontrol
-access http://127.0.0.1:8000
 ```
 
-## by docker composer
 
-Right now we are using db.sqlite3, but I used composer so we can change to mySQL if needed.
+run docker:
+```
+docker run -p 8000:8000 -t robertoberto/vycontrol
+```
+
+now you can access http://127.0.0.1:8000
+
+
+## by docker composer
+Right now we are using db.sqlite3, you can edit composer and to change to mySQL/PostgreSQL if needed.
 
 ```
 docker-compose build
-docker-compose  up
+docker-compose up
 ```
 
 ## manual install instructions
@@ -63,13 +85,16 @@ pip3 install -r requirements.txt
 
 ### setup initial database
 ```
+source env/bin/activate
 cd vycontrol
-python3 manage.py --settings=vycontrol.settings.production migrate
+python3 manage.py migrate --settings=vycontrol.settings_available.production
 ```
 
 ### run webserver
 ```
-python3 manage.py  --settings=vycontrol.settings.production runserver
+source env/bin/activate
+cd vycontrol
+python3 manage.py runserver --settings=vycontrol.settings_available.production 0.0.0.0:8000
 ```
 
 ## access webpage
@@ -78,7 +103,7 @@ http://127.0.0.1:8000/
 
 ## setup vyos new instance
 * click on *Add new instance*
-* configure vyos services like explained here https://docs.vyos.io/en/latest/appendix/http-api.html
+* configure vyos services like explained here https://docs.vyos.io/
 * click on *List Instances*
 * click on *Test Connection*
 
