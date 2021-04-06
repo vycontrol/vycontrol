@@ -287,7 +287,7 @@ def user_edit(request, username):
 
     context = viewinfo.context(vinfo)    
     localcontext = {
-        'user':             user
+        'user':             user,
     }
     context.update(localcontext)
 

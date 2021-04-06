@@ -41,7 +41,15 @@ class msg:
     def get_all(self):
         return self.msgs
 
-
+    def count(self, t=None):
+        if t == None:
+            return len(self.msgs)
+        else:
+            n = 0
+            for m in self.msgs:
+                if m['msg_type'] == t:
+                    n+= 1
+            return n
 
 def log(area, value = [], end = True):
     print("\n\n")

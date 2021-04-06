@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Group
-
+from django.contrib.auth.models import User
 
 class Instance(models.Model):
     hostname = models.CharField(max_length=120, primary_key=True)

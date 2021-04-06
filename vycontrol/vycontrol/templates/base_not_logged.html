@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>{% block header_title %}{% endblock %} - VyControl</title>
+    <title>{% if header_title %}{{ header_title }}{% else %}{% block header_title %}{% endblock %}{% endif %} - VyControl</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -20,7 +20,6 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" 
     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" 
     crossorigin="anonymous"></script>
-  
     <link rel="stylesheet" href="{% static "main.css" %}?{% random_int 100000 500000 %} ">
     <script src="{% static "vycontrol.js" %}?{% random_int 100000 500000 %} "></script>  
     </head>
@@ -59,7 +58,20 @@
 
     </div>
     <div class="col content">
-        <h2>{% block section_title %}{% endblock %}</h2>
+        <h2>{% if header_title %}{{ header_title }}{% else %}{% block section_title %}{% endblock %}{% endif %}</h2>
+
+        {% for m in msg %}
+          {% if forloop.first %}  
+          <h2 id="msgs-header">Save result</h2>
+          <ul id="msgs">
+          {% endif %}
+            <li class="msgs_{{ m.msg_type }}">{{ m.msg_type }} - {{ m.msg }}</li>
+          {% if forloop.last %}  
+          </ul>
+          {% endif %}        
+        {% endfor %}
+
+        
         {% block content %}{% endblock %}
     </div>
   </div>

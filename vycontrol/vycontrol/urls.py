@@ -50,3 +50,9 @@ urlpatterns = [
     path('ntp/', include('ntp.urls')),
     path('dnsresolver/', include('dnsresolver.urls')),
 ]
+
+
+if settings.VYCONTROL_CRYSPY:
+    urlpatterns += [
+        path('users/', include('users.urls')),
+    ]

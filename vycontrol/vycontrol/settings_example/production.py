@@ -12,7 +12,7 @@ CACHES = {
 #    }
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
+        'LOCATION': 'cache_table',
     }
 }
 
@@ -34,7 +34,7 @@ DATABASES = {
 }
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'change me warning'
+SECRET_KEY = '281c8847762153b12d1f2a637ea1885ae6d6c4b5b3ed45232e09f3a11bb29974'
 
 # show footer link to VyControl
 VYCONTROL_CREDITS = True

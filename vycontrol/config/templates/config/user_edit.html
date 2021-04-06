@@ -15,9 +15,13 @@
 {% csrf_token %}
 <table width="100%" border="1">
     <tr>
+        <th width="50%">name</th>
+        <td>{{ user.last_name }}</td>
+    </tr>
+    <tr>
         <th width="50%">username</th>
         <td>{{ user }}</td>
-    </tr>
+    </tr>    
     <tr>
         <th width="50%">email</th>
         <td><input type="text" name="email" id="email" value="{{ user.email }}"></td>

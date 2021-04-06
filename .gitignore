@@ -141,3 +141,5 @@ db.sqlite3
 vycontrol/vycontrol/settings/development.py
 migrations
 vycontrol/vycontrol/settings_available
+vycontrol/users
+vycontrol/on*.sh

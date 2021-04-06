@@ -160,3 +160,4 @@ STATIC_URL = '/s/'
 
 # show footer link to VyControl
 VYCONTROL_CREDITS = True
+VYCONTROL_CRYSPY = False
