@@ -6,6 +6,20 @@
 VyControl is web frontend interface to manage a single or multiple VyoS servers. It is developed in Python/Django using VyOS API.
 
 
+# Branch v2
+This is a development branch.
+
+Features:
+* refactory all code
+* API first
+* use [OpenAPI 3.0](https://swagger.io/specification/) to describe API
+* use [Connexion](https://github.com/zalando/connexion) Python API Framework. 
+* use [pycasbin](https://github.com/casbin/pycasbin) for RABC 
+* all input validation will be handled by OpenAPI definition
+* SDK will be available in major programing langs since we have SDK generation based on OpenAPI
+* interface based on Vue.JS
+* yes, you will be able to manage hundreds of VyOS instances using API
+
 # Use Cases:
 
 VyControl can be a web gui for one single VyOS installation, but it requires a separeted webserver from VyOS to a single network admin user or a TI department from a company
