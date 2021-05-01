@@ -5,6 +5,8 @@
 
 VyControl is web frontend interface to manage a single or multiple VyoS servers. It is developed in Python/Django using VyOS API.
 
+# Future Roadmap
+If you are interested on future of VyControl, please check [VyControl v2 Roadmap](https://github.com/vycontrol/vycontrol/tree/v2).
 
 # Use Cases:
 
