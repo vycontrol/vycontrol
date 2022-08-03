@@ -1,4 +1,4 @@
-Django==4.0.6
+Django==4.1
 asgiref==3.5.2
 pytz==2022.1
 sqlparse==0.4.2
