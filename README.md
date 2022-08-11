@@ -49,7 +49,7 @@ docker run -p 8000:8000 -t robertoberto/vycontrol
 now you can access http://127.0.0.1:8000
 
 
-## by docker composer
+## by docker compose
 Right now we are using db.sqlite3, you can edit composer and to change to mySQL/PostgreSQL if needed.
 
 ```
