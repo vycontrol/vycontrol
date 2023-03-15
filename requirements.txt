@@ -3,7 +3,7 @@ asgiref==3.6.0
 pytz==2022.7.1
 sqlparse==0.4.3
 requests==2.28.2
-python-slugify==6.1.2
+python-slugify==8.0.1
 validators==0.20.0
 python-memcached==1.59
 password_strength==0.0.3.post2
