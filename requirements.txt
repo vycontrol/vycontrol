@@ -1,7 +1,7 @@
 Django>=4.0.7
 pytz-2023.3
 sqlparse==0.4.4
-asgiref==3.7.2
+asgiref==3.8.0
 pytz==2024.1
 sqlparse==0.4.4
 requests==2.31.0
