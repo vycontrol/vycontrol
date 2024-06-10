@@ -23,8 +23,6 @@ VyControl can be a web gui for multiple VyOS installation in a datacenter. Each 
 * [Reddit](https://www.reddit.com/r/vycontrol/) 
 
 # Plan to use VyControl?
-- [ ] **Subscribe to our announce list** at https://vycontrol.com/
-- [ ] Join Slack Channel https://vycontrol.slack.com/archives/C012ZRMB8VB
 - [ ] Add new enhancement requests at https://github.com/vycontrol/vycontrol/issues
 
 # Install instructions 
