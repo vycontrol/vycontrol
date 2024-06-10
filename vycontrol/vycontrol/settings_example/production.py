@@ -24,7 +24,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'user'
 EMAIL_HOST_PASSWORD = 'password'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = '"VyControl" <contact@vycontrol.com>'
+DEFAULT_FROM_EMAIL = '"VyControl" <contact@example.com>'
 
 DATABASES = {
     'default': {
