@@ -2,11 +2,11 @@ Django>=4.0.7
 pytz-2023.3
 sqlparse==0.4.4
 asgiref==3.8.0
-pytz==2023.3.post1
+pytz==2024.1
 sqlparse==0.4.4
 requests==2.31.0
-python-slugify==8.0.1
-validators==0.22.0
-python-memcached==1.59
+validators==0.23.2
+python-slugify==8.0.4
+python-memcached==1.62
 password_strength==0.0.3.post2
 django-utils-six==2.0
