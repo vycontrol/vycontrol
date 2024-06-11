@@ -1,5 +1,5 @@
 Django>=4.0.7
-asgiref==3.8.0
+asgiref==3.8.1
 django-utils-six==2.0
 password_strength==0.0.3.post2
 python-memcached==1.62
